@@ -950,16 +950,24 @@ const services = [
               <small>01</small>
               <strong>Products</strong>
             </a>
-            <a href="#philosophy" data-menu-link>
+
+            <a href="/gallery" data-menu-link>
               <small>02</small>
+              <strong>Gallery</strong>
+            </a>
+
+            <a href="#philosophy" data-menu-link>
+              <small>03</small>
               <strong>Philosophy</strong>
             </a>
+
             <a href="#service" data-menu-link>
-              <small>03</small>
+              <small>04</small>
               <strong>Service</strong>
             </a>
+
             <a href="#quote" data-menu-link>
-              <small>04</small>
+              <small>05</small>
               <strong>Contact</strong>
             </a>
           </div>
@@ -987,13 +995,13 @@ const services = [
                 WhatsApp for quote
               </a>
 
+              <a class="btn btn-light" href="/gallery">
+                View gallery
+              </a>
+
               <button class="btn btn-light" type="button" data-copy-email>
                 Copy email
               </button>
-
-              <a class="btn btn-light" href={mailLink}>
-                Open email app
-              </a>
             </div>
           </div>
 
@@ -1121,6 +1129,10 @@ const services = [
                 WhatsApp {displayPhone}
               </a>
 
+              <a class="btn btn-outline-light" href="/gallery">
+                View gallery
+              </a>
+
               <button class="btn btn-outline-light" type="button" data-copy-email>
                 Copy {email}
               </button>
@@ -1148,8 +1160,9 @@ const services = [
         </div>
 
         <div>
-          <strong>Services</strong>
-          <span>Kitchens • Cupboards • Wardrobes • TV units • Vanities</span>
+          <strong>Pages</strong>
+          <a href="/">Home</a>
+          <a href="/gallery">Gallery</a>
         </div>
       </footer>
 
