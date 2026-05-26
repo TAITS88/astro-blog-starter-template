@@ -1595,179 +1595,178 @@ const services = [
     </div>
 
     <script define:vars={{ email, mailLink, whatsappNumber }}>
-      const openMenuButton = document.querySelector("[data-open-menu]");
-      const closeMenuButton = document.querySelector("[data-close-menu]");
-      const menuOverlay = document.getElementById("menuOverlay");
-      const menuLinks = document.querySelectorAll("[data-menu-link]");
-      const copyButtons = document.querySelectorAll("[data-copy-email]");
-      const toast = document.getElementById("emailToast");
+  const openMenuButton = document.querySelector("[data-open-menu]");
+  const closeMenuButton = document.querySelector("[data-close-menu]");
+  const menuOverlay = document.getElementById("menuOverlay");
+  const menuLinks = document.querySelectorAll("[data-menu-link]");
+  const copyButtons = document.querySelectorAll("[data-copy-email]");
+  const toast = document.getElementById("emailToast");
 
-      const estimateForm = document.getElementById("estimateForm");
-      const estimatePhotos = document.getElementById("estimatePhotos");
-      const selectedPhotos = document.getElementById("selectedPhotos");
-      const estimatePreview = document.getElementById("estimatePreview");
-      const estimateWhatsAppButton = document.getElementById("estimateWhatsAppButton");
+  const estimateForm = document.getElementById("estimateForm");
+  const estimatePhotos = document.getElementById("estimatePhotos");
+  const selectedPhotos = document.getElementById("selectedPhotos");
+  const estimatePreview = document.getElementById("estimatePreview");
+  const estimateWhatsAppButton = document.getElementById("estimateWhatsAppButton");
 
-      function openMenu() {
-        if (!menuOverlay) return;
-        menuOverlay.classList.add("open");
-        document.body.style.overflow = "hidden";
-      }
+  let activePhotoUrls = [];
 
-      function closeMenu() {
-        if (!menuOverlay) return;
-        menuOverlay.classList.remove("open");
-        document.body.style.overflow = "";
-      }
+  function openMenu() {
+    if (!menuOverlay) return;
+    menuOverlay.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
 
-      function showToast(message) {
-        if (!toast) return;
+  function closeMenu() {
+    if (!menuOverlay) return;
+    menuOverlay.classList.remove("open");
+    document.body.style.overflow = "";
+  }
 
-        toast.textContent = message;
-        toast.classList.add("show");
+  function showToast(message) {
+    if (!toast) return;
 
-        window.setTimeout(() => {
-          toast.classList.remove("show");
-        }, 2400);
-      }
+    toast.textContent = message;
+    toast.classList.add("show");
 
-      function fallbackCopy(text) {
-        const textarea = document.createElement("textarea");
-        textarea.value = text;
-        textarea.setAttribute("readonly", "");
-        textarea.style.position = "fixed";
-        textarea.style.left = "-9999px";
-        textarea.style.top = "0";
+    window.setTimeout(() => {
+      toast.classList.remove("show");
+    }, 2400);
+  }
 
-        document.body.appendChild(textarea);
-        textarea.focus();
-        textarea.select();
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "0";
 
-        const successful = document.execCommand("copy");
-        document.body.removeChild(textarea);
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
 
-        return successful;
-      }
+    const successful = document.execCommand("copy");
+    document.body.removeChild(textarea);
 
-      async function copyEmail() {
-        try {
-          if (navigator.clipboard && window.isSecureContext) {
-            await navigator.clipboard.writeText(email);
-          } else {
-            const copied = fallbackCopy(email);
+    return successful;
+  }
 
-            if (!copied) {
-              throw new Error("Fallback copy failed.");
-            }
-          }
+  async function copyEmail() {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(email);
+      } else {
+        const copied = fallbackCopy(email);
 
-          showToast(`Email copied: ${email}`);
-        } catch {
-          showToast(`Email: ${email}`);
-
-          window.setTimeout(() => {
-            window.location.href = mailLink;
-          }, 900);
+        if (!copied) {
+          throw new Error("Fallback copy failed.");
         }
       }
 
-      function getInputValue(id) {
-        const element = document.getElementById(id);
-        const value = element?.value?.trim();
+      showToast(`Email copied: ${email}`);
+    } catch {
+      showToast(`Email: ${email}`);
 
-        return value && value.length > 0 ? value : "Not supplied";
-      }
-
-      function getCheckedValues(name) {
-        const checked = Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
-          .map((input) => input.value);
-
-        return checked.length > 0 ? checked.join(", ") : "Not supplied";
-      }
-
-      function getSelectedFinish() {
-        const selected = document.querySelector('input[name="finishOption"]:checked');
-        return selected?.value || "Not supplied";
-      }
-
-      let activePhotoUrls = [];
-
-function getSelectedPhotoFiles() {
-  return Array.from(estimatePhotos?.files || []);
-}
-
-function getSelectedPhotoNames() {
-  return getSelectedPhotoFiles().map((file) => file.name);
-}
-
-function clearPhotoUrls() {
-  activePhotoUrls.forEach((url) => URL.revokeObjectURL(url));
-  activePhotoUrls = [];
-}
-
-function updateSelectedPhotos() {
-  if (!selectedPhotos) return;
-
-  clearPhotoUrls();
-
-  const files = getSelectedPhotoFiles();
-  selectedPhotos.replaceChildren();
-
-  if (files.length === 0) {
-    const emptyText = document.createElement("div");
-    emptyText.className = "photo-list-text";
-    emptyText.textContent = "No photos selected yet.";
-    selectedPhotos.appendChild(emptyText);
-    return;
+      window.setTimeout(() => {
+        window.location.href = mailLink;
+      }, 900);
+    }
   }
 
-  const countText = document.createElement("div");
-  countText.className = "photo-list-text";
-  countText.textContent = `${files.length} photo(s) selected and ready to share.`;
-  selectedPhotos.appendChild(countText);
+  function getInputValue(id) {
+    const element = document.getElementById(id);
+    const value = element?.value?.trim();
 
-  const previewGrid = document.createElement("div");
-  previewGrid.className = "photo-preview-grid";
+    return value && value.length > 0 ? value : "Not supplied";
+  }
 
-  files.forEach((file, index) => {
-    const imageUrl = URL.createObjectURL(file);
-    activePhotoUrls.push(imageUrl);
+  function getCheckedValues(name) {
+    const checked = Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
+      .map((input) => input.value);
 
-    const card = document.createElement("div");
-    card.className = "photo-preview-card";
+    return checked.length > 0 ? checked.join(", ") : "Not supplied";
+  }
 
-    const image = document.createElement("img");
-    image.src = imageUrl;
-    image.alt = `Selected estimate photo ${index + 1}`;
+  function getSelectedFinish() {
+    const selected = document.querySelector('input[name="finishOption"]:checked');
+    return selected?.value || "Not supplied";
+  }
 
-    const label = document.createElement("span");
-    label.textContent = `${index + 1}. ${file.name}`;
+  function getSelectedPhotoFiles() {
+    return Array.from(estimatePhotos?.files || []);
+  }
 
-    card.appendChild(image);
-    card.appendChild(label);
-    previewGrid.appendChild(card);
-  });
+  function getSelectedPhotoNames() {
+    return getSelectedPhotoFiles().map((file) => file.name);
+  }
 
-  selectedPhotos.appendChild(previewGrid);
-}
-      }
+  function clearPhotoUrls() {
+    activePhotoUrls.forEach((url) => URL.revokeObjectURL(url));
+    activePhotoUrls = [];
+  }
 
-      function buildEstimateMessage() {
-        const projectType = getInputValue("projectType");
-        const width = getInputValue("widthMeasure");
-        const height = getInputValue("heightMeasure");
-        const depth = getInputValue("depthMeasure");
-        const visibleDetails = getCheckedValues("siteDetails");
-        const finish = getSelectedFinish();
-        const notes = getInputValue("estimateNotes");
-        const photos = getSelectedPhotoNames();
+  function updateSelectedPhotos() {
+    if (!selectedPhotos) return;
 
-        const photoText =
-          photos.length > 0
-            ? `${photos.length} photo(s) selected. I will attach them in WhatsApp.`
-            : "No photos selected yet. I still need to attach photos.";
+    clearPhotoUrls();
 
-        const message =
+    const files = getSelectedPhotoFiles();
+    selectedPhotos.replaceChildren();
+
+    if (files.length === 0) {
+      const emptyText = document.createElement("div");
+      emptyText.className = "photo-list-text";
+      emptyText.textContent = "No photos selected yet.";
+      selectedPhotos.appendChild(emptyText);
+      return;
+    }
+
+    const countText = document.createElement("div");
+    countText.className = "photo-list-text";
+    countText.textContent = `${files.length} photo(s) selected and ready to share.`;
+    selectedPhotos.appendChild(countText);
+
+    const previewGrid = document.createElement("div");
+    previewGrid.className = "photo-preview-grid";
+
+    files.forEach((file, index) => {
+      const imageUrl = URL.createObjectURL(file);
+      activePhotoUrls.push(imageUrl);
+
+      const card = document.createElement("div");
+      card.className = "photo-preview-card";
+
+      const image = document.createElement("img");
+      image.src = imageUrl;
+      image.alt = `Selected estimate photo ${index + 1}`;
+
+      const label = document.createElement("span");
+      label.textContent = `${index + 1}. ${file.name}`;
+
+      card.appendChild(image);
+      card.appendChild(label);
+      previewGrid.appendChild(card);
+    });
+
+    selectedPhotos.appendChild(previewGrid);
+  }
+
+  function buildEstimateMessage() {
+    const projectType = getInputValue("projectType");
+    const width = getInputValue("widthMeasure");
+    const height = getInputValue("heightMeasure");
+    const depth = getInputValue("depthMeasure");
+    const visibleDetails = getCheckedValues("siteDetails");
+    const finish = getSelectedFinish();
+    const notes = getInputValue("estimateNotes");
+    const photos = getSelectedPhotoNames();
+
+    const photoText =
+      photos.length > 0
+        ? `${photos.length} photo(s) selected. I will attach them in WhatsApp.`
+        : "No photos selected yet. I still need to attach photos.";
+
+    const message =
 `Hi WhichwoodFitters, I need a fast estimate.
 
 Project type: ${projectType}
@@ -1791,75 +1790,75 @@ ${notes}
 
 Please let me know what else you need for the quote.`;
 
-        if (estimatePreview) {
-          estimatePreview.textContent = message;
-        }
-
-        return message;
-      }
-
-      async function openEstimateWhatsApp() {
-  const message = buildEstimateMessage();
-  const files = getSelectedPhotoFiles();
-
-  try {
-    if (
-      files.length > 0 &&
-      navigator.canShare &&
-      navigator.share &&
-      navigator.canShare({ files })
-    ) {
-      await navigator.share({
-        title: "WhichwoodFitters Estimate Request",
-        text: message,
-        files
-      });
-
-      showToast("Photos and estimate shared. Choose WhatsApp if asked.");
-      return;
+    if (estimatePreview) {
+      estimatePreview.textContent = message;
     }
-  } catch {
-    showToast("Photo sharing was cancelled or blocked.");
+
+    return message;
   }
 
-  const link = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-  window.open(link, "_blank", "noopener,noreferrer");
+  async function openEstimateWhatsApp() {
+    const message = buildEstimateMessage();
+    const files = getSelectedPhotoFiles();
 
-  if (files.length > 0) {
-    showToast("WhatsApp opened with text. Attach the selected photos manually if they did not share.");
-  } else {
-    showToast("WhatsApp estimate request opened.");
+    try {
+      if (
+        files.length > 0 &&
+        navigator.canShare &&
+        navigator.share &&
+        navigator.canShare({ files })
+      ) {
+        await navigator.share({
+          title: "WhichwoodFitters Estimate Request",
+          text: message,
+          files
+        });
+
+        showToast("Photos and estimate shared. Choose WhatsApp if asked.");
+        return;
+      }
+    } catch {
+      showToast("Photo sharing was cancelled or blocked.");
+    }
+
+    const link = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(link, "_blank", "noopener,noreferrer");
+
+    if (files.length > 0) {
+      showToast("WhatsApp opened with text. Attach the selected photos manually if they did not share.");
+    } else {
+      showToast("WhatsApp estimate request opened.");
+    }
   }
-}
 
-      openMenuButton?.addEventListener("click", openMenu);
-      closeMenuButton?.addEventListener("click", closeMenu);
+  openMenuButton?.addEventListener("click", openMenu);
+  closeMenuButton?.addEventListener("click", closeMenu);
 
-      menuLinks.forEach((link) => {
-        link.addEventListener("click", closeMenu);
-      });
+  menuLinks.forEach((link) => {
+    link.addEventListener("click", closeMenu);
+  });
 
-      copyButtons.forEach((button) => {
-        button.addEventListener("click", copyEmail);
-      });
+  copyButtons.forEach((button) => {
+    button.addEventListener("click", copyEmail);
+  });
 
-      estimatePhotos?.addEventListener("change", () => {
-        updateSelectedPhotos();
-        buildEstimateMessage();
-      });
+  estimatePhotos?.addEventListener("change", () => {
+    updateSelectedPhotos();
+    buildEstimateMessage();
+  });
 
-      estimateForm?.addEventListener("input", buildEstimateMessage);
-      estimateForm?.addEventListener("change", buildEstimateMessage);
+  estimateForm?.addEventListener("input", buildEstimateMessage);
+  estimateForm?.addEventListener("change", buildEstimateMessage);
 
-      estimateWhatsAppButton?.addEventListener("click", openEstimateWhatsApp);
+  estimateWhatsAppButton?.addEventListener("click", openEstimateWhatsApp);
 
-      buildEstimateMessage();
+  buildEstimateMessage();
 
-      window.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-          closeMenu();
-        }
-      });
-    </script>
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeMenu();
+    }
+  });
+</script>
   </body>
 </html>
