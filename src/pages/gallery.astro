@@ -16,52 +16,59 @@ const emailBody =
 
 const mailLink = `mailto:${email}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
 
+const filters = [
+  { key: "all", label: "All Work" },
+  { key: "kitchens", label: "Kitchens" },
+  { key: "cupboards", label: "Cupboards" },
+  { key: "tv-units", label: "TV Units" },
+  { key: "vanities", label: "Vanities" },
+  { key: "storage", label: "Storage" },
+  { key: "custom", label: "Custom Work" }
+];
+
 const galleryItems = [
   {
     title: "Modern Kitchen Build",
     category: "Kitchens",
+    categoryKey: "kitchens",
     image: "/images/kitchen.jpg",
     text: "Clean fitted kitchen design with practical storage and modern finishes."
   },
   {
     title: "Built-In Cupboards",
     category: "Cupboards",
+    categoryKey: "cupboards",
     image: "/images/cupboards.jpg",
     text: "Wall-to-wall bedroom storage designed to fit the room properly."
   },
   {
     title: "TV Unit & Interior Storage",
     category: "TV Units",
+    categoryKey: "tv-units",
     image: "/images/tv-unit.jpg",
     text: "Floating media storage and living-room units with clean modern lines."
   },
   {
+    title: "Bathroom Vanity Idea",
+    category: "Vanities",
+    categoryKey: "vanities",
+    image: "/images/hero-small.jpg",
+    text: "Compact fitted vanity storage for bathrooms, guest toilets and small spaces."
+  },
+  {
+    title: "Smart Storage Solution",
+    category: "Storage",
+    categoryKey: "storage",
+    image: "/images/service.jpg",
+    text: "Practical storage made for awkward corners, passage areas and unused walls."
+  },
+  {
     title: "Feature Carpentry",
     category: "Custom Work",
+    categoryKey: "custom",
     image: "/images/hero-main.jpg",
     text: "Premium custom fitted work for homes that need smarter use of space."
-  },
-  {
-    title: "Detail & Finish Work",
-    category: "Finishes",
-    image: "/images/hero-small.jpg",
-    text: "Close-up finish details, clean edges, and modern material choices."
-  },
-  {
-    title: "Measuring & Installation",
-    category: "Service",
-    image: "/images/service.jpg",
-    text: "From measurements to final fitting, the process must be clean and accurate."
   }
-];
-
-const categories = [
-  "Kitchens",
-  "Cupboards",
-  "TV Units",
-  "Vanities",
-  "Storage",
-  "Custom Work"
 ];
 ---
 
@@ -85,7 +92,6 @@ const categories = [
         --cream: #fffaf1;
         --ink: #201a13;
         --muted: #74695c;
-        --soft: #9b8f80;
         --wood: #9a6535;
         --wood-dark: #4b2b16;
         --line: rgba(32, 26, 19, 0.16);
@@ -173,12 +179,6 @@ const categories = [
         font-weight: 850;
       }
 
-      .back-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
       .brand {
         justify-self: center;
         display: grid;
@@ -207,7 +207,7 @@ const categories = [
       }
 
       .hero {
-        min-height: 82vh;
+        min-height: 80vh;
         display: grid;
         align-items: end;
         padding: 8rem clamp(1rem, 4vw, 4.8rem) 3rem;
@@ -249,19 +249,20 @@ const categories = [
         line-height: 1.82;
       }
 
-      .hero-actions {
+      .hero-actions,
+      .filter-strip {
         display: flex;
         flex-wrap: wrap;
         gap: 0.75rem;
         margin-top: 2rem;
       }
 
-      .btn {
+      .btn,
+      .filter-btn {
         min-height: 48px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 0.55rem;
         border-radius: 999px;
         padding: 0.9rem 1.18rem;
         border: 1px solid var(--line-dark);
@@ -271,22 +272,32 @@ const categories = [
         transition:
           transform 0.2s ease,
           background 0.2s ease,
-          border-color 0.2s ease;
+          border-color 0.2s ease,
+          color 0.2s ease;
       }
 
-      .btn:hover {
+      .btn:hover,
+      .filter-btn:hover {
         transform: translateY(-2px);
       }
 
-      .btn-dark {
+      .btn-dark,
+      .filter-btn.active {
         color: var(--paper);
         background: var(--ink);
         border-color: var(--ink);
       }
 
-      .btn-light {
+      .btn-light,
+      .filter-btn {
         color: var(--ink);
         background: rgba(255, 250, 241, 0.5);
+      }
+
+      .btn-outline-light {
+        color: var(--paper);
+        background: transparent;
+        border-color: rgba(244, 239, 229, 0.34);
       }
 
       .section {
@@ -316,20 +327,8 @@ const categories = [
         letter-spacing: -0.1em;
       }
 
-      .category-strip {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.65rem;
-        margin-bottom: 2rem;
-      }
-
-      .category-pill {
-        padding: 0.78rem 1rem;
-        border-radius: 999px;
-        border: 1px solid var(--line);
-        background: rgba(255, 250, 241, 0.34);
-        color: var(--muted);
-        font-weight: 850;
+      .filter-strip {
+        margin: 0 0 2rem;
       }
 
       .gallery-grid {
@@ -348,6 +347,10 @@ const categories = [
         border-bottom: 1px solid var(--line);
       }
 
+      .gallery-card.hidden {
+        display: none;
+      }
+
       .gallery-image {
         position: relative;
         min-height: 390px;
@@ -363,7 +366,20 @@ const categories = [
         inset: 0;
         background:
           linear-gradient(0deg, rgba(32, 26, 19, 0.45), transparent 58%),
-          radial-gradient(circle at 30% 18%, rgba(255,255,255,0.24), transparent 19rem);
+          radial-gradient(circle at 30% 18%, rgba(255, 255, 255, 0.24), transparent 19rem);
+      }
+
+      .gallery-badge {
+        position: absolute;
+        left: 1rem;
+        bottom: 1rem;
+        z-index: 2;
+        padding: 0.62rem 0.85rem;
+        border-radius: 999px;
+        background: rgba(255, 250, 241, 0.86);
+        color: var(--ink);
+        font-weight: 950;
+        backdrop-filter: blur(14px);
       }
 
       .gallery-content {
@@ -451,12 +467,6 @@ const categories = [
         background: var(--paper);
         color: var(--ink);
         border-color: var(--paper);
-      }
-
-      .btn-outline-light {
-        color: var(--paper);
-        background: transparent;
-        border-color: rgba(244, 239, 229, 0.34);
       }
 
       .footer {
@@ -556,11 +566,13 @@ const categories = [
           font-size: clamp(4.1rem, 20vw, 6.5rem);
         }
 
-        .hero-actions {
+        .hero-actions,
+        .filter-strip {
           display: grid;
         }
 
-        .btn {
+        .btn,
+        .filter-btn {
           width: 100%;
         }
 
@@ -642,15 +654,14 @@ const categories = [
             <span class="page-label">Project Gallery</span>
 
             <h1>
-              Work that shows
-              <span>the finish.</span>
+              Choose what
+              <span>you want to see.</span>
             </h1>
 
             <p class="hero-text">
-              A gallery of kitchens, built-in cupboards, TV units, storage
-              ideas and custom carpentry finishes. These images can be replaced
-              with your real WhichwoodFitters project photos as your portfolio
-              grows.
+              Use the options below to view kitchens, cupboards, TV units,
+              vanities, storage ideas and custom fitted carpentry. These images
+              can later be replaced with your real WhichwoodFitters project photos.
             </p>
 
             <div class="hero-actions">
@@ -667,23 +678,31 @@ const categories = [
 
         <section class="section">
           <div class="section-title">
-            <small>Categories</small>
-            <h2>Browse the type of work you need.</h2>
+            <small>Options</small>
+            <h2>Filter the gallery by project type.</h2>
           </div>
 
-          <div class="category-strip">
-            {categories.map((category) => (
-              <span class="category-pill">{category}</span>
+          <div class="filter-strip" aria-label="Gallery filters">
+            {filters.map((filter) => (
+              <button
+                class={filter.key === "all" ? "filter-btn active" : "filter-btn"}
+                type="button"
+                data-filter={filter.key}
+              >
+                {filter.label}
+              </button>
             ))}
           </div>
 
           <div class="gallery-grid">
             {galleryItems.map((item) => (
-              <article class="gallery-card">
+              <article class="gallery-card" data-gallery-card data-category={item.categoryKey}>
                 <div
                   class="gallery-image"
                   style={`background-image: url('${item.image}');`}
-                ></div>
+                >
+                  <span class="gallery-badge">{item.category}</span>
+                </div>
 
                 <div class="gallery-content">
                   <div class="gallery-category">{item.category}</div>
@@ -749,7 +768,7 @@ const categories = [
         </div>
 
         <div>
-          <strong>Gallery</strong>
+          <strong>Gallery Options</strong>
           <span>Kitchens • Cupboards • TV units • Vanities • Storage</span>
         </div>
       </footer>
@@ -772,6 +791,8 @@ const categories = [
     <script define:vars={{ email, mailLink }}>
       const copyButtons = document.querySelectorAll("[data-copy-email]");
       const toast = document.getElementById("emailToast");
+      const filterButtons = document.querySelectorAll("[data-filter]");
+      const galleryCards = document.querySelectorAll("[data-gallery-card]");
 
       function showToast(message) {
         if (!toast) return;
@@ -824,8 +845,28 @@ const categories = [
         }
       }
 
+      function filterGallery(selectedFilter) {
+        filterButtons.forEach((button) => {
+          const isActive = button.dataset.filter === selectedFilter;
+          button.classList.toggle("active", isActive);
+        });
+
+        galleryCards.forEach((card) => {
+          const cardCategory = card.dataset.category;
+          const shouldShow = selectedFilter === "all" || cardCategory === selectedFilter;
+          card.classList.toggle("hidden", !shouldShow);
+        });
+      }
+
       copyButtons.forEach((button) => {
         button.addEventListener("click", copyEmail);
+      });
+
+      filterButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const selectedFilter = button.dataset.filter || "all";
+          filterGallery(selectedFilter);
+        });
       });
     </script>
   </body>
