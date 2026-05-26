@@ -21,19 +21,22 @@ const products = [
     no: "01",
     title: "Kitchen Builds",
     subtitle: "Design meets daily use",
-    text: "Fitted kitchens planned around storage, appliances, workflow, finishes and the exact room measurements."
+    text: "Fitted kitchens planned around storage, appliances, workflow, finishes and the exact room measurements.",
+    image: "/images/kitchen.jpg"
   },
   {
     no: "02",
     title: "Built-In Cupboards",
     subtitle: "Storage made to fit",
-    text: "Bedroom cupboards, wardrobes, linen cupboards and wall-to-wall fitted storage with clean practical layouts."
+    text: "Bedroom cupboards, wardrobes, linen cupboards and wall-to-wall fitted storage with clean practical layouts.",
+    image: "/images/cupboards.jpg"
   },
   {
     no: "03",
     title: "Interior Units",
     subtitle: "Details that complete a room",
-    text: "TV units, vanities, shelves, office units, laundry cupboards and custom storage for awkward spaces."
+    text: "TV units, vanities, shelves, office units, laundry cupboards and custom storage for awkward spaces.",
+    image: "/images/tv-unit.jpg"
   }
 ];
 
@@ -109,7 +112,7 @@ const services = [
         position: fixed;
         inset: 0;
         pointer-events: none;
-        opacity: 0.16;
+        opacity: 0.13;
         background-image:
           linear-gradient(rgba(32, 26, 19, 0.14) 1px, transparent 1px),
           linear-gradient(90deg, rgba(32, 26, 19, 0.14) 1px, transparent 1px);
@@ -379,22 +382,19 @@ const services = [
         align-items: end;
       }
 
+      .hero-image,
+      .product-visual,
+      .feature-image {
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
       .hero-image {
         position: relative;
         min-height: 72vh;
         overflow: hidden;
         box-shadow: var(--shadow);
-        background:
-          linear-gradient(90deg, rgba(255, 255, 255, 0.24), transparent 35%),
-          repeating-linear-gradient(
-            90deg,
-            #70431f 0,
-            #70431f 22px,
-            #8e5b2d 22px,
-            #8e5b2d 48px,
-            #ad7840 48px,
-            #ad7840 76px
-          );
       }
 
       .hero-image.large {
@@ -404,28 +404,22 @@ const services = [
       .hero-image.small {
         min-height: 48vh;
         border-radius: 48px 48px 0 0;
-        background:
-          radial-gradient(circle at 28% 18%, rgba(255,255,255,0.26), transparent 16rem),
-          repeating-linear-gradient(
-            90deg,
-            #e5ded2 0,
-            #e5ded2 24px,
-            #fff8ed 24px,
-            #fff8ed 52px
-          );
       }
 
-      .hero-image::before {
+      .hero-image::before,
+      .product-visual::after,
+      .feature-image::before {
         content: "";
         position: absolute;
         inset: 0;
         background:
           linear-gradient(0deg, rgba(32, 26, 19, 0.5), transparent 55%),
-          radial-gradient(circle at 26% 18%, rgba(255, 255, 255, 0.32), transparent 20rem);
+          radial-gradient(circle at 26% 18%, rgba(255, 255, 255, 0.28), transparent 20rem);
       }
 
       .image-caption {
         position: absolute;
+        z-index: 2;
         left: 1rem;
         right: 1rem;
         bottom: 1rem;
@@ -521,44 +515,6 @@ const services = [
         position: relative;
         min-height: 350px;
         overflow: hidden;
-        background:
-          linear-gradient(90deg, rgba(255,255,255,0.25), transparent 38%),
-          repeating-linear-gradient(
-            90deg,
-            #71502f 0,
-            #71502f 16px,
-            #92683f 16px,
-            #92683f 38px,
-            #b08352 38px,
-            #b08352 60px
-          );
-      }
-
-      .product-card:nth-child(2) .product-visual {
-        background:
-          linear-gradient(120deg, rgba(32,26,19,0.13), transparent 45%),
-          repeating-linear-gradient(
-            90deg,
-            #e6dfd2 0,
-            #e6dfd2 26px,
-            #fff8ed 26px,
-            #fff8ed 54px
-          );
-      }
-
-      .product-card:nth-child(3) .product-visual {
-        background:
-          radial-gradient(circle at 30% 20%, rgba(255,255,255,0.23), transparent 16rem),
-          linear-gradient(135deg, #2f2a23, #75634e);
-      }
-
-      .product-visual::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background:
-          linear-gradient(0deg, rgba(32, 26, 19, 0.36), transparent 58%),
-          radial-gradient(circle at 30% 18%, rgba(255,255,255,0.3), transparent 19rem);
       }
 
       .product-content {
@@ -603,22 +559,12 @@ const services = [
         overflow: hidden;
         border-radius: 48px;
         box-shadow: var(--shadow);
-        background:
-          linear-gradient(0deg, rgba(32, 26, 19, 0.38), transparent 50%),
-          repeating-linear-gradient(
-            90deg,
-            #6d401e 0,
-            #6d401e 22px,
-            #875225 22px,
-            #875225 48px,
-            #a0692f 48px,
-            #a0692f 72px
-          );
       }
 
       .feature-image::after {
         content: "Made to fit";
         position: absolute;
+        z-index: 2;
         left: 1.2rem;
         bottom: 1.2rem;
         padding: 0.72rem 1rem;
@@ -1023,7 +969,7 @@ const services = [
       <main>
         <section class="hero">
           <div class="hero-copy">
-            <span class="page-label">Startseite</span>
+            <span class="page-label">Custom Carpentry</span>
 
             <h1>
               Connected
@@ -1052,14 +998,14 @@ const services = [
           </div>
 
           <div class="hero-gallery">
-            <div class="hero-image large">
+            <div class="hero-image large" style={`background-image: url('/images/hero-main.jpg');`}>
               <div class="image-caption">
                 <strong>Kitchens, cupboards & fitted interiors</strong>
                 <span>Modern storage with a clean custom-made finish.</span>
               </div>
             </div>
 
-            <div class="hero-image small">
+            <div class="hero-image small" style={`background-image: url('/images/hero-small.jpg');`}>
               <div class="image-caption">
                 <strong>Measured properly</strong>
                 <span>Every wall, corner, plug and ceiling height matters.</span>
@@ -1097,7 +1043,7 @@ const services = [
           <div class="product-grid">
             {products.map((product) => (
               <article class="product-card">
-                <div class="product-visual"></div>
+                <div class="product-visual" style={`background-image: url('${product.image}');`}></div>
 
                 <div class="product-content">
                   <div class="product-no">{product.no}</div>
@@ -1112,7 +1058,7 @@ const services = [
 
         <section class="section" id="service">
           <div class="feature">
-            <div class="feature-image"></div>
+            <div class="feature-image" style={`background-image: url('/images/service.jpg');`}></div>
 
             <div class="feature-copy">
               <span class="page-label">Service</span>
@@ -1135,7 +1081,7 @@ const services = [
 
         <section class="section">
           <div class="section-title">
-            <small>Before quote</small>
+            <small>Before Quote</small>
             <h2>What to send for a faster estimate.</h2>
           </div>
 
@@ -1151,7 +1097,7 @@ const services = [
 
         <section class="quote-section" id="quote">
           <div class="quote-copy">
-            <span class="page-label">Personal quote</span>
+            <span class="page-label">Personal Quote</span>
             <h2>Send your space.</h2>
 
             <p>
