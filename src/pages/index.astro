@@ -1,37 +1,69 @@
 ---
+const email = "ruhantait@yahoo.com";
+const whatsappNumber = "27799101465";
+
+const whatsappMessage = encodeURIComponent(
+  "Hi WhichwoodFitters, I would like a quote for custom carpentry. I can send photos and measurements."
+);
+
+const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
+
+const mailLink = `mailto:${email}?subject=${encodeURIComponent(
+  "Quote request - WhichwoodFitters"
+)}&body=${encodeURIComponent(
+  "Hi WhichwoodFitters,\n\nI would like a quote for custom carpentry.\n\nProject type:\nMeasurements:\nPhotos attached:\nLocation:\n\nThank you."
+)}`;
+
 const services = [
   {
     title: "Custom Kitchens",
-    text: "Modern fitted kitchens designed around your space, storage needs, appliances, and finish choices."
+    text: "Modern fitted kitchens designed around your space, appliances, workflow, and storage needs.",
+    tag: "Kitchen"
   },
   {
     title: "Built-In Cupboards",
-    text: "Bedroom cupboards, wardrobes, linen cupboards, and smart storage units made to fit properly."
+    text: "Bedroom cupboards, linen cupboards, wardrobes, and storage designed to fit wall-to-wall.",
+    tag: "Cupboards"
   },
   {
     title: "TV Units",
-    text: "Clean floating TV units, feature walls, display shelving, and practical cable-friendly storage."
+    text: "Floating TV units, display shelves, feature walls, and clean cable-friendly entertainment storage.",
+    tag: "Living"
   },
   {
-    title: "Vanities & Storage",
-    text: "Bathroom vanities, laundry cupboards, garage storage, office units, and custom home storage."
+    title: "Vanities",
+    text: "Bathroom vanities and compact storage built for practical daily use with a clean premium finish.",
+    tag: "Bathroom"
+  },
+  {
+    title: "Storage Solutions",
+    text: "Garage, laundry, office, pantry, and under-stair storage that turns dead space into useful space.",
+    tag: "Storage"
+  },
+  {
+    title: "Custom Fit-Outs",
+    text: "Purpose-built units for awkward spaces, renovations, rentals, and homes needing smarter storage.",
+    tag: "Custom"
   }
 ];
 
 const steps = [
-  "Measure the space",
-  "Plan the layout",
-  "Choose finishes",
-  "Build and install"
+  "Send photos",
+  "Send measurements",
+  "Choose finish",
+  "Approve quote",
+  "Build and fit"
 ];
 
 const finishes = [
   "White melamine",
+  "Nordic / Iceberg white",
   "Woodgrain melamine",
-  "MDF painted finishes",
+  "Black accents",
+  "Soft-close hinges",
   "Modern handles",
-  "Soft-close hardware",
-  "Quartz-ready designs"
+  "Push-to-open doors",
+  "Quartz-ready kitchens"
 ];
 ---
 
@@ -40,24 +72,33 @@ const finishes = [
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WhichwoodFitters | Custom Carpentry & Built-In Cupboards</title>
+
+    <title>WhichwoodFitters | Modern Custom Carpentry & Built-In Cupboards</title>
+
     <meta
       name="description"
-      content="WhichwoodFitters builds custom kitchens, built-in cupboards, wardrobes, TV units, vanities, and storage solutions in South Africa."
+      content="WhichwoodFitters builds custom kitchens, built-in cupboards, wardrobes, TV units, vanities, and modern storage solutions."
     />
+
     <style>
       :root {
-        --bg: #0f0c08;
-        --bg-soft: #18130d;
-        --card: rgba(255, 255, 255, 0.08);
-        --card-border: rgba(255, 255, 255, 0.14);
-        --text: #fff7ed;
-        --muted: #d8c7b0;
-        --gold: #d8a85d;
-        --wood: #8b5a2b;
-        --cream: #fff2dc;
-        --dark: #080604;
-        --green: #8fa874;
+        --bg: #070604;
+        --bg-2: #0d0a06;
+        --text: #fff8ed;
+        --muted: #c8b9a2;
+        --soft: rgba(255, 248, 237, 0.72);
+        --gold: #d9a44c;
+        --gold-2: #ffe0a3;
+        --wood: #8d5524;
+        --brown: #2a190d;
+        --glass: rgba(255, 255, 255, 0.075);
+        --glass-strong: rgba(255, 255, 255, 0.12);
+        --line: rgba(255, 255, 255, 0.13);
+        --line-strong: rgba(255, 255, 255, 0.22);
+        --shadow: 0 30px 100px rgba(0, 0, 0, 0.45);
+        --radius-xl: 34px;
+        --radius-lg: 26px;
+        --radius-md: 18px;
       }
 
       * {
@@ -70,14 +111,39 @@ const finishes = [
 
       body {
         margin: 0;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 12% 8%, rgba(217, 164, 76, 0.22), transparent 29rem),
+          radial-gradient(circle at 88% 4%, rgba(255, 224, 163, 0.12), transparent 25rem),
+          radial-gradient(circle at 72% 82%, rgba(141, 85, 36, 0.22), transparent 34rem),
+          linear-gradient(135deg, var(--bg), var(--bg-2));
         font-family:
           Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
           "Segoe UI", sans-serif;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.35;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+        background-size: 72px 72px;
+        mask-image: radial-gradient(circle at center, black, transparent 75%);
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
         background:
-          radial-gradient(circle at top left, rgba(216, 168, 93, 0.18), transparent 36rem),
-          radial-gradient(circle at bottom right, rgba(139, 90, 43, 0.22), transparent 34rem),
-          var(--bg);
-        color: var(--text);
+          linear-gradient(90deg, rgba(255,255,255,0.025), transparent 18%, transparent 82%, rgba(255,255,255,0.025)),
+          radial-gradient(circle at center, transparent 45%, rgba(0,0,0,0.52));
       }
 
       a {
@@ -85,606 +151,1370 @@ const finishes = [
         text-decoration: none;
       }
 
-      .page {
-        overflow: hidden;
+      button,
+      a {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .site {
+        position: relative;
+        z-index: 1;
       }
 
       .nav {
         position: sticky;
         top: 0;
-        z-index: 20;
+        z-index: 50;
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 1rem;
-        padding: 1rem clamp(1rem, 4vw, 4rem);
-        backdrop-filter: blur(18px);
-        background: rgba(15, 12, 8, 0.78);
+        padding: 1rem clamp(1rem, 4vw, 4.5rem);
+        background: rgba(7, 6, 4, 0.68);
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(22px);
       }
 
       .brand {
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 0.75rem;
-        font-weight: 900;
-        letter-spacing: -0.04em;
-        font-size: clamp(1.1rem, 2vw, 1.5rem);
+        gap: 0.8rem;
       }
 
       .brand-mark {
-        width: 42px;
-        height: 42px;
-        border-radius: 14px;
-        background:
-          linear-gradient(135deg, rgba(255, 255, 255, 0.18), transparent),
-          linear-gradient(135deg, var(--gold), var(--wood));
+        width: 48px;
+        height: 48px;
+        border-radius: 17px;
         display: grid;
         place-items: center;
-        color: var(--dark);
+        color: #130c05;
         font-weight: 1000;
-        box-shadow: 0 16px 40px rgba(216, 168, 93, 0.22);
+        letter-spacing: -0.08em;
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.42), transparent 38%),
+          linear-gradient(135deg, var(--gold-2), var(--gold), var(--wood));
+        box-shadow:
+          0 18px 55px rgba(217, 164, 76, 0.25),
+          inset 0 1px 0 rgba(255, 255, 255, 0.55);
+      }
+
+      .brand-text {
+        display: grid;
+        line-height: 1;
+      }
+
+      .brand-text strong {
+        font-size: clamp(1.05rem, 2vw, 1.35rem);
+        letter-spacing: -0.055em;
+      }
+
+      .brand-text span {
+        margin-top: 0.25rem;
+        color: var(--muted);
+        font-size: 0.78rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
       }
 
       .nav-links {
         display: flex;
         align-items: center;
-        gap: 1.1rem;
+        gap: 1.3rem;
         color: var(--muted);
-        font-size: 0.95rem;
+        font-size: 0.93rem;
+        font-weight: 650;
+      }
+
+      .nav-links a {
+        position: relative;
+      }
+
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 100%;
+        bottom: -0.4rem;
+        height: 1px;
+        background: var(--gold-2);
+        transition: right 0.22s ease;
       }
 
       .nav-links a:hover {
-        color: var(--cream);
+        color: var(--text);
       }
 
-      .nav-cta,
-      .btn-primary,
-      .btn-secondary {
-        border-radius: 999px;
-        padding: 0.85rem 1.15rem;
-        font-weight: 800;
+      .nav-links a:hover::after {
+        right: 0;
+      }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+      }
+
+      .btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        gap: 0.55rem;
+        min-height: 46px;
+        padding: 0.88rem 1.15rem;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        font-size: 0.94rem;
+        font-weight: 850;
         transition:
           transform 0.2s ease,
           box-shadow 0.2s ease,
-          border-color 0.2s ease;
+          border-color 0.2s ease,
+          background 0.2s ease;
+        white-space: nowrap;
       }
 
-      .nav-cta,
-      .btn-primary {
-        background: linear-gradient(135deg, var(--gold), #f2d18e);
-        color: #171007;
-        box-shadow: 0 18px 45px rgba(216, 168, 93, 0.22);
-      }
-
-      .btn-secondary {
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: var(--cream);
-        background: rgba(255, 255, 255, 0.06);
-      }
-
-      .nav-cta:hover,
-      .btn-primary:hover,
-      .btn-secondary:hover {
+      .btn:hover {
         transform: translateY(-2px);
       }
 
-      .hero {
-        min-height: 88vh;
-        display: grid;
-        grid-template-columns: 1.1fr 0.9fr;
-        align-items: center;
-        gap: clamp(2rem, 5vw, 5rem);
-        padding: clamp(4rem, 8vw, 7rem) clamp(1rem, 4vw, 4rem);
+      .btn-primary {
+        color: #140c04;
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.48), transparent 36%),
+          linear-gradient(135deg, var(--gold-2), var(--gold));
+        box-shadow: 0 18px 55px rgba(217, 164, 76, 0.24);
       }
 
-      .eyebrow {
+      .btn-primary:hover {
+        box-shadow: 0 24px 72px rgba(217, 164, 76, 0.34);
+      }
+
+      .btn-ghost {
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.075);
+        border-color: var(--line);
+      }
+
+      .btn-ghost:hover {
+        background: rgba(255, 255, 255, 0.115);
+        border-color: var(--line-strong);
+      }
+
+      .hero {
+        min-height: calc(100vh - 82px);
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(350px, 0.95fr);
+        align-items: center;
+        gap: clamp(2rem, 5vw, 5.5rem);
+        padding: clamp(3rem, 7vw, 7rem) clamp(1rem, 4vw, 4.5rem);
+      }
+
+      .hero-copy {
+        position: relative;
+      }
+
+      .status-pill {
+        width: fit-content;
         display: inline-flex;
         align-items: center;
-        gap: 0.55rem;
-        padding: 0.5rem 0.8rem;
-        border: 1px solid rgba(216, 168, 93, 0.35);
+        gap: 0.65rem;
+        margin-bottom: 1.35rem;
+        padding: 0.56rem 0.85rem;
         border-radius: 999px;
-        background: rgba(216, 168, 93, 0.08);
-        color: #f6d59b;
+        color: #ffe6b4;
         font-size: 0.88rem;
         font-weight: 800;
-        margin-bottom: 1.2rem;
+        background: rgba(217, 164, 76, 0.11);
+        border: 1px solid rgba(217, 164, 76, 0.32);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      }
+
+      .pulse {
+        width: 9px;
+        height: 9px;
+        border-radius: 999px;
+        background: #9dffad;
+        box-shadow: 0 0 0 7px rgba(157, 255, 173, 0.09);
       }
 
       .hero h1 {
         margin: 0;
-        max-width: 900px;
-        font-size: clamp(3rem, 8vw, 6.8rem);
-        line-height: 0.9;
-        letter-spacing: -0.075em;
+        max-width: 980px;
+        font-size: clamp(3.4rem, 8.6vw, 8.2rem);
+        line-height: 0.84;
+        letter-spacing: -0.085em;
       }
 
-      .hero h1 span {
-        color: var(--gold);
+      .gradient-text {
+        background: linear-gradient(135deg, #fff8ed, #ffe0a3 38%, #d9a44c 75%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
       }
 
-      .hero p {
-        max-width: 680px;
-        margin: 1.4rem 0 0;
-        color: var(--muted);
-        font-size: clamp(1.05rem, 2vw, 1.35rem);
-        line-height: 1.7;
+      .hero-lead {
+        max-width: 720px;
+        margin: 1.45rem 0 0;
+        color: var(--soft);
+        font-size: clamp(1.05rem, 1.8vw, 1.32rem);
+        line-height: 1.75;
       }
 
-      .hero-actions {
+      .hero-ctas {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.9rem;
+        gap: 0.85rem;
         margin-top: 2rem;
       }
 
-      .trust-row {
+      .contact-strip {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.8rem;
-        margin-top: 2.2rem;
-        max-width: 720px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.85rem;
+        max-width: 760px;
+        margin-top: 1.25rem;
       }
 
-      .trust-card {
-        border: 1px solid var(--card-border);
-        background: rgba(255, 255, 255, 0.06);
-        border-radius: 22px;
+      .contact-chip {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        min-height: 76px;
         padding: 1rem;
+        border-radius: 24px;
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.045)),
+          rgba(255, 255, 255, 0.055);
+        border: 1px solid var(--line);
+        box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
       }
 
-      .trust-card strong {
+      .contact-chip small {
         display: block;
-        color: var(--cream);
-        font-size: 1.4rem;
-      }
-
-      .trust-card span {
         color: var(--muted);
-        font-size: 0.9rem;
+        font-size: 0.78rem;
+        margin-bottom: 0.28rem;
       }
 
-      .hero-visual {
+      .contact-chip strong {
+        display: block;
+        font-size: clamp(0.95rem, 1.5vw, 1.05rem);
+        letter-spacing: -0.02em;
+      }
+
+      .arrow-icon {
+        width: 34px;
+        height: 34px;
+        flex: 0 0 auto;
+        display: grid;
+        place-items: center;
+        border-radius: 999px;
+        color: #130c05;
+        background: linear-gradient(135deg, var(--gold-2), var(--gold));
+      }
+
+      .hero-panel-wrap {
         position: relative;
-        min-height: 560px;
-        border-radius: 38px;
+      }
+
+      .hero-panel-wrap::before {
+        content: "";
+        position: absolute;
+        inset: -2rem;
+        border-radius: 60px;
+        background: radial-gradient(circle, rgba(217, 164, 76, 0.26), transparent 64%);
+        filter: blur(10px);
+        animation: glowFloat 7s ease-in-out infinite;
+      }
+
+      .hero-panel {
+        position: relative;
+        min-height: 610px;
         padding: 1rem;
-        background:
-          linear-gradient(135deg, rgba(255, 255, 255, 0.14), transparent),
-          rgba(255, 255, 255, 0.06);
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        box-shadow: 0 40px 90px rgba(0, 0, 0, 0.32);
-      }
-
-      .wood-panel {
-        height: 100%;
-        min-height: 530px;
-        border-radius: 30px;
-        background:
-          linear-gradient(90deg, rgba(255, 255, 255, 0.08), transparent 30%),
-          repeating-linear-gradient(
-            90deg,
-            #7a4d24 0,
-            #7a4d24 18px,
-            #8b5a2b 18px,
-            #8b5a2b 38px,
-            #a46f35 38px,
-            #a46f35 58px
-          );
-        position: relative;
+        border-radius: 42px;
         overflow: hidden;
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent 32%),
+          rgba(255, 255, 255, 0.065);
+        border: 1px solid var(--line-strong);
+        box-shadow: var(--shadow);
       }
 
-      .wood-panel::before {
+      .cabinet-visual {
+        position: relative;
+        min-height: 580px;
+        height: 100%;
+        border-radius: 34px;
+        overflow: hidden;
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 40%),
+          linear-gradient(160deg, #2a190d, #0d0a06 64%);
+      }
+
+      .cabinet-visual::before {
         content: "";
         position: absolute;
         inset: 0;
         background:
-          radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.2), transparent 18rem),
-          linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.36));
+          linear-gradient(90deg, transparent 0 8%, rgba(255,255,255,0.09) 8% 8.4%, transparent 8.4% 100%),
+          linear-gradient(0deg, rgba(255,255,255,0.08) 0 1px, transparent 1px 100%);
+        background-size: 100% 100%, 100% 82px;
+        opacity: 0.64;
       }
 
-      .floating-box {
+      .cabinet-visual::after {
+        content: "";
         position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 25% 18%, rgba(255,255,255,0.2), transparent 18rem),
+          linear-gradient(180deg, transparent, rgba(0,0,0,0.5));
+      }
+
+      .wood-slab {
+        position: absolute;
+        border-radius: 24px;
+        overflow: hidden;
+        background:
+          linear-gradient(90deg, rgba(255,255,255,0.12), transparent 28%),
+          repeating-linear-gradient(
+            90deg,
+            #6f411d 0,
+            #6f411d 17px,
+            #8d5524 17px,
+            #8d5524 36px,
+            #a96c2f 36px,
+            #a96c2f 56px
+          );
+        box-shadow:
+          0 26px 65px rgba(0, 0, 0, 0.34),
+          inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      }
+
+      .slab-one {
+        top: 7%;
         left: 8%;
+        width: 38%;
+        height: 52%;
+        transform: rotate(-2deg);
+      }
+
+      .slab-two {
+        top: 14%;
         right: 8%;
-        bottom: 8%;
-        border-radius: 26px;
-        padding: 1.2rem;
-        background: rgba(8, 6, 4, 0.78);
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        backdrop-filter: blur(16px);
+        width: 38%;
+        height: 66%;
+        transform: rotate(2deg);
+        background:
+          linear-gradient(90deg, rgba(255,255,255,0.11), transparent 32%),
+          repeating-linear-gradient(
+            90deg,
+            #e9e1d4 0,
+            #e9e1d4 20px,
+            #fff8ed 20px,
+            #fff8ed 42px
+          );
       }
 
-      .floating-box h3 {
-        margin: 0;
-        font-size: 1.35rem;
+      .slab-three {
+        bottom: 7%;
+        left: 10%;
+        width: 80%;
+        height: 22%;
       }
 
-      .floating-box p {
-        margin: 0.5rem 0 0;
-        color: var(--muted);
-        line-height: 1.5;
-      }
-
-      .section {
-        padding: clamp(4rem, 8vw, 7rem) clamp(1rem, 4vw, 4rem);
-      }
-
-      .section-head {
-        max-width: 780px;
-        margin-bottom: 2rem;
-      }
-
-      .section-head h2 {
-        margin: 0;
-        font-size: clamp(2.2rem, 5vw, 4.2rem);
-        line-height: 1;
-        letter-spacing: -0.06em;
-      }
-
-      .section-head p {
-        color: var(--muted);
-        font-size: 1.1rem;
-        line-height: 1.7;
-      }
-
-      .grid {
+      .floating-card {
+        position: absolute;
+        left: 7%;
+        right: 7%;
+        bottom: 7%;
+        z-index: 2;
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        gap: 0.95rem;
+        padding: 1.15rem;
+        border-radius: 28px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(8, 7, 5, 0.72);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 28px 70px rgba(0, 0, 0, 0.34);
+      }
+
+      .floating-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         gap: 1rem;
       }
 
-      .service-card,
-      .process-card,
-      .quote-card {
-        border: 1px solid var(--card-border);
-        background:
-          linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.035)),
-          var(--card);
-        border-radius: 28px;
-        padding: 1.4rem;
-        box-shadow: 0 26px 70px rgba(0, 0, 0, 0.18);
-      }
-
-      .service-card h3,
-      .process-card h3 {
+      .floating-card h2 {
         margin: 0;
         font-size: 1.25rem;
+        letter-spacing: -0.035em;
       }
 
-      .service-card p,
-      .process-card p {
+      .floating-card p {
+        margin: 0.38rem 0 0;
         color: var(--muted);
         line-height: 1.6;
+        font-size: 0.95rem;
       }
 
-      .number {
-        width: 42px;
-        height: 42px;
-        border-radius: 15px;
-        display: grid;
-        place-items: center;
-        background: rgba(216, 168, 93, 0.16);
-        color: #f8d99d;
+      .mini-badge {
+        flex: 0 0 auto;
+        padding: 0.48rem 0.7rem;
+        border-radius: 999px;
+        color: #160f07;
+        background: linear-gradient(135deg, var(--gold-2), var(--gold));
+        font-size: 0.78rem;
         font-weight: 900;
-        margin-bottom: 1rem;
       }
 
-      .split {
+      .mini-grid {
         display: grid;
-        grid-template-columns: 0.9fr 1.1fr;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.6rem;
+      }
+
+      .mini-stat {
+        padding: 0.85rem;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.075);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .mini-stat strong {
+        display: block;
+        font-size: 1rem;
+      }
+
+      .mini-stat span {
+        display: block;
+        margin-top: 0.18rem;
+        color: var(--muted);
+        font-size: 0.76rem;
+      }
+
+      .marquee {
+        border-block: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.035);
+        overflow: hidden;
+      }
+
+      .marquee-track {
+        display: flex;
+        width: max-content;
+        animation: marquee 28s linear infinite;
+      }
+
+      .marquee-track span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 1rem 1.7rem;
+        color: var(--muted);
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+      }
+
+      .marquee-track span::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--gold);
+        box-shadow: 0 0 22px rgba(217, 164, 76, 0.8);
+      }
+
+      .section {
+        padding: clamp(4.5rem, 8vw, 7.5rem) clamp(1rem, 4vw, 4.5rem);
+      }
+
+      .section-head {
+        display: grid;
+        grid-template-columns: 0.9fr 1fr;
+        gap: 2rem;
+        align-items: end;
+        margin-bottom: 2rem;
+      }
+
+      .section-kicker {
+        width: fit-content;
+        display: inline-flex;
+        margin-bottom: 1rem;
+        padding: 0.48rem 0.72rem;
+        border-radius: 999px;
+        color: #ffe6b4;
+        background: rgba(217, 164, 76, 0.1);
+        border: 1px solid rgba(217, 164, 76, 0.25);
+        font-size: 0.8rem;
+        font-weight: 850;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+      }
+
+      .section h2 {
+        margin: 0;
+        max-width: 840px;
+        font-size: clamp(2.45rem, 5.4vw, 5.2rem);
+        line-height: 0.9;
+        letter-spacing: -0.075em;
+      }
+
+      .section-head p {
+        margin: 0;
+        max-width: 760px;
+        color: var(--muted);
+        font-size: clamp(1rem, 1.4vw, 1.12rem);
+        line-height: 1.8;
+      }
+
+      .bento {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 1rem;
+      }
+
+      .bento-card {
+        position: relative;
+        min-height: 250px;
+        grid-column: span 2;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 1.35rem;
+        border-radius: var(--radius-xl);
+        overflow: hidden;
+        background:
+          linear-gradient(145deg, rgba(255, 255, 255, 0.115), rgba(255, 255, 255, 0.04)),
+          rgba(255, 255, 255, 0.055);
+        border: 1px solid var(--line);
+        box-shadow: 0 26px 80px rgba(0, 0, 0, 0.22);
+        opacity: 0;
+        transform: translateY(22px);
+        animation: reveal 0.7s ease forwards;
+        animation-delay: var(--delay);
+      }
+
+      .bento-card:nth-child(1),
+      .bento-card:nth-child(6) {
+        grid-column: span 3;
+      }
+
+      .bento-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 0.25s ease;
+        background:
+          radial-gradient(circle at 15% 10%, rgba(255, 224, 163, 0.18), transparent 18rem),
+          radial-gradient(circle at 95% 85%, rgba(217, 164, 76, 0.16), transparent 16rem);
+      }
+
+      .bento-card:hover::before {
+        opacity: 1;
+      }
+
+      .card-content {
+        position: relative;
+        z-index: 1;
+      }
+
+      .tag {
+        display: inline-flex;
+        width: fit-content;
+        margin-bottom: 1.2rem;
+        padding: 0.45rem 0.68rem;
+        border-radius: 999px;
+        color: #ffe8bb;
+        background: rgba(217, 164, 76, 0.1);
+        border: 1px solid rgba(217, 164, 76, 0.25);
+        font-size: 0.78rem;
+        font-weight: 850;
+      }
+
+      .bento-card h3 {
+        margin: 0;
+        font-size: clamp(1.45rem, 2.3vw, 2rem);
+        line-height: 1;
+        letter-spacing: -0.055em;
+      }
+
+      .bento-card p {
+        position: relative;
+        z-index: 1;
+        margin: 1rem 0 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .card-line {
+        position: relative;
+        z-index: 1;
+        height: 1px;
+        width: 100%;
+        margin-top: 1.5rem;
+        background: linear-gradient(90deg, var(--gold), transparent);
+        opacity: 0.55;
+      }
+
+      .process-wrap {
+        display: grid;
+        grid-template-columns: 0.8fr 1.2fr;
         gap: 1rem;
         align-items: stretch;
       }
 
-      .showcase {
-        min-height: 520px;
-        border-radius: 34px;
-        border: 1px solid rgba(255, 255, 255, 0.14);
+      .process-panel {
+        min-height: 540px;
+        border-radius: var(--radius-xl);
+        padding: 1.3rem;
         background:
-          linear-gradient(135deg, rgba(216, 168, 93, 0.24), transparent),
-          linear-gradient(160deg, #25190f, #0f0c08);
-        padding: 1.2rem;
-        display: grid;
-        align-content: end;
+          linear-gradient(135deg, rgba(217, 164, 76, 0.16), transparent),
+          rgba(255, 255, 255, 0.055);
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow);
         overflow: hidden;
-        position: relative;
       }
 
-      .showcase::before {
+      .process-art {
+        position: relative;
+        height: 100%;
+        min-height: 510px;
+        border-radius: 28px;
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.11), transparent 32%),
+          repeating-linear-gradient(
+            90deg,
+            #6d401e 0,
+            #6d401e 22px,
+            #875225 22px,
+            #875225 48px,
+            #a0692f 48px,
+            #a0692f 72px
+          );
+        overflow: hidden;
+      }
+
+      .process-art::before {
         content: "";
         position: absolute;
-        inset: 1.2rem;
+        inset: 0;
+        background:
+          radial-gradient(circle at 25% 22%, rgba(255, 255, 255, 0.2), transparent 15rem),
+          linear-gradient(180deg, transparent, rgba(0,0,0,0.58));
+      }
+
+      .process-art-card {
+        position: absolute;
+        left: 1rem;
+        right: 1rem;
+        bottom: 1rem;
+        padding: 1rem;
+        border-radius: 22px;
+        background: rgba(7, 6, 4, 0.72);
+        border: 1px solid rgba(255, 255, 255, 0.13);
+        backdrop-filter: blur(18px);
+      }
+
+      .process-art-card strong {
+        display: block;
+        font-size: 1.1rem;
+      }
+
+      .process-art-card span {
+        display: block;
+        margin-top: 0.4rem;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .steps {
+        display: grid;
+        gap: 0.8rem;
+      }
+
+      .step {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 1rem;
+        align-items: center;
+        padding: 1.1rem;
         border-radius: 26px;
         background:
-          linear-gradient(90deg, transparent 0 8%, rgba(255, 255, 255, 0.08) 8% 9%, transparent 9% 100%),
-          linear-gradient(0deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 100%);
-        background-size: 100% 100%, 100% 78px;
-        opacity: 0.65;
+          linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.035)),
+          rgba(255, 255, 255, 0.055);
+        border: 1px solid var(--line);
       }
 
-      .showcase-content {
-        position: relative;
-        border-radius: 24px;
-        background: rgba(8, 6, 4, 0.76);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        padding: 1.3rem;
+      .step-number {
+        width: 52px;
+        height: 52px;
+        border-radius: 18px;
+        display: grid;
+        place-items: center;
+        color: #160f07;
+        font-weight: 950;
+        background:
+          linear-gradient(135deg, rgba(255,255,255,0.45), transparent 38%),
+          linear-gradient(135deg, var(--gold-2), var(--gold));
       }
 
-      .showcase-content h3 {
+      .step h3 {
         margin: 0;
-        font-size: 1.5rem;
+        font-size: 1.22rem;
+        letter-spacing: -0.035em;
       }
 
-      .showcase-content p {
+      .step p {
+        margin: 0.32rem 0 0;
         color: var(--muted);
-        line-height: 1.6;
+        line-height: 1.55;
       }
 
-      .finish-list {
+      .finish-lab {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+
+      .finish-card {
+        min-height: 520px;
+        border-radius: var(--radius-xl);
+        padding: 1.35rem;
+        background:
+          linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04)),
+          rgba(255, 255, 255, 0.055);
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow);
+      }
+
+      .sample-wall {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 0.8rem;
       }
 
-      .finish-item {
+      .sample {
+        min-height: 155px;
+        border-radius: 24px;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      }
+
+      .sample::after {
+        content: attr(data-name);
+        position: absolute;
+        left: 0.8rem;
+        right: 0.8rem;
+        bottom: 0.8rem;
+        padding: 0.55rem 0.7rem;
+        border-radius: 999px;
+        color: var(--text);
+        font-size: 0.8rem;
+        font-weight: 850;
+        background: rgba(7, 6, 4, 0.58);
+        backdrop-filter: blur(12px);
+      }
+
+      .sample-white {
+        background:
+          linear-gradient(135deg, rgba(255,255,255,0.8), transparent 50%),
+          repeating-linear-gradient(90deg, #e9e6dd 0, #e9e6dd 20px, #fbf8ef 20px, #fbf8ef 44px);
+      }
+
+      .sample-wood {
+        background:
+          linear-gradient(90deg, rgba(255,255,255,0.12), transparent 32%),
+          repeating-linear-gradient(90deg, #6f411d 0, #6f411d 17px, #8d5524 17px, #8d5524 36px, #a96c2f 36px, #a96c2f 56px);
+      }
+
+      .sample-black {
+        background:
+          radial-gradient(circle at 25% 18%, rgba(255,255,255,0.18), transparent 11rem),
+          linear-gradient(135deg, #2c2924, #090807);
+      }
+
+      .sample-stone {
+        background:
+          linear-gradient(135deg, rgba(255,255,255,0.42), transparent 32%),
+          linear-gradient(160deg, #c7b8a1, #f4eadc);
+      }
+
+      .finish-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.7rem;
+        margin-top: 1.4rem;
+      }
+
+      .finish-pill {
+        padding: 0.72rem 0.9rem;
+        border-radius: 999px;
+        color: var(--soft);
+        background: rgba(255, 255, 255, 0.07);
         border: 1px solid rgba(255, 255, 255, 0.12);
-        background: rgba(255, 255, 255, 0.055);
-        border-radius: 20px;
-        padding: 1rem;
-        color: var(--cream);
         font-weight: 750;
       }
 
-      .quote {
-        padding-top: 0;
+      .quote-section {
+        padding: 0 clamp(1rem, 4vw, 4.5rem) clamp(4.5rem, 8vw, 7.5rem);
       }
 
-      .quote-card {
+      .quote-box {
+        position: relative;
+        overflow: hidden;
         display: grid;
         grid-template-columns: 1fr auto;
         align-items: center;
         gap: 2rem;
+        padding: clamp(1.45rem, 4vw, 3rem);
+        border-radius: 38px;
         background:
-          linear-gradient(135deg, rgba(216, 168, 93, 0.22), rgba(255, 255, 255, 0.05)),
-          rgba(255, 255, 255, 0.06);
+          radial-gradient(circle at 10% 10%, rgba(255, 224, 163, 0.18), transparent 22rem),
+          linear-gradient(135deg, rgba(217, 164, 76, 0.18), rgba(255, 255, 255, 0.055)),
+          rgba(255, 255, 255, 0.07);
+        border: 1px solid var(--line-strong);
+        box-shadow: var(--shadow);
       }
 
-      .quote-card h2 {
+      .quote-box h2 {
         margin: 0;
-        font-size: clamp(2rem, 4vw, 3.4rem);
-        line-height: 1;
-        letter-spacing: -0.05em;
+        max-width: 820px;
+        font-size: clamp(2.35rem, 5vw, 5rem);
+        line-height: 0.9;
+        letter-spacing: -0.075em;
       }
 
-      .quote-card p {
+      .quote-box p {
+        max-width: 750px;
+        margin: 1rem 0 0;
         color: var(--muted);
-        font-size: 1.05rem;
-        line-height: 1.65;
+        line-height: 1.75;
+        font-size: 1.06rem;
+      }
+
+      .quote-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+        min-width: 260px;
       }
 
       .footer {
-        padding: 2rem clamp(1rem, 4vw, 4rem);
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        color: var(--muted);
         display: flex;
         justify-content: space-between;
         gap: 1rem;
         flex-wrap: wrap;
+        padding: 2rem clamp(1rem, 4vw, 4.5rem);
+        color: var(--muted);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(0, 0, 0, 0.14);
       }
 
-      @media (max-width: 980px) {
+      .mobile-sticky {
+        display: none;
+      }
+
+      @keyframes reveal {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes marquee {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-50%);
+        }
+      }
+
+      @keyframes glowFloat {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+          opacity: 0.76;
+        }
+        50% {
+          transform: translateY(-12px) scale(1.03);
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 1120px) {
         .hero,
-        .split {
+        .process-wrap,
+        .finish-lab {
           grid-template-columns: 1fr;
         }
 
-        .hero-visual {
-          min-height: 460px;
+        .hero-panel {
+          min-height: 520px;
         }
 
-        .wood-panel {
-          min-height: 430px;
+        .cabinet-visual {
+          min-height: 490px;
         }
 
-        .grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
-
-        .quote-card {
+        .section-head {
           grid-template-columns: 1fr;
+          align-items: start;
+        }
+
+        .bento-card,
+        .bento-card:nth-child(1),
+        .bento-card:nth-child(6) {
+          grid-column: span 3;
+        }
+
+        .quote-box {
+          grid-template-columns: 1fr;
+        }
+
+        .quote-actions {
+          flex-direction: row;
+          flex-wrap: wrap;
+          min-width: 0;
         }
       }
 
-      @media (max-width: 680px) {
+      @media (max-width: 760px) {
+        .nav {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
         .nav-links {
           display: none;
         }
 
-        .hero {
-          padding-top: 3rem;
-        }
-
-        .trust-row,
-        .grid,
-        .finish-list {
-          grid-template-columns: 1fr;
-        }
-
-        .hero-actions {
-          flex-direction: column;
-        }
-
-        .btn-primary,
-        .btn-secondary,
-        .nav-cta {
+        .nav-actions {
           width: 100%;
         }
 
+        .nav-actions .btn {
+          flex: 1;
+        }
+
+        .hero {
+          min-height: auto;
+          padding-top: 2.5rem;
+        }
+
         .hero h1 {
-          font-size: clamp(2.7rem, 16vw, 4.5rem);
+          font-size: clamp(3rem, 15vw, 5.2rem);
+        }
+
+        .hero-ctas,
+        .contact-strip,
+        .mini-grid,
+        .sample-wall {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-ctas {
+          display: grid;
+        }
+
+        .contact-strip {
+          display: grid;
+        }
+
+        .hero-panel {
+          min-height: 470px;
+          border-radius: 32px;
+        }
+
+        .cabinet-visual {
+          min-height: 440px;
+          border-radius: 26px;
+        }
+
+        .floating-card {
+          left: 1rem;
+          right: 1rem;
+          bottom: 1rem;
+        }
+
+        .floating-top {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .bento {
+          grid-template-columns: 1fr;
+        }
+
+        .bento-card,
+        .bento-card:nth-child(1),
+        .bento-card:nth-child(6) {
+          grid-column: span 1;
+        }
+
+        .step {
+          grid-template-columns: 1fr;
+        }
+
+        .quote-actions {
+          flex-direction: column;
+        }
+
+        .btn {
+          width: 100%;
+        }
+
+        .mobile-sticky {
+          position: fixed;
+          left: 0.85rem;
+          right: 0.85rem;
+          bottom: 0.85rem;
+          z-index: 60;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0.7rem;
+          padding: 0.65rem;
+          border-radius: 24px;
+          background: rgba(7, 6, 4, 0.76);
+          border: 1px solid rgba(255, 255, 255, 0.13);
+          backdrop-filter: blur(22px);
+          box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+        }
+
+        .mobile-sticky .btn {
+          min-height: 44px;
+          padding: 0.75rem 0.8rem;
+          font-size: 0.86rem;
+        }
+
+        .footer {
+          padding-bottom: 6.5rem;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001ms !important;
         }
       }
     </style>
   </head>
 
   <body>
-    <main class="page">
+    <div class="site">
       <nav class="nav">
-        <a class="brand" href="/">
+        <a class="brand" href="/" aria-label="WhichwoodFitters home">
           <span class="brand-mark">W</span>
-          <span>WhichwoodFitters</span>
+          <span class="brand-text">
+            <strong>WhichwoodFitters</strong>
+            <span>Custom Carpentry</span>
+          </span>
         </a>
 
-        <div class="nav-links">
+        <div class="nav-links" aria-label="Main navigation">
           <a href="#services">Services</a>
           <a href="#process">Process</a>
           <a href="#finishes">Finishes</a>
+          <a href="#quote">Quote</a>
         </div>
 
-        <a class="nav-cta" href="#quote">Get a Quote</a>
+        <div class="nav-actions">
+          <a class="btn btn-ghost" href={mailLink}>Email</a>
+          <a
+            class="btn btn-primary"
+            href={whatsappLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            WhatsApp
+          </a>
+        </div>
       </nav>
 
-      <section class="hero">
-        <div>
-          <div class="eyebrow">Custom carpentry • Built to fit</div>
-          <h1>Turn empty space into <span>beautiful storage.</span></h1>
-          <p>
-            WhichwoodFitters builds custom kitchens, built-in cupboards,
-            wardrobes, TV units, vanities, and practical storage solutions with
-            clean installation and strong workmanship.
-          </p>
+      <main>
+        <section class="hero">
+          <div class="hero-copy">
+            <div class="status-pill">
+              <span class="pulse"></span>
+              Modern fitted storage for real homes
+            </div>
 
-          <div class="hero-actions">
-            <a class="btn-primary" href="#quote">Request a Quote</a>
-            <a class="btn-secondary" href="#services">View Services</a>
+            <h1>
+              Custom cupboards that make your space feel
+              <span class="gradient-text">expensive.</span>
+            </h1>
+
+            <p class="hero-lead">
+              WhichwoodFitters designs and installs kitchens, built-in
+              cupboards, wardrobes, TV units, vanities, and smart storage
+              solutions made to fit your exact space.
+            </p>
+
+            <div class="hero-ctas">
+              <a
+                class="btn btn-primary"
+                href={whatsappLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Get a WhatsApp Quote
+              </a>
+
+              <a class="btn btn-ghost" href={mailLink}>
+                Email Measurements
+              </a>
+            </div>
+
+            <div class="contact-strip">
+              <a class="contact-chip" href={mailLink}>
+                <span>
+                  <small>Email</small>
+                  <strong>{email}</strong>
+                </span>
+                <span class="arrow-icon">↗</span>
+              </a>
+
+              <a
+                class="contact-chip"
+                href={whatsappLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>
+                  <small>WhatsApp</small>
+                  <strong>079 910 1465</strong>
+                </span>
+                <span class="arrow-icon">↗</span>
+              </a>
+            </div>
           </div>
 
-          <div class="trust-row">
-            <div class="trust-card">
-              <strong>Made</strong>
-              <span>to your exact space</span>
+          <div class="hero-panel-wrap">
+            <div class="hero-panel">
+              <div class="cabinet-visual">
+                <div class="wood-slab slab-one"></div>
+                <div class="wood-slab slab-two"></div>
+                <div class="wood-slab slab-three"></div>
+
+                <div class="floating-card">
+                  <div class="floating-top">
+                    <div>
+                      <h2>Measured. Planned. Fitted clean.</h2>
+                      <p>
+                        Send your photos and rough measurements. We help turn
+                        your idea into a practical, modern fitted solution.
+                      </p>
+                    </div>
+                    <span class="mini-badge">Quote Ready</span>
+                  </div>
+
+                  <div class="mini-grid">
+                    <div class="mini-stat">
+                      <strong>01</strong>
+                      <span>Photos</span>
+                    </div>
+                    <div class="mini-stat">
+                      <strong>02</strong>
+                      <span>Sizes</span>
+                    </div>
+                    <div class="mini-stat">
+                      <strong>03</strong>
+                      <span>Finish</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="trust-card">
-              <strong>Clean</strong>
-              <span>modern finishes</span>
-            </div>
-            <div class="trust-card">
-              <strong>Strong</strong>
-              <span>practical builds</span>
-            </div>
+          </div>
+        </section>
+
+        <div class="marquee" aria-hidden="true">
+          <div class="marquee-track">
+            <span>Custom Kitchens</span>
+            <span>Built-In Cupboards</span>
+            <span>Wardrobes</span>
+            <span>TV Units</span>
+            <span>Vanities</span>
+            <span>Storage Solutions</span>
+            <span>Custom Kitchens</span>
+            <span>Built-In Cupboards</span>
+            <span>Wardrobes</span>
+            <span>TV Units</span>
+            <span>Vanities</span>
+            <span>Storage Solutions</span>
           </div>
         </div>
 
-        <div class="hero-visual" aria-label="Wood finish visual">
-          <div class="wood-panel"></div>
-          <div class="floating-box">
-            <h3>Measured. Planned. Fitted properly.</h3>
+        <section class="section" id="services">
+          <div class="section-head">
+            <div>
+              <span class="section-kicker">Services</span>
+              <h2>Not flat-pack. Not guesswork. Built to fit.</h2>
+            </div>
+
             <p>
-              From small storage upgrades to full kitchens, the work starts with
-              accurate measurements and ends with a clean finished result.
+              The value is in the fit: clean lines, proper measurements, strong
+              materials, practical storage, and a finish that matches the room
+              instead of fighting it.
             </p>
           </div>
-        </div>
-      </section>
 
-      <section class="section" id="services">
-        <div class="section-head">
-          <h2>Built for real homes, not showroom guesses.</h2>
-          <p>
-            Every cupboard, unit, and kitchen should fit the room, the walls,
-            the client’s storage needs, and the budget. That is where custom
-            carpentry wins.
-          </p>
-        </div>
+          <div class="bento">
+            {services.map((service, index) => (
+              <article class="bento-card" style={`--delay: ${index * 90}ms`}>
+                <div class="card-content">
+                  <span class="tag">{service.tag}</span>
+                  <h3>{service.title}</h3>
+                  <p>{service.text}</p>
+                </div>
+                <div class="card-line"></div>
+              </article>
+            ))}
+          </div>
+        </section>
 
-        <div class="grid">
-          {services.map((service) => (
-            <article class="service-card">
-              <h3>{service.title}</h3>
-              <p>{service.text}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section class="section" id="process">
-        <div class="section-head">
-          <h2>A simple process that keeps the job clear.</h2>
-          <p>
-            Clear measurements, clear planning, clear finishes, and clean
-            fitting. That is how a project stays under control.
-          </p>
-        </div>
-
-        <div class="grid">
-          {steps.map((step, index) => (
-            <article class="process-card">
-              <div class="number">{index + 1}</div>
-              <h3>{step}</h3>
-              <p>
-                We keep this stage practical so the final build fits the space
-                and the client knows what is being made.
-              </p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section class="section" id="finishes">
-        <div class="split">
-          <div class="showcase">
-            <div class="showcase-content">
-              <h3>Premium look. Practical materials.</h3>
-              <p>
-                Choose finishes that match the room and the budget, from clean
-                white melamine to warm woodgrain and painted MDF looks.
-              </p>
+        <section class="section" id="process">
+          <div class="section-head">
+            <div>
+              <span class="section-kicker">Process</span>
+              <h2>A quote process that does not waste your time.</h2>
             </div>
+
+            <p>
+              For a faster estimate, send photos, rough sizes, and the type of
+              build you want. Clear information gives you a cleaner quote and
+              fewer expensive surprises.
+            </p>
           </div>
 
-          <div>
-            <div class="section-head">
-              <h2>Popular finish options.</h2>
-              <p>
-                The right finish makes the difference between a normal cupboard
-                and a fitted unit that feels like part of the home.
-              </p>
+          <div class="process-wrap">
+            <div class="process-panel">
+              <div class="process-art">
+                <div class="process-art-card">
+                  <strong>Best quote photos</strong>
+                  <span>
+                    Stand back, show the full wall, then send close-ups of
+                    corners, plugs, pipes, floors, and ceiling height.
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <div class="finish-list">
-              {finishes.map((finish) => (
-                <div class="finish-item">{finish}</div>
+            <div class="steps">
+              {steps.map((step, index) => (
+                <article class="step">
+                  <div class="step-number">{String(index + 1).padStart(2, "0")}</div>
+                  <div>
+                    <h3>{step}</h3>
+                    <p>
+                      This keeps the job clear from the first message to the
+                      final fitted result.
+                    </p>
+                  </div>
+                </article>
               ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="section quote" id="quote">
-        <div class="quote-card">
-          <div>
-            <h2>Ready to price your space?</h2>
+        <section class="section" id="finishes">
+          <div class="section-head">
+            <div>
+              <span class="section-kicker">Finishes</span>
+              <h2>Modern finishes that make the build look premium.</h2>
+            </div>
+
             <p>
-              Send photos, rough measurements, and what you want built. We can
-              help turn the idea into a proper custom-fitted solution.
+              White, woodgrain, black details, soft-close hardware, and clean
+              profiles are the easiest way to make cupboards feel current
+              without overcomplicating the design.
             </p>
           </div>
-          <a class="btn-primary" href="mailto:ruhantait@yahoo.com">
-            Email for a Quote
-          </a>
-        </div>
-      </section>
+
+          <div class="finish-lab">
+            <div class="finish-card">
+              <div class="sample-wall">
+                <div class="sample sample-white" data-name="Iceberg / Nordic White"></div>
+                <div class="sample sample-wood" data-name="Warm Woodgrain"></div>
+                <div class="sample sample-black" data-name="Black Accent"></div>
+                <div class="sample sample-stone" data-name="Stone / Quartz Look"></div>
+              </div>
+            </div>
+
+            <div class="finish-card">
+              <span class="section-kicker">Popular Choices</span>
+              <h2>Clean, practical, and easy to live with.</h2>
+              <p>
+                A good finish must look sharp, clean easily, and still make
+                sense for the budget. These are strong options for kitchens,
+                wardrobes, TV units, and storage.
+              </p>
+
+              <div class="finish-list">
+                {finishes.map((finish) => (
+                  <span class="finish-pill">{finish}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="quote-section" id="quote">
+          <div class="quote-box">
+            <div>
+              <span class="section-kicker">Get a quote</span>
+              <h2>Send your space. Get a clearer price.</h2>
+              <p>
+                WhatsApp your photos, rough measurements, finish idea, and what
+                you want built. The better the details, the better the quote.
+              </p>
+            </div>
+
+            <div class="quote-actions">
+              <a
+                class="btn btn-primary"
+                href={whatsappLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                WhatsApp 079 910 1465
+              </a>
+
+              <a class="btn btn-ghost" href={mailLink}>
+                {email}
+              </a>
+            </div>
+          </div>
+        </section>
+      </main>
 
       <footer class="footer">
         <span>© 2026 WhichwoodFitters. All rights reserved.</span>
-        <span>Custom kitchens • cupboards • wardrobes • TV units</span>
+        <span>Custom kitchens • cupboards • wardrobes • TV units • vanities</span>
       </footer>
-    </main>
+
+      <div class="mobile-sticky" aria-label="Quick contact buttons">
+        <a class="btn btn-ghost" href={mailLink}>Email</a>
+        <a
+          class="btn btn-primary"
+          href={whatsappLink}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          WhatsApp
+        </a>
+      </div>
+    </div>
   </body>
 </html>
