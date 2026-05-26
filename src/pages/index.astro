@@ -18,58 +18,39 @@ const mailLink = `mailto:${email}?subject=${encodeURIComponent(emailSubject)}&bo
 
 const products = [
   {
-    number: "01",
-    title: "Kitchens",
-    subtitle: "Designed around real homes",
-    text: "Modern kitchens built around storage, workflow, appliances, finishes, and the exact space available."
+    no: "01",
+    title: "Kitchen Builds",
+    subtitle: "Design meets daily use",
+    text: "Fitted kitchens planned around storage, appliances, workflow, finishes and the exact room measurements."
   },
   {
-    number: "02",
+    no: "02",
     title: "Built-In Cupboards",
-    subtitle: "Wall-to-wall fitted storage",
-    text: "Bedroom cupboards, wardrobes, linen cupboards, and practical storage made to fit cleanly and properly."
+    subtitle: "Storage made to fit",
+    text: "Bedroom cupboards, wardrobes, linen cupboards and wall-to-wall fitted storage with clean practical layouts."
   },
   {
-    number: "03",
-    title: "TV Units",
-    subtitle: "Clean living-room details",
-    text: "Floating TV units, media walls, shelving, cable-friendly storage, and modern display solutions."
+    no: "03",
+    title: "Interior Units",
+    subtitle: "Details that complete a room",
+    text: "TV units, vanities, shelves, office units, laundry cupboards and custom storage for awkward spaces."
   }
+];
+
+const advice = [
+  "Send full-wall photos from a distance",
+  "Measure width, height and depth",
+  "Show plugs, pipes, corners and ceilings",
+  "Choose a finish before final pricing"
 ];
 
 const services = [
   "Site measuring",
   "Layout planning",
-  "Material advice",
-  "Custom manufacture",
+  "Material guidance",
+  "Custom manufacturing",
   "Clean installation",
   "After-job support"
-];
-
-const finishes = [
-  "White melamine",
-  "Iceberg white",
-  "Nordic white",
-  "Woodgrain melamine",
-  "Black accents",
-  "Soft-close hinges",
-  "Modern handles",
-  "Push-to-open doors"
-];
-
-const news = [
-  {
-    title: "Send photos for a faster quote",
-    text: "Stand back and show the full wall, then send close-ups of plugs, corners, pipes, floors, and ceiling height."
-  },
-  {
-    title: "Choose finishes before pricing",
-    text: "White, woodgrain, black accents, and soft-close hardware can change the quote, so finish choice matters."
-  },
-  {
-    title: "Measure width, height, and depth",
-    text: "Rough measurements help start the estimate, but final measurements must be confirmed before production."
-  }
 ];
 ---
 
@@ -79,27 +60,27 @@ const news = [
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>WhichwoodFitters | Custom Kitchens, Cupboards & Carpentry</title>
+    <title>WhichwoodFitters | Custom Kitchens, Cupboards & Fitted Storage</title>
 
     <meta
       name="description"
-      content="WhichwoodFitters designs and installs custom kitchens, built-in cupboards, wardrobes, TV units, vanities, and fitted storage."
+      content="WhichwoodFitters designs and installs custom kitchens, built-in cupboards, wardrobes, TV units, vanities and fitted storage."
     />
 
     <style>
       :root {
-        --paper: #f3eee4;
-        --paper-2: #ebe2d2;
-        --ink: #1e1913;
-        --muted: #756b5f;
-        --soft: #a89a89;
-        --wood: #9b6a38;
-        --wood-dark: #4b2d18;
-        --olive: #606c4d;
-        --line: rgba(30, 25, 19, 0.16);
-        --line-strong: rgba(30, 25, 19, 0.28);
-        --white: #fffaf1;
-        --shadow: 0 30px 90px rgba(45, 32, 18, 0.16);
+        --paper: #f4efe5;
+        --paper-soft: #ebe1d1;
+        --cream: #fffaf1;
+        --ink: #201a13;
+        --muted: #74695c;
+        --soft: #9b8f80;
+        --wood: #9a6535;
+        --wood-dark: #4b2b16;
+        --olive: #626a4f;
+        --line: rgba(32, 26, 19, 0.16);
+        --line-dark: rgba(32, 26, 19, 0.32);
+        --shadow: 0 36px 110px rgba(58, 38, 18, 0.16);
       }
 
       * {
@@ -112,14 +93,14 @@ const news = [
 
       body {
         margin: 0;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 12% 5%, rgba(154, 101, 53, 0.15), transparent 30rem),
+          radial-gradient(circle at 88% 14%, rgba(98, 106, 79, 0.12), transparent 28rem),
+          linear-gradient(135deg, var(--paper), var(--paper-soft));
         font-family:
           Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
           "Segoe UI", sans-serif;
-        color: var(--ink);
-        background:
-          radial-gradient(circle at 15% 5%, rgba(155, 106, 56, 0.16), transparent 28rem),
-          radial-gradient(circle at 90% 15%, rgba(96, 108, 77, 0.12), transparent 26rem),
-          linear-gradient(135deg, var(--paper), var(--paper-2));
         overflow-x: hidden;
       }
 
@@ -128,12 +109,12 @@ const news = [
         position: fixed;
         inset: 0;
         pointer-events: none;
-        opacity: 0.18;
+        opacity: 0.16;
         background-image:
-          linear-gradient(rgba(30, 25, 19, 0.12) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(30, 25, 19, 0.12) 1px, transparent 1px);
-        background-size: 82px 82px;
-        mask-image: linear-gradient(to bottom, black, transparent 85%);
+          linear-gradient(rgba(32, 26, 19, 0.14) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(32, 26, 19, 0.14) 1px, transparent 1px);
+        background-size: 86px 86px;
+        mask-image: linear-gradient(to bottom, black, transparent 82%);
       }
 
       a {
@@ -150,6 +131,13 @@ const news = [
         z-index: 1;
       }
 
+      h1,
+      h2,
+      h3 {
+        font-family: Georgia, "Times New Roman", serif;
+        font-weight: 500;
+      }
+
       .nav {
         position: fixed;
         inset: 0 0 auto;
@@ -158,39 +146,39 @@ const news = [
         grid-template-columns: 1fr auto 1fr;
         align-items: center;
         gap: 1rem;
-        padding: 1.1rem clamp(1rem, 4vw, 4.5rem);
-        background: rgba(243, 238, 228, 0.78);
-        border-bottom: 1px solid rgba(30, 25, 19, 0.1);
+        padding: 1.1rem clamp(1rem, 4vw, 4.8rem);
+        background: rgba(244, 239, 229, 0.78);
+        border-bottom: 1px solid rgba(32, 26, 19, 0.08);
         backdrop-filter: blur(22px);
       }
 
       .menu-button,
-      .nav-contact {
-        width: fit-content;
+      .nav-email {
         border: 0;
-        background: transparent;
+        padding: 0;
+        width: fit-content;
         color: var(--ink);
+        background: transparent;
         cursor: pointer;
-        font-weight: 750;
-        letter-spacing: 0.02em;
+        font-weight: 800;
       }
 
       .menu-button {
         display: inline-flex;
         align-items: center;
-        gap: 0.7rem;
+        gap: 0.75rem;
       }
 
       .menu-lines {
-        width: 34px;
+        width: 35px;
         display: grid;
         gap: 6px;
       }
 
       .menu-lines span {
+        display: block;
         height: 2px;
         background: var(--ink);
-        display: block;
       }
 
       .brand {
@@ -202,28 +190,28 @@ const news = [
 
       .brand strong {
         font-family: Georgia, "Times New Roman", serif;
-        font-size: clamp(1.55rem, 3vw, 2.35rem);
-        letter-spacing: -0.08em;
+        font-size: clamp(1.55rem, 3vw, 2.3rem);
+        letter-spacing: -0.085em;
         font-weight: 500;
       }
 
       .brand span {
         margin-top: 0.28rem;
         color: var(--muted);
-        font-size: 0.72rem;
+        font-size: 0.7rem;
         text-transform: uppercase;
-        letter-spacing: 0.18em;
-        font-weight: 750;
+        letter-spacing: 0.2em;
+        font-weight: 850;
       }
 
-      .nav-contact {
+      .nav-email {
         justify-self: end;
       }
 
       .menu-overlay {
         position: fixed;
         inset: 0;
-        z-index: 80;
+        z-index: 100;
         display: none;
         background: var(--ink);
         color: var(--paper);
@@ -235,13 +223,13 @@ const news = [
 
       .menu-inner {
         display: grid;
-        grid-template-columns: 0.75fr 1.25fr;
+        grid-template-columns: 0.72fr 1.28fr;
         min-height: 100vh;
       }
 
-      .menu-side {
-        padding: clamp(1.4rem, 4vw, 4rem);
-        border-right: 1px solid rgba(255, 255, 255, 0.15);
+      .menu-info {
+        padding: clamp(1.5rem, 4vw, 4rem);
+        border-right: 1px solid rgba(255, 250, 241, 0.14);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -250,87 +238,79 @@ const news = [
       .close-menu {
         width: fit-content;
         border: 0;
-        color: var(--paper);
         background: transparent;
+        color: var(--paper);
         cursor: pointer;
-        font-size: 1rem;
-        font-weight: 800;
+        font-weight: 850;
       }
 
-      .menu-side p {
-        color: rgba(243, 238, 228, 0.68);
-        line-height: 1.7;
-        max-width: 380px;
+      .menu-info p {
+        max-width: 390px;
+        color: rgba(244, 239, 229, 0.68);
+        line-height: 1.8;
       }
 
-      .menu-links {
-        padding: clamp(1.4rem, 5vw, 5rem);
+      .menu-list {
+        padding: clamp(1.5rem, 5vw, 5rem);
         display: grid;
         align-content: center;
         gap: 1.2rem;
       }
 
-      .menu-links a {
+      .menu-list a {
         display: grid;
-        grid-template-columns: 72px 1fr;
+        grid-template-columns: 76px 1fr;
         gap: 1rem;
         align-items: baseline;
-        padding-bottom: 1.1rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+        padding-bottom: 1.15rem;
+        border-bottom: 1px solid rgba(255, 250, 241, 0.14);
       }
 
-      .menu-links small {
-        color: rgba(243, 238, 228, 0.45);
-        font-weight: 850;
+      .menu-list small {
+        color: rgba(244, 239, 229, 0.45);
+        font-weight: 900;
       }
 
-      .menu-links strong {
+      .menu-list strong {
         font-family: Georgia, "Times New Roman", serif;
-        font-size: clamp(2.4rem, 7vw, 6.8rem);
-        line-height: 0.9;
-        letter-spacing: -0.085em;
+        font-size: clamp(2.5rem, 7.5vw, 7rem);
+        line-height: 0.86;
+        letter-spacing: -0.095em;
         font-weight: 500;
       }
 
       .hero {
         min-height: 100vh;
         display: grid;
-        grid-template-columns: 0.9fr 1.1fr;
+        grid-template-columns: 0.85fr 1.15fr;
         gap: clamp(2rem, 5vw, 5.5rem);
         align-items: end;
-        padding: 8rem clamp(1rem, 4vw, 4.5rem) 3rem;
+        padding: 8rem clamp(1rem, 4vw, 4.8rem) 3rem;
       }
 
       .hero-copy {
-        padding-bottom: clamp(1rem, 5vw, 5rem);
+        padding-bottom: clamp(1rem, 5vw, 5.5rem);
       }
 
-      .eyebrow {
+      .page-label {
         display: inline-flex;
-        margin-bottom: 1.2rem;
-        padding: 0.55rem 0.85rem;
+        margin-bottom: 1.4rem;
+        padding: 0.54rem 0.85rem;
         border: 1px solid var(--line);
         border-radius: 999px;
         color: var(--wood-dark);
         background: rgba(255, 250, 241, 0.42);
-        font-size: 0.82rem;
-        font-weight: 850;
+        font-size: 0.8rem;
+        font-weight: 900;
         text-transform: uppercase;
-        letter-spacing: 0.12em;
-      }
-
-      h1,
-      h2,
-      h3 {
-        font-family: Georgia, "Times New Roman", serif;
-        font-weight: 500;
+        letter-spacing: 0.14em;
       }
 
       .hero h1 {
         margin: 0;
-        font-size: clamp(4rem, 12vw, 11rem);
-        line-height: 0.78;
-        letter-spacing: -0.095em;
+        font-size: clamp(4.4rem, 12vw, 11.6rem);
+        line-height: 0.76;
+        letter-spacing: -0.105em;
       }
 
       .hero h1 span {
@@ -339,17 +319,17 @@ const news = [
       }
 
       .hero-text {
-        max-width: 640px;
-        margin: 1.5rem 0 0;
+        max-width: 620px;
+        margin: 1.6rem 0 0;
         color: var(--muted);
-        font-size: clamp(1.05rem, 1.6vw, 1.22rem);
-        line-height: 1.75;
+        font-size: clamp(1.05rem, 1.55vw, 1.22rem);
+        line-height: 1.82;
       }
 
       .hero-actions {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.8rem;
+        gap: 0.75rem;
         margin-top: 2rem;
       }
 
@@ -361,10 +341,10 @@ const news = [
         gap: 0.55rem;
         border-radius: 999px;
         padding: 0.9rem 1.18rem;
-        border: 1px solid var(--line-strong);
+        border: 1px solid var(--line-dark);
         cursor: pointer;
-        font-size: 0.92rem;
-        font-weight: 850;
+        font-size: 0.9rem;
+        font-weight: 900;
         transition:
           transform 0.2s ease,
           background 0.2s ease,
@@ -376,24 +356,36 @@ const news = [
       }
 
       .btn-dark {
-        background: var(--ink);
         color: var(--paper);
+        background: var(--ink);
         border-color: var(--ink);
       }
 
       .btn-light {
-        background: rgba(255, 250, 241, 0.5);
         color: var(--ink);
+        background: rgba(255, 250, 241, 0.5);
       }
 
-      .hero-visual {
+      .btn-outline-light {
+        color: var(--paper);
+        background: transparent;
+        border-color: rgba(244, 239, 229, 0.34);
+      }
+
+      .hero-gallery {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 1rem;
+        align-items: end;
+      }
+
+      .hero-image {
         position: relative;
         min-height: 72vh;
-        border-radius: 0 0 44px 44px;
         overflow: hidden;
         box-shadow: var(--shadow);
         background:
-          linear-gradient(90deg, rgba(255, 255, 255, 0.28), transparent 35%),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.24), transparent 35%),
           repeating-linear-gradient(
             90deg,
             #70431f 0,
@@ -405,89 +397,108 @@ const news = [
           );
       }
 
-      .hero-visual::before {
+      .hero-image.large {
+        border-radius: 0 0 48px 48px;
+      }
+
+      .hero-image.small {
+        min-height: 48vh;
+        border-radius: 48px 48px 0 0;
+        background:
+          radial-gradient(circle at 28% 18%, rgba(255,255,255,0.26), transparent 16rem),
+          repeating-linear-gradient(
+            90deg,
+            #e5ded2 0,
+            #e5ded2 24px,
+            #fff8ed 24px,
+            #fff8ed 52px
+          );
+      }
+
+      .hero-image::before {
         content: "";
         position: absolute;
         inset: 0;
         background:
-          linear-gradient(0deg, rgba(30, 25, 19, 0.5), transparent 48%),
-          radial-gradient(circle at 25% 18%, rgba(255, 255, 255, 0.32), transparent 20rem);
+          linear-gradient(0deg, rgba(32, 26, 19, 0.5), transparent 55%),
+          radial-gradient(circle at 26% 18%, rgba(255, 255, 255, 0.32), transparent 20rem);
       }
 
-      .visual-card {
+      .image-caption {
         position: absolute;
-        left: 1.2rem;
-        right: 1.2rem;
-        bottom: 1.2rem;
-        padding: 1.2rem;
-        border-radius: 28px;
-        background: rgba(255, 250, 241, 0.84);
+        left: 1rem;
+        right: 1rem;
+        bottom: 1rem;
+        padding: 1rem;
+        border-radius: 26px;
+        background: rgba(255, 250, 241, 0.82);
         backdrop-filter: blur(18px);
-        border: 1px solid rgba(255, 250, 241, 0.6);
+        border: 1px solid rgba(255, 250, 241, 0.55);
       }
 
-      .visual-card h2 {
-        margin: 0;
-        font-size: clamp(1.6rem, 3vw, 2.6rem);
-        line-height: 1;
-        letter-spacing: -0.055em;
+      .image-caption strong {
+        display: block;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(1.4rem, 2.5vw, 2.25rem);
+        line-height: 0.95;
+        letter-spacing: -0.06em;
       }
 
-      .visual-card p {
+      .image-caption span {
+        display: block;
+        margin-top: 0.45rem;
         color: var(--muted);
-        line-height: 1.65;
-        margin: 0.7rem 0 0;
+        line-height: 1.55;
       }
 
       .section {
-        padding: clamp(4.5rem, 8vw, 8rem) clamp(1rem, 4vw, 4.5rem);
+        padding: clamp(4.8rem, 8vw, 8.5rem) clamp(1rem, 4vw, 4.8rem);
       }
 
-      .section-label {
+      .section-title {
         display: grid;
-        grid-template-columns: 110px 1fr;
+        grid-template-columns: 120px 1fr;
         gap: 1rem;
         align-items: start;
         margin-bottom: 2rem;
       }
 
-      .section-label small {
+      .section-title small {
         color: var(--muted);
-        font-weight: 900;
-        letter-spacing: 0.12em;
+        font-weight: 950;
+        letter-spacing: 0.13em;
         text-transform: uppercase;
       }
 
-      .section-label h2 {
+      .section-title h2 {
         margin: 0;
-        max-width: 1060px;
-        font-size: clamp(3rem, 8vw, 8rem);
+        max-width: 1120px;
+        font-size: clamp(3.2rem, 8vw, 8.3rem);
         line-height: 0.82;
-        letter-spacing: -0.09em;
+        letter-spacing: -0.1em;
       }
 
       .intro-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: clamp(1rem, 4vw, 4rem);
-        align-items: start;
         border-top: 1px solid var(--line);
-        padding-top: 2rem;
+        padding-top: 2.2rem;
       }
 
-      .intro-grid p {
+      .intro-quote {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(2rem, 4.2vw, 4.2rem);
+        line-height: 1.05;
+        letter-spacing: -0.065em;
+      }
+
+      .intro-text {
         margin: 0;
         color: var(--muted);
-        font-size: clamp(1.05rem, 1.5vw, 1.25rem);
-        line-height: 1.85;
-      }
-
-      .quote-line {
-        font-family: Georgia, "Times New Roman", serif;
-        color: var(--ink) !important;
-        font-size: clamp(1.8rem, 4vw, 4rem) !important;
-        line-height: 1.05 !important;
-        letter-spacing: -0.055em;
+        font-size: clamp(1.05rem, 1.45vw, 1.2rem);
+        line-height: 1.9;
       }
 
       .product-grid {
@@ -498,34 +509,34 @@ const news = [
       }
 
       .product-card {
-        min-height: 620px;
+        min-height: 630px;
         display: grid;
         align-content: space-between;
+        background: rgba(255, 250, 241, 0.22);
         border-right: 1px solid var(--line);
         border-bottom: 1px solid var(--line);
-        background: rgba(255, 250, 241, 0.22);
       }
 
-      .product-image {
-        min-height: 340px;
+      .product-visual {
         position: relative;
+        min-height: 350px;
         overflow: hidden;
         background:
-          linear-gradient(90deg, rgba(255, 255, 255, 0.22), transparent 40%),
+          linear-gradient(90deg, rgba(255,255,255,0.25), transparent 38%),
           repeating-linear-gradient(
             90deg,
-            #72502f 0,
-            #72502f 16px,
-            #91683f 16px,
-            #91683f 36px,
-            #b08352 36px,
-            #b08352 56px
+            #71502f 0,
+            #71502f 16px,
+            #92683f 16px,
+            #92683f 38px,
+            #b08352 38px,
+            #b08352 60px
           );
       }
 
-      .product-card:nth-child(2) .product-image {
+      .product-card:nth-child(2) .product-visual {
         background:
-          linear-gradient(120deg, rgba(30, 25, 19, 0.14), transparent 40%),
+          linear-gradient(120deg, rgba(32,26,19,0.13), transparent 45%),
           repeating-linear-gradient(
             90deg,
             #e6dfd2 0,
@@ -535,26 +546,26 @@ const news = [
           );
       }
 
-      .product-card:nth-child(3) .product-image {
+      .product-card:nth-child(3) .product-visual {
         background:
-          radial-gradient(circle at 30% 20%, rgba(255,255,255,0.24), transparent 16rem),
-          linear-gradient(135deg, #2c2923, #72614d);
+          radial-gradient(circle at 30% 20%, rgba(255,255,255,0.23), transparent 16rem),
+          linear-gradient(135deg, #2f2a23, #75634e);
       }
 
-      .product-image::after {
+      .product-visual::after {
         content: "";
         position: absolute;
         inset: 0;
         background:
-          linear-gradient(0deg, rgba(30, 25, 19, 0.38), transparent 58%),
-          radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.28), transparent 18rem);
+          linear-gradient(0deg, rgba(32, 26, 19, 0.36), transparent 58%),
+          radial-gradient(circle at 30% 18%, rgba(255,255,255,0.3), transparent 19rem);
       }
 
       .product-content {
-        padding: 1.5rem;
+        padding: 1.45rem;
       }
 
-      .product-number {
+      .product-no {
         color: var(--wood);
         font-weight: 950;
         margin-bottom: 1rem;
@@ -562,37 +573,38 @@ const news = [
 
       .product-content h3 {
         margin: 0;
-        font-size: clamp(2rem, 4vw, 4rem);
+        font-size: clamp(2.1rem, 4vw, 4.2rem);
         line-height: 0.9;
-        letter-spacing: -0.075em;
+        letter-spacing: -0.08em;
       }
 
       .product-content h4 {
-        margin: 0.9rem 0 0;
+        margin: 0.95rem 0 0;
         color: var(--wood-dark);
         font-size: 1rem;
       }
 
       .product-content p {
+        margin: 1rem 0 0;
         color: var(--muted);
-        line-height: 1.7;
+        line-height: 1.72;
       }
 
-      .split-feature {
+      .feature {
         display: grid;
         grid-template-columns: 0.9fr 1.1fr;
         gap: clamp(1rem, 4vw, 4rem);
         align-items: stretch;
       }
 
-      .feature-art {
-        min-height: 680px;
+      .feature-image {
+        min-height: 700px;
         position: relative;
         overflow: hidden;
-        border-radius: 44px;
+        border-radius: 48px;
         box-shadow: var(--shadow);
         background:
-          linear-gradient(0deg, rgba(30, 25, 19, 0.38), transparent 50%),
+          linear-gradient(0deg, rgba(32, 26, 19, 0.38), transparent 50%),
           repeating-linear-gradient(
             90deg,
             #6d401e 0,
@@ -604,16 +616,16 @@ const news = [
           );
       }
 
-      .feature-art::after {
+      .feature-image::after {
         content: "Made to fit";
         position: absolute;
-        left: 1.3rem;
-        bottom: 1.3rem;
-        padding: 0.75rem 1rem;
+        left: 1.2rem;
+        bottom: 1.2rem;
+        padding: 0.72rem 1rem;
         border-radius: 999px;
-        background: rgba(255, 250, 241, 0.78);
+        background: rgba(255, 250, 241, 0.82);
         color: var(--ink);
-        font-weight: 900;
+        font-weight: 950;
         backdrop-filter: blur(14px);
       }
 
@@ -625,22 +637,21 @@ const news = [
 
       .feature-copy h2 {
         margin: 0;
-        font-size: clamp(3rem, 8vw, 8rem);
+        font-size: clamp(3.2rem, 8vw, 8rem);
         line-height: 0.82;
-        letter-spacing: -0.09em;
+        letter-spacing: -0.095em;
       }
 
       .feature-copy p {
         max-width: 720px;
         color: var(--muted);
-        font-size: 1.12rem;
-        line-height: 1.85;
+        font-size: 1.1rem;
+        line-height: 1.9;
       }
 
       .service-list {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 0;
         border-top: 1px solid var(--line);
         border-left: 1px solid var(--line);
         margin-top: 2rem;
@@ -648,106 +659,92 @@ const news = [
 
       .service-item {
         padding: 1.1rem;
+        background: rgba(255, 250, 241, 0.28);
         border-right: 1px solid var(--line);
         border-bottom: 1px solid var(--line);
-        font-weight: 850;
-        color: var(--ink);
-        background: rgba(255, 250, 241, 0.25);
+        font-weight: 900;
       }
 
-      .news-grid {
+      .advice-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
+        grid-template-columns: repeat(4, 1fr);
+        border-top: 1px solid var(--line);
+        border-left: 1px solid var(--line);
       }
 
-      .news-card {
-        min-height: 260px;
+      .advice-card {
+        min-height: 280px;
         display: grid;
         align-content: space-between;
-        padding: 1.35rem;
-        border: 1px solid var(--line);
-        background: rgba(255, 250, 241, 0.32);
+        padding: 1.2rem;
+        background: rgba(255, 250, 241, 0.25);
+        border-right: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
       }
 
-      .news-card small {
+      .advice-card small {
         color: var(--wood);
         font-weight: 950;
       }
 
-      .news-card h3 {
+      .advice-card h3 {
         margin: 1rem 0 0;
-        font-size: clamp(1.7rem, 3vw, 3rem);
-        line-height: 0.94;
-        letter-spacing: -0.065em;
+        font-size: clamp(1.6rem, 3vw, 2.8rem);
+        line-height: 0.95;
+        letter-spacing: -0.07em;
       }
 
-      .news-card p {
-        color: var(--muted);
-        line-height: 1.7;
-      }
-
-      .finish-strip {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.65rem;
-        margin-top: 2rem;
-      }
-
-      .finish-pill {
-        padding: 0.78rem 1rem;
-        border-radius: 999px;
-        border: 1px solid var(--line);
-        background: rgba(255, 250, 241, 0.34);
-        color: var(--muted);
-        font-weight: 800;
-      }
-
-      .consultation {
-        margin: 0 clamp(1rem, 4vw, 4.5rem) clamp(4.5rem, 8vw, 8rem);
+      .quote-section {
+        margin: 0 clamp(1rem, 4vw, 4.8rem) clamp(4.8rem, 8vw, 8rem);
         display: grid;
-        grid-template-columns: 1fr 0.85fr;
-        min-height: 620px;
+        grid-template-columns: 1fr 0.82fr;
+        min-height: 640px;
         border-top: 1px solid var(--line);
         border-bottom: 1px solid var(--line);
       }
 
-      .consult-copy {
-        padding: clamp(2rem, 5vw, 5rem) 0;
+      .quote-copy {
         display: grid;
         align-content: center;
+        padding: clamp(2rem, 5vw, 5rem) 0;
       }
 
-      .consult-copy h2 {
+      .quote-copy h2 {
         margin: 0;
-        font-size: clamp(3.4rem, 9vw, 9rem);
-        line-height: 0.8;
-        letter-spacing: -0.095em;
+        max-width: 840px;
+        font-size: clamp(3.6rem, 9vw, 9rem);
+        line-height: 0.78;
+        letter-spacing: -0.105em;
       }
 
-      .consult-copy p {
+      .quote-copy p {
         max-width: 660px;
         color: var(--muted);
-        line-height: 1.85;
         font-size: 1.1rem;
+        line-height: 1.9;
       }
 
-      .consult-card {
+      .contact-card {
         margin: clamp(2rem, 4vw, 4rem) 0 clamp(2rem, 4vw, 4rem) clamp(1rem, 4vw, 4rem);
         padding: 1.4rem;
         display: grid;
         align-content: space-between;
         background: var(--ink);
         color: var(--paper);
-        border-radius: 44px;
+        border-radius: 48px;
         box-shadow: var(--shadow);
       }
 
-      .consult-card h3 {
+      .contact-card h3 {
         margin: 0;
         font-size: clamp(2rem, 4vw, 4rem);
-        line-height: 0.9;
-        letter-spacing: -0.075em;
+        line-height: 0.88;
+        letter-spacing: -0.08em;
+      }
+
+      .contact-card p {
+        color: rgba(244, 239, 229, 0.68);
+        line-height: 1.75;
       }
 
       .contact-actions {
@@ -755,23 +752,17 @@ const news = [
         gap: 0.8rem;
       }
 
-      .consult-card .btn-light {
+      .contact-card .btn-light {
         background: var(--paper);
         color: var(--ink);
         border-color: var(--paper);
       }
 
-      .consult-card .btn-outline {
-        color: var(--paper);
-        border-color: rgba(243, 238, 228, 0.32);
-        background: transparent;
-      }
-
       .footer {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1.2fr 1fr 1fr;
         gap: 2rem;
-        padding: clamp(2rem, 5vw, 4.5rem);
+        padding: clamp(2rem, 5vw, 4.8rem);
         border-top: 1px solid var(--line);
         color: var(--muted);
       }
@@ -788,25 +779,26 @@ const news = [
         width: fit-content;
         border: 0;
         padding: 0;
-        color: var(--muted);
-        background: transparent;
-        cursor: pointer;
         margin-top: 0.35rem;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
       }
 
       .toast {
         position: fixed;
         left: 50%;
         bottom: 2rem;
-        z-index: 100;
+        z-index: 120;
         transform: translateX(-50%) translateY(18px);
         opacity: 0;
         pointer-events: none;
+        max-width: calc(100vw - 2rem);
         padding: 0.9rem 1.1rem;
         border-radius: 999px;
         background: var(--ink);
         color: var(--paper);
-        font-weight: 900;
+        font-weight: 950;
         box-shadow: var(--shadow);
         transition: 0.25s ease;
       }
@@ -820,21 +812,27 @@ const news = [
         display: none;
       }
 
-      @media (max-width: 1080px) {
+      @media (max-width: 1100px) {
         .hero,
-        .split-feature,
-        .consultation,
+        .feature,
+        .quote-section,
         .menu-inner {
           grid-template-columns: 1fr;
         }
 
-        .hero-visual,
-        .feature-art {
+        .hero-gallery {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-image,
+        .hero-image.small,
+        .feature-image {
           min-height: 520px;
+          border-radius: 42px;
         }
 
         .product-grid,
-        .news-grid {
+        .advice-grid {
           grid-template-columns: 1fr;
         }
 
@@ -842,7 +840,7 @@ const news = [
           min-height: auto;
         }
 
-        .consult-card {
+        .contact-card {
           margin-left: 0;
         }
 
@@ -866,21 +864,17 @@ const news = [
         }
 
         .brand span,
-        .nav-contact {
+        .nav-email,
+        .menu-button > span:last-child {
           display: none;
         }
 
         .hero {
-          padding: 6.5rem 1rem 2rem;
+          padding: 6.4rem 1rem 2rem;
         }
 
         .hero h1 {
-          font-size: clamp(4rem, 20vw, 6.5rem);
-        }
-
-        .hero-actions,
-        .service-list {
-          grid-template-columns: 1fr;
+          font-size: clamp(4.1rem, 20vw, 6.5rem);
         }
 
         .hero-actions {
@@ -895,45 +889,45 @@ const news = [
           padding: 4rem 1rem;
         }
 
-        .section-label {
+        .section-title {
           grid-template-columns: 1fr;
         }
 
-        .section-label h2,
+        .section-title h2,
         .feature-copy h2,
-        .consult-copy h2 {
-          font-size: clamp(3.4rem, 17vw, 5.6rem);
+        .quote-copy h2 {
+          font-size: clamp(3.4rem, 17vw, 5.8rem);
         }
 
-        .intro-grid {
+        .intro-grid,
+        .service-list {
           grid-template-columns: 1fr;
         }
 
-        .product-image {
+        .product-visual {
           min-height: 260px;
         }
 
-        .consultation {
+        .quote-section {
           margin-inline: 1rem;
         }
 
-        .menu-side {
+        .menu-info {
           border-right: 0;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.14);
-          min-height: auto;
+          border-bottom: 1px solid rgba(255, 250, 241, 0.14);
           gap: 2rem;
         }
 
-        .menu-links {
+        .menu-list {
           padding: 1.5rem;
         }
 
-        .menu-links a {
-          grid-template-columns: 44px 1fr;
+        .menu-list a {
+          grid-template-columns: 46px 1fr;
         }
 
-        .menu-links strong {
-          font-size: clamp(2.4rem, 15vw, 4.4rem);
+        .menu-list strong {
+          font-size: clamp(2.4rem, 15vw, 4.6rem);
         }
 
         .mobile-sticky {
@@ -947,7 +941,7 @@ const news = [
           gap: 0.65rem;
           padding: 0.6rem;
           border-radius: 22px;
-          background: rgba(243, 238, 228, 0.82);
+          background: rgba(244, 239, 229, 0.86);
           backdrop-filter: blur(18px);
           border: 1px solid var(--line);
           box-shadow: var(--shadow);
@@ -956,7 +950,7 @@ const news = [
         .mobile-sticky .btn {
           min-height: 44px;
           padding: 0.75rem 0.8rem;
-          font-size: 0.85rem;
+          font-size: 0.84rem;
         }
 
         .footer {
@@ -982,31 +976,30 @@ const news = [
           <span>Fitters</span>
         </a>
 
-        <button class="nav-contact" type="button" data-copy-email>
+        <button class="nav-email" type="button" data-copy-email>
           {email}
         </button>
       </nav>
 
       <div class="menu-overlay" id="menuOverlay">
         <div class="menu-inner">
-          <div class="menu-side">
+          <div class="menu-info">
             <button class="close-menu" type="button" data-close-menu>
               Close
             </button>
 
             <p>
-              WhichwoodFitters designs and installs custom kitchens, built-in
-              cupboards, wardrobes, TV units, vanities, and storage solutions.
+              WhichwoodFitters designs and installs custom kitchens, cupboards,
+              wardrobes, TV units, vanities and storage solutions made to fit
+              your exact space.
             </p>
 
-            <div>
-              <a class="btn btn-light" href={whatsappLink} target="_blank" rel="noopener noreferrer">
-                WhatsApp {displayPhone}
-              </a>
-            </div>
+            <a class="btn btn-light" href={whatsappLink} target="_blank" rel="noopener noreferrer">
+              WhatsApp {displayPhone}
+            </a>
           </div>
 
-          <div class="menu-links">
+          <div class="menu-list">
             <a href="#products" data-menu-link>
               <small>01</small>
               <strong>Products</strong>
@@ -1030,7 +1023,7 @@ const news = [
       <main>
         <section class="hero">
           <div class="hero-copy">
-            <span class="eyebrow">Custom carpentry • South Africa</span>
+            <span class="page-label">Startseite</span>
 
             <h1>
               Connected
@@ -1038,9 +1031,9 @@ const news = [
             </h1>
 
             <p class="hero-text">
-              Modern fitted furniture, kitchens, wardrobes, TV units and
-              storage solutions — designed around your space, your finish, and
-              your daily use.
+              Custom kitchens, built-in cupboards, wardrobes, TV units and
+              fitted storage — created around your home, your measurements and
+              the way you use the space.
             </p>
 
             <div class="hero-actions">
@@ -1058,50 +1051,56 @@ const news = [
             </div>
           </div>
 
-          <div class="hero-visual">
-            <div class="visual-card">
-              <h2>Design meets practical storage.</h2>
-              <p>
-                Built-in work should look clean, fit properly, and solve real
-                storage problems without wasting space.
-              </p>
+          <div class="hero-gallery">
+            <div class="hero-image large">
+              <div class="image-caption">
+                <strong>Kitchens, cupboards & fitted interiors</strong>
+                <span>Modern storage with a clean custom-made finish.</span>
+              </div>
+            </div>
+
+            <div class="hero-image small">
+              <div class="image-caption">
+                <strong>Measured properly</strong>
+                <span>Every wall, corner, plug and ceiling height matters.</span>
+              </div>
             </div>
           </div>
         </section>
 
         <section class="section" id="philosophy">
-          <div class="section-label">
+          <div class="section-title">
             <small>Philosophy</small>
-            <h2>Beautiful work starts with proper measurements.</h2>
+            <h2>Good carpentry begins before the first board is cut.</h2>
           </div>
 
           <div class="intro-grid">
-            <p class="quote-line">
-              Every wall, corner, plug point and ceiling height matters.
+            <p class="intro-quote">
+              A fitted unit should feel like it was always meant to be there.
             </p>
 
-            <p>
-              A good fitted unit is not only about how it looks. It must open
-              properly, carry weight, hide clutter, handle daily use, and make
-              the room feel calmer. WhichwoodFitters focuses on clean planning,
-              realistic materials, and solid installation.
+            <p class="intro-text">
+              WhichwoodFitters focuses on accurate measuring, practical layouts,
+              honest material choices and clean installation. The goal is simple:
+              more useful storage, better-looking rooms and work that fits the
+              home properly.
             </p>
           </div>
         </section>
 
         <section class="section" id="products">
-          <div class="section-label">
+          <div class="section-title">
             <small>Products</small>
-            <h2>Designed for homes that need better storage.</h2>
+            <h2>Designed for spaces that need better storage.</h2>
           </div>
 
           <div class="product-grid">
             {products.map((product) => (
               <article class="product-card">
-                <div class="product-image"></div>
+                <div class="product-visual"></div>
 
                 <div class="product-content">
-                  <div class="product-number">{product.number}</div>
+                  <div class="product-no">{product.no}</div>
                   <h3>{product.title}</h3>
                   <h4>{product.subtitle}</h4>
                   <p>{product.text}</p>
@@ -1112,16 +1111,17 @@ const news = [
         </section>
 
         <section class="section" id="service">
-          <div class="split-feature">
-            <div class="feature-art"></div>
+          <div class="feature">
+            <div class="feature-image"></div>
 
             <div class="feature-copy">
-              <span class="eyebrow">Service</span>
+              <span class="page-label">Service</span>
               <h2>From idea to fitted result.</h2>
+
               <p>
                 Send photos, rough measurements and the type of unit you want.
-                The quote becomes clearer when the space, finish and purpose
-                are clear from the start.
+                The clearer the space and finish choice, the cleaner the quote
+                and the fewer costly surprises later.
               </p>
 
               <div class="service-list">
@@ -1129,39 +1129,31 @@ const news = [
                   <div class="service-item">{service}</div>
                 ))}
               </div>
-
-              <div class="finish-strip">
-                {finishes.map((finish) => (
-                  <span class="finish-pill">{finish}</span>
-                ))}
-              </div>
             </div>
           </div>
         </section>
 
         <section class="section">
-          <div class="section-label">
-            <small>Advice</small>
-            <h2>Before you ask for a quote.</h2>
+          <div class="section-title">
+            <small>Before quote</small>
+            <h2>What to send for a faster estimate.</h2>
           </div>
 
-          <div class="news-grid">
-            {news.map((item, index) => (
-              <article class="news-card">
-                <div>
-                  <small>{String(index + 1).padStart(2, "0")}</small>
-                  <h3>{item.title}</h3>
-                </div>
-                <p>{item.text}</p>
+          <div class="advice-grid">
+            {advice.map((item, index) => (
+              <article class="advice-card">
+                <small>{String(index + 1).padStart(2, "0")}</small>
+                <h3>{item}</h3>
               </article>
             ))}
           </div>
         </section>
 
-        <section class="consultation" id="quote">
-          <div class="consult-copy">
-            <span class="eyebrow">Personal quote</span>
+        <section class="quote-section" id="quote">
+          <div class="quote-copy">
+            <span class="page-label">Personal quote</span>
             <h2>Send your space.</h2>
+
             <p>
               WhatsApp is the fastest way. Send photos, rough measurements,
               finish ideas and your location. You can also copy the email
@@ -1169,7 +1161,7 @@ const news = [
             </p>
           </div>
 
-          <div class="consult-card">
+          <div class="contact-card">
             <div>
               <h3>WhichwoodFitters</h3>
               <p>
@@ -1183,11 +1175,11 @@ const news = [
                 WhatsApp {displayPhone}
               </a>
 
-              <button class="btn btn-outline" type="button" data-copy-email>
+              <button class="btn btn-outline-light" type="button" data-copy-email>
                 Copy {email}
               </button>
 
-              <a class="btn btn-outline" href={mailLink}>
+              <a class="btn btn-outline-light" href={mailLink}>
                 Open email app
               </a>
             </div>
