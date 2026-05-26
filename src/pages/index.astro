@@ -40,13 +40,6 @@ const products = [
   }
 ];
 
-const advice = [
-  "Send full-wall photos from a distance",
-  "Measure width, height and depth",
-  "Show plugs, pipes, corners and ceilings",
-  "Choose a finish before final pricing"
-];
-
 const services = [
   "Site measuring",
   "Layout planning",
@@ -611,33 +604,219 @@ const services = [
         font-weight: 900;
       }
 
-      .advice-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        border-top: 1px solid var(--line);
-        border-left: 1px solid var(--line);
+      .estimate-section {
+        scroll-margin-top: 110px;
       }
 
-      .advice-card {
-        min-height: 280px;
+      .estimate-builder {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: clamp(1rem, 4vw, 4rem);
+        border-top: 1px solid var(--line);
+        padding-top: 2rem;
+      }
+
+      .estimate-panel {
+        padding: clamp(1rem, 3vw, 2rem);
+        border: 1px solid var(--line);
+        border-radius: 42px;
+        background: rgba(255, 250, 241, 0.34);
+        box-shadow: var(--shadow);
+      }
+
+      .estimate-form {
+        display: grid;
+        gap: 1.1rem;
+      }
+
+      .estimate-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+      }
+
+      .field {
+        display: grid;
+        gap: 0.45rem;
+      }
+
+      .field label,
+      .field-title {
+        color: var(--wood-dark);
+        font-weight: 950;
+        font-size: 0.9rem;
+      }
+
+      .input,
+      .select,
+      .textarea {
+        width: 100%;
+        min-height: 48px;
+        border: 1px solid var(--line-dark);
+        border-radius: 18px;
+        padding: 0.85rem 1rem;
+        background: rgba(255, 250, 241, 0.72);
+        color: var(--ink);
+        outline: none;
+        font: inherit;
+      }
+
+      .textarea {
+        min-height: 120px;
+        resize: vertical;
+        line-height: 1.5;
+      }
+
+      .input:focus,
+      .select:focus,
+      .textarea:focus {
+        border-color: var(--wood);
+        box-shadow: 0 0 0 4px rgba(154, 101, 53, 0.12);
+      }
+
+      .photo-box {
+        display: grid;
+        gap: 0.8rem;
+        padding: 1rem;
+        border: 1px dashed var(--line-dark);
+        border-radius: 24px;
+        background: rgba(255, 250, 241, 0.42);
+      }
+
+      .photo-box p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .photo-list {
+        display: grid;
+        gap: 0.45rem;
+        color: var(--wood-dark);
+        font-size: 0.9rem;
+        font-weight: 850;
+      }
+
+      .checkbox-grid,
+      .colour-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+      }
+
+      .check-card,
+      .colour-card {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        min-height: 54px;
+        padding: 0.85rem;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: rgba(255, 250, 241, 0.5);
+        cursor: pointer;
+        font-weight: 850;
+      }
+
+      .check-card input,
+      .colour-card input {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--wood);
+      }
+
+      .colour-card {
+        align-items: flex-start;
+      }
+
+      .colour-card strong {
+        display: block;
+        line-height: 1.1;
+      }
+
+      .colour-card small {
+        display: block;
+        margin-top: 0.25rem;
+        color: var(--muted);
+        font-weight: 700;
+        line-height: 1.35;
+      }
+
+      .swatch {
+        width: 22px;
+        height: 22px;
+        flex: 0 0 22px;
+        border-radius: 999px;
+        border: 1px solid rgba(32, 26, 19, 0.24);
+        margin-top: 0.1rem;
+      }
+
+      .swatch-white {
+        background: #f7f4ea;
+      }
+
+      .swatch-grey {
+        background: #b8b6ae;
+      }
+
+      .swatch-black {
+        background: #171717;
+      }
+
+      .swatch-oak {
+        background: #b9824b;
+      }
+
+      .swatch-gloss {
+        background: linear-gradient(135deg, #ffffff, #d9d9d9, #ffffff);
+      }
+
+      .swatch-other {
+        background: linear-gradient(135deg, #9a6535, #626a4f);
+      }
+
+      .estimate-preview-card {
         display: grid;
         align-content: space-between;
-        padding: 1.2rem;
-        background: rgba(255, 250, 241, 0.25);
-        border-right: 1px solid var(--line);
-        border-bottom: 1px solid var(--line);
+        gap: 1.2rem;
+        padding: clamp(1rem, 3vw, 2rem);
+        border-radius: 42px;
+        background: var(--ink);
+        color: var(--paper);
+        box-shadow: var(--shadow);
       }
 
-      .advice-card small {
-        color: var(--wood);
-        font-weight: 950;
+      .estimate-preview-card h3 {
+        margin: 0;
+        font-size: clamp(2.2rem, 4vw, 4.2rem);
+        line-height: 0.88;
+        letter-spacing: -0.08em;
       }
 
-      .advice-card h3 {
-        margin: 1rem 0 0;
-        font-size: clamp(1.6rem, 3vw, 2.8rem);
-        line-height: 0.95;
-        letter-spacing: -0.07em;
+      .estimate-preview-card p {
+        margin: 0;
+        color: rgba(244, 239, 229, 0.68);
+        line-height: 1.75;
+      }
+
+      .estimate-preview {
+        min-height: 260px;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+        padding: 1rem;
+        border-radius: 24px;
+        background: rgba(255, 250, 241, 0.08);
+        border: 1px solid rgba(255, 250, 241, 0.14);
+        color: rgba(244, 239, 229, 0.88);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.86rem;
+        line-height: 1.65;
+      }
+
+      .estimate-note {
+        color: var(--muted);
+        font-size: 0.92rem;
+        line-height: 1.7;
       }
 
       .quote-section {
@@ -762,7 +941,8 @@ const services = [
         .hero,
         .feature,
         .quote-section,
-        .menu-inner {
+        .menu-inner,
+        .estimate-builder {
           grid-template-columns: 1fr;
         }
 
@@ -777,8 +957,7 @@ const services = [
           border-radius: 42px;
         }
 
-        .product-grid,
-        .advice-grid {
+        .product-grid {
           grid-template-columns: 1fr;
         }
 
@@ -846,7 +1025,10 @@ const services = [
         }
 
         .intro-grid,
-        .service-list {
+        .service-list,
+        .estimate-grid,
+        .checkbox-grid,
+        .colour-grid {
           grid-template-columns: 1fr;
         }
 
@@ -945,37 +1127,37 @@ const services = [
             </a>
           </div>
 
-         <div class="menu-list">
-  <a href="#products" data-menu-link>
-    <small>01</small>
-    <strong>Products</strong>
-  </a>
+          <div class="menu-list">
+            <a href="#products" data-menu-link>
+              <small>01</small>
+              <strong>Products</strong>
+            </a>
 
-  <a href="/gallery" data-menu-link>
-    <small>02</small>
-    <strong>Gallery</strong>
-  </a>
+            <a href="/gallery" data-menu-link>
+              <small>02</small>
+              <strong>Gallery</strong>
+            </a>
 
-  <a href="#estimate" data-menu-link>
-    <small>03</small>
-    <strong>Estimate</strong>
-  </a>
+            <a href="#estimate" data-menu-link>
+              <small>03</small>
+              <strong>Estimate</strong>
+            </a>
 
-  <a href="#philosophy" data-menu-link>
-    <small>04</small>
-    <strong>Philosophy</strong>
-  </a>
+            <a href="#philosophy" data-menu-link>
+              <small>04</small>
+              <strong>Philosophy</strong>
+            </a>
 
-  <a href="#service" data-menu-link>
-    <small>05</small>
-    <strong>Service</strong>
-  </a>
+            <a href="#service" data-menu-link>
+              <small>05</small>
+              <strong>Service</strong>
+            </a>
 
-  <a href="#quote" data-menu-link>
-    <small>06</small>
-    <strong>Contact</strong>
-  </a>
-</div>
+            <a href="#quote" data-menu-link>
+              <small>06</small>
+              <strong>Contact</strong>
+            </a>
+          </div>
         </div>
       </div>
 
@@ -998,6 +1180,10 @@ const services = [
             <div class="hero-actions">
               <a class="btn btn-dark" href={whatsappLink} target="_blank" rel="noopener noreferrer">
                 WhatsApp for quote
+              </a>
+
+              <a class="btn btn-light" href="#estimate">
+                Build estimate
               </a>
 
               <a class="btn btn-light" href="/gallery">
@@ -1092,19 +1278,197 @@ const services = [
           </div>
         </section>
 
-        <section class="section">
+        <section class="section estimate-section" id="estimate">
           <div class="section-title">
-            <small>Before Quote</small>
-            <h2>What to send for a faster estimate.</h2>
+            <small>Fast Estimate</small>
+            <h2>Send the right details for a faster quote.</h2>
           </div>
 
-          <div class="advice-grid">
-            {advice.map((item, index) => (
-              <article class="advice-card">
-                <small>{String(index + 1).padStart(2, "0")}</small>
-                <h3>{item}</h3>
-              </article>
-            ))}
+          <div class="estimate-builder">
+            <form class="estimate-panel estimate-form" id="estimateForm">
+              <div class="field">
+                <label for="projectType">Project type</label>
+                <select class="select" id="projectType">
+                  <option value="Kitchen">Kitchen</option>
+                  <option value="Built-in cupboards">Built-in cupboards</option>
+                  <option value="Wardrobe">Wardrobe</option>
+                  <option value="TV unit">TV unit</option>
+                  <option value="Bathroom vanity">Bathroom vanity</option>
+                  <option value="Storage solution">Storage solution</option>
+                  <option value="Custom melamine work">Custom melamine work</option>
+                </select>
+              </div>
+
+              <div class="photo-box">
+                <div>
+                  <div class="field-title">Photos</div>
+                  <p>
+                    Take or upload photos of the full wall, close-up corners,
+                    plugs, pipes, ceiling and the area where the unit must fit.
+                  </p>
+                </div>
+
+                <input
+                  class="input"
+                  id="estimatePhotos"
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  multiple
+                />
+
+                <div class="photo-list" id="selectedPhotos">
+                  No photos selected yet.
+                </div>
+
+                <p class="estimate-note">
+                  After WhatsApp opens, attach the same photos in the WhatsApp chat.
+                </p>
+              </div>
+
+              <div class="estimate-grid">
+                <div class="field">
+                  <label for="widthMeasure">Width</label>
+                  <input class="input" id="widthMeasure" type="text" placeholder="Example: 3200mm" />
+                </div>
+
+                <div class="field">
+                  <label for="heightMeasure">Height</label>
+                  <input class="input" id="heightMeasure" type="text" placeholder="Example: 2400mm" />
+                </div>
+
+                <div class="field">
+                  <label for="depthMeasure">Depth</label>
+                  <input class="input" id="depthMeasure" type="text" placeholder="Example: 600mm" />
+                </div>
+              </div>
+
+              <div class="field">
+                <div class="field-title">What must we see in the photos?</div>
+
+                <div class="checkbox-grid">
+                  <label class="check-card">
+                    <input type="checkbox" name="siteDetails" value="Plugs" />
+                    Plugs
+                  </label>
+
+                  <label class="check-card">
+                    <input type="checkbox" name="siteDetails" value="Pipes" />
+                    Pipes
+                  </label>
+
+                  <label class="check-card">
+                    <input type="checkbox" name="siteDetails" value="Corners" />
+                    Corners
+                  </label>
+
+                  <label class="check-card">
+                    <input type="checkbox" name="siteDetails" value="Ceiling height" />
+                    Ceiling height
+                  </label>
+
+                  <label class="check-card">
+                    <input type="checkbox" name="siteDetails" value="Skirting" />
+                    Skirting
+                  </label>
+
+                  <label class="check-card">
+                    <input type="checkbox" name="siteDetails" value="Uneven wall or floor" />
+                    Uneven wall/floor
+                  </label>
+                </div>
+              </div>
+
+              <div class="field">
+                <div class="field-title">Colour / finish option</div>
+
+                <div class="colour-grid">
+                  <label class="colour-card">
+                    <input type="radio" name="finishOption" value="White melamine" checked />
+                    <span class="swatch swatch-white"></span>
+                    <span>
+                      <strong>White</strong>
+                      <small>Clean, bright, modern</small>
+                    </span>
+                  </label>
+
+                  <label class="colour-card">
+                    <input type="radio" name="finishOption" value="Light grey melamine" />
+                    <span class="swatch swatch-grey"></span>
+                    <span>
+                      <strong>Light Grey</strong>
+                      <small>Soft neutral finish</small>
+                    </span>
+                  </label>
+
+                  <label class="colour-card">
+                    <input type="radio" name="finishOption" value="Black melamine" />
+                    <span class="swatch swatch-black"></span>
+                    <span>
+                      <strong>Black</strong>
+                      <small>Bold premium look</small>
+                    </span>
+                  </label>
+
+                  <label class="colour-card">
+                    <input type="radio" name="finishOption" value="Oak / wood-look melamine" />
+                    <span class="swatch swatch-oak"></span>
+                    <span>
+                      <strong>Oak / Wood Look</strong>
+                      <small>Warm natural style</small>
+                    </span>
+                  </label>
+
+                  <label class="colour-card">
+                    <input type="radio" name="finishOption" value="SupaGloss / high-gloss finish" />
+                    <span class="swatch swatch-gloss"></span>
+                    <span>
+                      <strong>SupaGloss</strong>
+                      <small>Gloss modern finish</small>
+                    </span>
+                  </label>
+
+                  <label class="colour-card">
+                    <input type="radio" name="finishOption" value="Other finish / not sure yet" />
+                    <span class="swatch swatch-other"></span>
+                    <span>
+                      <strong>Other</strong>
+                      <small>Need advice</small>
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="estimateNotes">Extra notes</label>
+                <textarea
+                  class="textarea"
+                  id="estimateNotes"
+                  placeholder="Example: Need drawers, hanging space, shelves, soft-close hinges, LED lighting, or matching existing cupboards."
+                ></textarea>
+              </div>
+            </form>
+
+            <div class="estimate-preview-card">
+              <div>
+                <h3>Your WhatsApp request.</h3>
+                <p>
+                  This message updates as the client fills in the form. When they click
+                  the button, WhatsApp opens with the quote details ready.
+                </p>
+              </div>
+
+              <pre class="estimate-preview" id="estimatePreview"></pre>
+
+              <button class="btn btn-light" id="estimateWhatsAppButton" type="button">
+                Create WhatsApp Estimate Request
+              </button>
+
+              <p>
+                Photos cannot be attached automatically by a website. The customer must
+                attach the selected photos manually after WhatsApp opens.
+              </p>
+            </div>
           </div>
         </section>
 
@@ -1132,6 +1496,10 @@ const services = [
             <div class="contact-actions">
               <a class="btn btn-light" href={whatsappLink} target="_blank" rel="noopener noreferrer">
                 WhatsApp {displayPhone}
+              </a>
+
+              <a class="btn btn-outline-light" href="#estimate">
+                Build estimate
               </a>
 
               <a class="btn btn-outline-light" href="/gallery">
@@ -1168,13 +1536,14 @@ const services = [
           <strong>Pages</strong>
           <a href="/">Home</a>
           <a href="/gallery">Gallery</a>
+          <a href="#estimate">Fast Estimate</a>
         </div>
       </footer>
 
       <div class="mobile-sticky">
-        <button class="btn btn-light" type="button" data-copy-email>
-          Email
-        </button>
+        <a class="btn btn-light" href="#estimate">
+          Estimate
+        </a>
 
         <a class="btn btn-dark" href={whatsappLink} target="_blank" rel="noopener noreferrer">
           WhatsApp
@@ -1186,13 +1555,19 @@ const services = [
       </div>
     </div>
 
-    <script define:vars={{ email, mailLink }}>
+    <script define:vars={{ email, mailLink, whatsappNumber }}>
       const openMenuButton = document.querySelector("[data-open-menu]");
       const closeMenuButton = document.querySelector("[data-close-menu]");
       const menuOverlay = document.getElementById("menuOverlay");
       const menuLinks = document.querySelectorAll("[data-menu-link]");
       const copyButtons = document.querySelectorAll("[data-copy-email]");
       const toast = document.getElementById("emailToast");
+
+      const estimateForm = document.getElementById("estimateForm");
+      const estimatePhotos = document.getElementById("estimatePhotos");
+      const selectedPhotos = document.getElementById("selectedPhotos");
+      const estimatePreview = document.getElementById("estimatePreview");
+      const estimateWhatsAppButton = document.getElementById("estimateWhatsAppButton");
 
       function openMenu() {
         if (!menuOverlay) return;
@@ -1257,6 +1632,103 @@ const services = [
         }
       }
 
+      function getInputValue(id) {
+        const element = document.getElementById(id);
+        const value = element?.value?.trim();
+
+        return value && value.length > 0 ? value : "Not supplied";
+      }
+
+      function getCheckedValues(name) {
+        const checked = Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
+          .map((input) => input.value);
+
+        return checked.length > 0 ? checked.join(", ") : "Not supplied";
+      }
+
+      function getSelectedFinish() {
+        const selected = document.querySelector('input[name="finishOption"]:checked');
+        return selected?.value || "Not supplied";
+      }
+
+      function getSelectedPhotoNames() {
+        const files = Array.from(estimatePhotos?.files || []);
+        return files.map((file) => file.name);
+      }
+
+      function updateSelectedPhotos() {
+        if (!selectedPhotos) return;
+
+        const names = getSelectedPhotoNames();
+
+        selectedPhotos.replaceChildren();
+
+        if (names.length === 0) {
+          selectedPhotos.textContent = "No photos selected yet.";
+          return;
+        }
+
+        names.forEach((name, index) => {
+          const photoItem = document.createElement("span");
+          photoItem.textContent = `${index + 1}. ${name}`;
+          selectedPhotos.appendChild(photoItem);
+        });
+      }
+
+      function buildEstimateMessage() {
+        const projectType = getInputValue("projectType");
+        const width = getInputValue("widthMeasure");
+        const height = getInputValue("heightMeasure");
+        const depth = getInputValue("depthMeasure");
+        const visibleDetails = getCheckedValues("siteDetails");
+        const finish = getSelectedFinish();
+        const notes = getInputValue("estimateNotes");
+        const photos = getSelectedPhotoNames();
+
+        const photoText =
+          photos.length > 0
+            ? `${photos.length} photo(s) selected. I will attach them in WhatsApp.`
+            : "No photos selected yet. I still need to attach photos.";
+
+        const message =
+`Hi WhichwoodFitters, I need a fast estimate.
+
+Project type: ${projectType}
+
+Measurements:
+Width: ${width}
+Height: ${height}
+Depth: ${depth}
+
+Photos:
+${photoText}
+
+Please check these in the photos:
+${visibleDetails}
+
+Colour / finish:
+${finish}
+
+Extra notes:
+${notes}
+
+Please let me know what else you need for the quote.`;
+
+        if (estimatePreview) {
+          estimatePreview.textContent = message;
+        }
+
+        return message;
+      }
+
+      function openEstimateWhatsApp() {
+        const message = buildEstimateMessage();
+        const link = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+
+        window.open(link, "_blank", "noopener,noreferrer");
+        showToast("WhatsApp request created. Attach the selected photos in WhatsApp.");
+      }
+
       openMenuButton?.addEventListener("click", openMenu);
       closeMenuButton?.addEventListener("click", closeMenu);
 
@@ -1267,6 +1739,18 @@ const services = [
       copyButtons.forEach((button) => {
         button.addEventListener("click", copyEmail);
       });
+
+      estimatePhotos?.addEventListener("change", () => {
+        updateSelectedPhotos();
+        buildEstimateMessage();
+      });
+
+      estimateForm?.addEventListener("input", buildEstimateMessage);
+      estimateForm?.addEventListener("change", buildEstimateMessage);
+
+      estimateWhatsAppButton?.addEventListener("click", openEstimateWhatsApp);
+
+      buildEstimateMessage();
 
       window.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
