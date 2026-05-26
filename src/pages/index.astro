@@ -690,12 +690,46 @@ const services = [
       }
 
       .photo-list {
-        display: grid;
-        gap: 0.45rem;
-        color: var(--wood-dark);
-        font-size: 0.9rem;
-        font-weight: 850;
-      }
+  display: grid;
+  gap: 0.75rem;
+}
+
+.photo-list-text {
+  color: var(--wood-dark);
+  font-size: 0.9rem;
+  font-weight: 850;
+}
+
+.photo-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.photo-preview-card {
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: rgba(255, 250, 241, 0.68);
+}
+
+.photo-preview-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.photo-preview-card span {
+  display: block;
+  padding: 0.55rem;
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 800;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 
       .checkbox-grid,
       .colour-grid {
@@ -1025,12 +1059,16 @@ const services = [
         }
 
         .intro-grid,
-        .service-list,
-        .estimate-grid,
-        .checkbox-grid,
-        .colour-grid {
-          grid-template-columns: 1fr;
-        }
+.service-list,
+.estimate-grid,
+.checkbox-grid,
+.colour-grid {
+  grid-template-columns: 1fr;
+}
+
+.photo-preview-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
 
         .product-visual {
           min-height: 260px;
@@ -1318,12 +1356,13 @@ const services = [
                 />
 
                 <div class="photo-list" id="selectedPhotos">
-                  No photos selected yet.
-                </div>
+  <div class="photo-list-text">No photos selected yet.</div>
+</div>
 
-                <p class="estimate-note">
-                  After WhatsApp opens, attach the same photos in the WhatsApp chat.
-                </p>
+<p class="estimate-note">
+  On mobile, the button will try to share the selected photos and message together.
+  Choose WhatsApp when your phone asks where to share.
+</p>
               </div>
 
               <div class="estimate-grid">
@@ -1461,13 +1500,13 @@ const services = [
               <pre class="estimate-preview" id="estimatePreview"></pre>
 
               <button class="btn btn-light" id="estimateWhatsAppButton" type="button">
-                Create WhatsApp Estimate Request
-              </button>
+  Share Photos + Estimate to WhatsApp
+</button>
 
               <p>
-                Photos cannot be attached automatically by a website. The customer must
-                attach the selected photos manually after WhatsApp opens.
-              </p>
+  Best on mobile. The site will try to share the selected photos with the estimate message.
+  If the browser blocks file sharing, WhatsApp will open with the message only.
+</p>
             </div>
           </div>
         </section>
@@ -1651,28 +1690,66 @@ const services = [
         return selected?.value || "Not supplied";
       }
 
-      function getSelectedPhotoNames() {
-        const files = Array.from(estimatePhotos?.files || []);
-        return files.map((file) => file.name);
-      }
+      let activePhotoUrls = [];
 
-      function updateSelectedPhotos() {
-        if (!selectedPhotos) return;
+function getSelectedPhotoFiles() {
+  return Array.from(estimatePhotos?.files || []);
+}
 
-        const names = getSelectedPhotoNames();
+function getSelectedPhotoNames() {
+  return getSelectedPhotoFiles().map((file) => file.name);
+}
 
-        selectedPhotos.replaceChildren();
+function clearPhotoUrls() {
+  activePhotoUrls.forEach((url) => URL.revokeObjectURL(url));
+  activePhotoUrls = [];
+}
 
-        if (names.length === 0) {
-          selectedPhotos.textContent = "No photos selected yet.";
-          return;
-        }
+function updateSelectedPhotos() {
+  if (!selectedPhotos) return;
 
-        names.forEach((name, index) => {
-          const photoItem = document.createElement("span");
-          photoItem.textContent = `${index + 1}. ${name}`;
-          selectedPhotos.appendChild(photoItem);
-        });
+  clearPhotoUrls();
+
+  const files = getSelectedPhotoFiles();
+  selectedPhotos.replaceChildren();
+
+  if (files.length === 0) {
+    const emptyText = document.createElement("div");
+    emptyText.className = "photo-list-text";
+    emptyText.textContent = "No photos selected yet.";
+    selectedPhotos.appendChild(emptyText);
+    return;
+  }
+
+  const countText = document.createElement("div");
+  countText.className = "photo-list-text";
+  countText.textContent = `${files.length} photo(s) selected and ready to share.`;
+  selectedPhotos.appendChild(countText);
+
+  const previewGrid = document.createElement("div");
+  previewGrid.className = "photo-preview-grid";
+
+  files.forEach((file, index) => {
+    const imageUrl = URL.createObjectURL(file);
+    activePhotoUrls.push(imageUrl);
+
+    const card = document.createElement("div");
+    card.className = "photo-preview-card";
+
+    const image = document.createElement("img");
+    image.src = imageUrl;
+    image.alt = `Selected estimate photo ${index + 1}`;
+
+    const label = document.createElement("span");
+    label.textContent = `${index + 1}. ${file.name}`;
+
+    card.appendChild(image);
+    card.appendChild(label);
+    previewGrid.appendChild(card);
+  });
+
+  selectedPhotos.appendChild(previewGrid);
+}
       }
 
       function buildEstimateMessage() {
@@ -1721,13 +1798,39 @@ Please let me know what else you need for the quote.`;
         return message;
       }
 
-      function openEstimateWhatsApp() {
-        const message = buildEstimateMessage();
-        const link = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+      async function openEstimateWhatsApp() {
+  const message = buildEstimateMessage();
+  const files = getSelectedPhotoFiles();
 
-        window.open(link, "_blank", "noopener,noreferrer");
-        showToast("WhatsApp request created. Attach the selected photos in WhatsApp.");
-      }
+  try {
+    if (
+      files.length > 0 &&
+      navigator.canShare &&
+      navigator.share &&
+      navigator.canShare({ files })
+    ) {
+      await navigator.share({
+        title: "WhichwoodFitters Estimate Request",
+        text: message,
+        files
+      });
+
+      showToast("Photos and estimate shared. Choose WhatsApp if asked.");
+      return;
+    }
+  } catch {
+    showToast("Photo sharing was cancelled or blocked.");
+  }
+
+  const link = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+  window.open(link, "_blank", "noopener,noreferrer");
+
+  if (files.length > 0) {
+    showToast("WhatsApp opened with text. Attach the selected photos manually if they did not share.");
+  } else {
+    showToast("WhatsApp estimate request opened.");
+  }
+}
 
       openMenuButton?.addEventListener("click", openMenu);
       closeMenuButton?.addEventListener("click", closeMenu);
