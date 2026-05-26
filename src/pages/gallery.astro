@@ -16,58 +16,164 @@ const emailBody =
 
 const mailLink = `mailto:${email}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
 
-const filters = [
-  { key: "all", label: "All Work" },
-  { key: "kitchens", label: "Kitchens" },
-  { key: "cupboards", label: "Cupboards" },
-  { key: "tv-units", label: "TV Units" },
-  { key: "vanities", label: "Vanities" },
-  { key: "storage", label: "Storage" },
-  { key: "custom", label: "Custom Work" }
-];
-
-const galleryItems = [
+const sections = [
   {
-    title: "Modern Kitchen Build",
-    category: "Kitchens",
-    categoryKey: "kitchens",
-    image: "/images/kitchen.jpg",
-    text: "Clean fitted kitchen design with practical storage and modern finishes."
+    id: "kitchens",
+    label: "Kitchens",
+    title: "Kitchen Builds",
+    description: "Custom fitted kitchens planned around storage, workflow, appliances, lighting, finishes and the way the home is used every day.",
+    items: [
+      {
+        title: "Modern White Kitchen",
+        image: "/images/kitchens/kitchen-01.jpg",
+        text: "Clean white fitted kitchen with practical storage, modern lines and a bright open feel."
+      },
+      {
+        title: "Wood Grain Kitchen",
+        image: "/images/kitchens/kitchen-02.jpg",
+        text: "Warm wood-style kitchen finish with strong storage and a natural fitted look."
+      },
+      {
+        title: "Two-Tone Kitchen",
+        image: "/images/kitchens/kitchen-03.jpg",
+        text: "Two-tone cupboard layout combining light finishes with darker feature panels."
+      },
+      {
+        title: "Compact Kitchen Layout",
+        image: "/images/kitchens/kitchen-04.jpg",
+        text: "Smart fitted kitchen design for smaller spaces where every cupboard matters."
+      },
+      {
+        title: "Luxury Kitchen Storage",
+        image: "/images/kitchens/kitchen-05.jpg",
+        text: "Premium kitchen storage with clean lines, useful cabinet space and a modern finish."
+      },
+      {
+        title: "Open Plan Kitchen",
+        image: "/images/kitchens/kitchen-06.jpg",
+        text: "Open kitchen layout designed to connect cooking, storage and living space."
+      },
+      {
+        title: "Kitchen Island Design",
+        image: "/images/kitchens/kitchen-07.jpg",
+        text: "Kitchen island concept with extra worktop space, storage and a strong centre feature."
+      },
+      {
+        title: "Dark Modern Kitchen",
+        image: "/images/kitchens/kitchen-08.jpg",
+        text: "Bold darker kitchen finish with clean cabinet lines and a premium modern look."
+      },
+      {
+        title: "Light Family Kitchen",
+        image: "/images/kitchens/kitchen-09.jpg",
+        text: "Bright practical kitchen made for daily family use and easy storage."
+      },
+      {
+        title: "Minimal Kitchen Design",
+        image: "/images/kitchens/kitchen-10.jpg",
+        text: "Simple modern kitchen design with flat finishes and a clean fitted appearance."
+      },
+      {
+        title: "Built-In Kitchen Cabinets",
+        image: "/images/kitchens/kitchen-11.jpg",
+        text: "Custom built-in kitchen cabinets made to fit the wall, appliances and available space."
+      },
+      {
+        title: "Premium Fitted Kitchen",
+        image: "/images/kitchens/kitchen-12.jpg",
+        text: "High-end fitted kitchen look with strong storage, clean installation and modern detail."
+      }
+    ]
   },
   {
+    id: "cupboards",
+    label: "Cupboards",
     title: "Built-In Cupboards",
-    category: "Cupboards",
-    categoryKey: "cupboards",
-    image: "/images/cupboards.jpg",
-    text: "Wall-to-wall bedroom storage designed to fit the room properly."
+    description: "Bedroom cupboards, wardrobes, linen cupboards and wall-to-wall fitted storage.",
+    items: [
+      {
+        title: "Built-In Cupboards",
+        image: "/images/cupboards.jpg",
+        text: "Wall-to-wall bedroom storage designed to fit the room properly."
+      },
+      {
+        title: "Wardrobe Storage",
+        image: "/images/hero-small.jpg",
+        text: "Practical cupboard layouts for clothing, shoes, linen and daily storage."
+      }
+    ]
   },
   {
-    title: "TV Unit & Interior Storage",
-    category: "TV Units",
-    categoryKey: "tv-units",
-    image: "/images/tv-unit.jpg",
-    text: "Floating media storage and living-room units with clean modern lines."
+    id: "tv-units",
+    label: "TV Units",
+    title: "TV Units",
+    description: "Modern TV units, floating media walls and living-room storage.",
+    items: [
+      {
+        title: "TV Unit & Interior Storage",
+        image: "/images/tv-unit.jpg",
+        text: "Floating media storage and living-room units with clean modern lines."
+      },
+      {
+        title: "Feature Wall Unit",
+        image: "/images/hero-main.jpg",
+        text: "Custom wall units that make the living room look finished and useful."
+      }
+    ]
   },
   {
-    title: "Bathroom Vanity Idea",
-    category: "Vanities",
-    categoryKey: "vanities",
-    image: "/images/hero-small.jpg",
-    text: "Compact fitted vanity storage for bathrooms, guest toilets and small spaces."
+    id: "vanities",
+    label: "Vanities",
+    title: "Vanities",
+    description: "Bathroom vanities and compact storage for bathrooms and small spaces.",
+    items: [
+      {
+        title: "Bathroom Vanity",
+        image: "/images/hero-small.jpg",
+        text: "Compact fitted vanity storage for bathrooms, guest toilets and smaller rooms."
+      },
+      {
+        title: "Small Space Storage",
+        image: "/images/service.jpg",
+        text: "Smart storage where every bit of usable space matters."
+      }
+    ]
   },
   {
-    title: "Smart Storage Solution",
-    category: "Storage",
-    categoryKey: "storage",
-    image: "/images/service.jpg",
-    text: "Practical storage made for awkward corners, passage areas and unused walls."
+    id: "storage",
+    label: "Storage",
+    title: "Storage Solutions",
+    description: "Custom storage for awkward spaces, passage areas, garages, offices and unused walls.",
+    items: [
+      {
+        title: "Smart Storage Solution",
+        image: "/images/service.jpg",
+        text: "Practical storage made for awkward corners, passage areas and unused walls."
+      },
+      {
+        title: "Fitted Utility Storage",
+        image: "/images/cupboards.jpg",
+        text: "Clean storage that makes messy areas easier to manage."
+      }
+    ]
   },
   {
-    title: "Feature Carpentry",
-    category: "Custom Work",
-    categoryKey: "custom",
-    image: "/images/hero-main.jpg",
-    text: "Premium custom fitted work for homes that need smarter use of space."
+    id: "custom-work",
+    label: "Custom Work",
+    title: "Custom Carpentry",
+    description: "Special fitted units made around the exact size and shape of the space.",
+    items: [
+      {
+        title: "Feature Carpentry",
+        image: "/images/hero-main.jpg",
+        text: "Premium custom fitted work for homes that need smarter use of space."
+      },
+      {
+        title: "Measured Installation",
+        image: "/images/service.jpg",
+        text: "From measurements to final fitting, the process must be clean and accurate."
+      }
+    ]
   }
 ];
 ---
@@ -89,7 +195,6 @@ const galleryItems = [
       :root {
         --paper: #f4efe5;
         --paper-soft: #ebe1d1;
-        --cream: #fffaf1;
         --ink: #201a13;
         --muted: #74695c;
         --wood: #9a6535;
@@ -207,7 +312,7 @@ const galleryItems = [
       }
 
       .hero {
-        min-height: 80vh;
+        min-height: 78vh;
         display: grid;
         align-items: end;
         padding: 8rem clamp(1rem, 4vw, 4.8rem) 3rem;
@@ -250,7 +355,7 @@ const galleryItems = [
       }
 
       .hero-actions,
-      .filter-strip {
+      .option-grid {
         display: flex;
         flex-wrap: wrap;
         gap: 0.75rem;
@@ -258,7 +363,7 @@ const galleryItems = [
       }
 
       .btn,
-      .filter-btn {
+      .option-link {
         min-height: 48px;
         display: inline-flex;
         align-items: center;
@@ -272,24 +377,22 @@ const galleryItems = [
         transition:
           transform 0.2s ease,
           background 0.2s ease,
-          border-color 0.2s ease,
-          color 0.2s ease;
+          border-color 0.2s ease;
       }
 
       .btn:hover,
-      .filter-btn:hover {
+      .option-link:hover {
         transform: translateY(-2px);
       }
 
       .btn-dark,
-      .filter-btn.active {
+      .option-link {
         color: var(--paper);
         background: var(--ink);
         border-color: var(--ink);
       }
 
-      .btn-light,
-      .filter-btn {
+      .btn-light {
         color: var(--ink);
         background: rgba(255, 250, 241, 0.5);
       }
@@ -327,8 +430,37 @@ const galleryItems = [
         letter-spacing: -0.1em;
       }
 
-      .filter-strip {
-        margin: 0 0 2rem;
+      .option-grid {
+        margin-top: 0;
+      }
+
+      .gallery-section {
+        scroll-margin-top: 110px;
+        padding: clamp(4.8rem, 8vw, 8.5rem) clamp(1rem, 4vw, 4.8rem);
+        border-top: 1px solid var(--line);
+      }
+
+      .gallery-heading {
+        display: grid;
+        grid-template-columns: 0.8fr 1.2fr;
+        gap: clamp(1rem, 4vw, 4rem);
+        align-items: end;
+        margin-bottom: 2rem;
+      }
+
+      .gallery-heading h2 {
+        margin: 0;
+        font-size: clamp(3.4rem, 8vw, 8.5rem);
+        line-height: 0.8;
+        letter-spacing: -0.1em;
+      }
+
+      .gallery-heading p {
+        margin: 0;
+        max-width: 700px;
+        color: var(--muted);
+        font-size: 1.08rem;
+        line-height: 1.85;
       }
 
       .gallery-grid {
@@ -339,7 +471,7 @@ const galleryItems = [
       }
 
       .gallery-card {
-        min-height: 620px;
+        min-height: 610px;
         display: grid;
         align-content: space-between;
         background: rgba(255, 250, 241, 0.22);
@@ -347,13 +479,9 @@ const galleryItems = [
         border-bottom: 1px solid var(--line);
       }
 
-      .gallery-card.hidden {
-        display: none;
-      }
-
       .gallery-image {
         position: relative;
-        min-height: 390px;
+        min-height: 360px;
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -386,16 +514,10 @@ const galleryItems = [
         padding: 1.45rem;
       }
 
-      .gallery-category {
-        color: var(--wood);
-        font-weight: 950;
-        margin-bottom: 1rem;
-      }
-
       .gallery-content h3 {
         margin: 0;
-        font-size: clamp(2rem, 4vw, 4rem);
-        line-height: 0.9;
+        font-size: clamp(2rem, 3.2vw, 3.3rem);
+        line-height: 0.92;
         letter-spacing: -0.08em;
       }
 
@@ -403,6 +525,13 @@ const galleryItems = [
         margin: 1rem 0 0;
         color: var(--muted);
         line-height: 1.72;
+      }
+
+      .card-link {
+        display: inline-flex;
+        margin-top: 1.2rem;
+        color: var(--wood-dark);
+        font-weight: 950;
       }
 
       .quote-section {
@@ -524,6 +653,7 @@ const galleryItems = [
       }
 
       @media (max-width: 1100px) {
+        .gallery-heading,
         .gallery-grid,
         .quote-section {
           grid-template-columns: 1fr;
@@ -567,16 +697,17 @@ const galleryItems = [
         }
 
         .hero-actions,
-        .filter-strip {
+        .option-grid {
           display: grid;
         }
 
         .btn,
-        .filter-btn {
+        .option-link {
           width: 100%;
         }
 
-        .section {
+        .section,
+        .gallery-section {
           padding: 4rem 1rem;
         }
 
@@ -585,6 +716,7 @@ const galleryItems = [
         }
 
         .section-title h2,
+        .gallery-heading h2,
         .quote-copy h2 {
           font-size: clamp(3.4rem, 17vw, 5.8rem);
         }
@@ -659,9 +791,9 @@ const galleryItems = [
             </h1>
 
             <p class="hero-text">
-              Use the options below to view kitchens, cupboards, TV units,
-              vanities, storage ideas and custom fitted carpentry. These images
-              can later be replaced with your real WhichwoodFitters project photos.
+              Select a gallery option below. Each option jumps to that project
+              type, so visitors can quickly view kitchens, cupboards, TV units,
+              vanities, storage ideas and custom fitted carpentry.
             </p>
 
             <div class="hero-actions">
@@ -679,40 +811,47 @@ const galleryItems = [
         <section class="section">
           <div class="section-title">
             <small>Options</small>
-            <h2>Filter the gallery by project type.</h2>
+            <h2>What do you want to see?</h2>
           </div>
 
-          <div class="filter-strip" aria-label="Gallery filters">
-            {filters.map((filter) => (
-              <button
-                class={filter.key === "all" ? "filter-btn active" : "filter-btn"}
-                type="button"
-                data-filter={filter.key}
-              >
-                {filter.label}
-              </button>
-            ))}
-          </div>
-
-          <div class="gallery-grid">
-            {galleryItems.map((item) => (
-              <article class="gallery-card" data-gallery-card data-category={item.categoryKey}>
-                <div
-                  class="gallery-image"
-                  style={`background-image: url('${item.image}');`}
-                >
-                  <span class="gallery-badge">{item.category}</span>
-                </div>
-
-                <div class="gallery-content">
-                  <div class="gallery-category">{item.category}</div>
-                  <h3>{item.title}</h3>
-                  <p>{item.text}</p>
-                </div>
-              </article>
+          <div class="option-grid">
+            {sections.map((section) => (
+              <a class="option-link" href={`#${section.id}`}>
+                {section.label}
+              </a>
             ))}
           </div>
         </section>
+
+        {sections.map((section) => (
+          <section class="gallery-section" id={section.id}>
+            <div class="gallery-heading">
+              <h2>{section.title}</h2>
+              <p>{section.description}</p>
+            </div>
+
+            <div class="gallery-grid">
+              {section.items.map((item) => (
+                <article class="gallery-card">
+                  <div
+                    class="gallery-image"
+                    style={`background-image: url('${item.image}');`}
+                  >
+                    <span class="gallery-badge">{section.label}</span>
+                  </div>
+
+                  <div class="gallery-content">
+                    <h3>{item.title}</h3>
+                    <p>{item.text}</p>
+                    <a class="card-link" href={whatsappLink} target="_blank" rel="noopener noreferrer">
+                      Ask about this →
+                    </a>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        ))}
 
         <section class="quote-section">
           <div class="quote-copy">
@@ -769,7 +908,9 @@ const galleryItems = [
 
         <div>
           <strong>Gallery Options</strong>
-          <span>Kitchens • Cupboards • TV units • Vanities • Storage</span>
+          {sections.map((section) => (
+            <a href={`#${section.id}`}>{section.label}</a>
+          ))}
         </div>
       </footer>
 
@@ -791,8 +932,6 @@ const galleryItems = [
     <script define:vars={{ email, mailLink }}>
       const copyButtons = document.querySelectorAll("[data-copy-email]");
       const toast = document.getElementById("emailToast");
-      const filterButtons = document.querySelectorAll("[data-filter]");
-      const galleryCards = document.querySelectorAll("[data-gallery-card]");
 
       function showToast(message) {
         if (!toast) return;
@@ -845,28 +984,8 @@ const galleryItems = [
         }
       }
 
-      function filterGallery(selectedFilter) {
-        filterButtons.forEach((button) => {
-          const isActive = button.dataset.filter === selectedFilter;
-          button.classList.toggle("active", isActive);
-        });
-
-        galleryCards.forEach((card) => {
-          const cardCategory = card.dataset.category;
-          const shouldShow = selectedFilter === "all" || cardCategory === selectedFilter;
-          card.classList.toggle("hidden", !shouldShow);
-        });
-      }
-
       copyButtons.forEach((button) => {
         button.addEventListener("click", copyEmail);
-      });
-
-      filterButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          const selectedFilter = button.dataset.filter || "all";
-          filterGallery(selectedFilter);
-        });
       });
     </script>
   </body>
