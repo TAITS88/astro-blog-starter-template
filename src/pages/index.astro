@@ -1,5 +1,6 @@
 ---
 const email = "ruhantait@yahoo.com";
+const displayPhone = "079 910 1465";
 const whatsappNumber = "27799101465";
 
 const whatsappMessage = encodeURIComponent(
@@ -8,11 +9,12 @@ const whatsappMessage = encodeURIComponent(
 
 const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
-const mailLink = `mailto:${email}?subject=${encodeURIComponent(
-  "Quote request - WhichwoodFitters"
-)}&body=${encodeURIComponent(
-  "Hi WhichwoodFitters,\n\nI would like a quote for custom carpentry.\n\nProject type:\nMeasurements:\nPhotos attached:\nLocation:\n\nThank you."
-)}`;
+const emailSubject = "Quote request - WhichwoodFitters";
+
+const emailBody =
+  "Hi WhichwoodFitters,\n\nI would like a quote for custom carpentry.\n\nProject type:\nMeasurements:\nPhotos attached:\nLocation:\n\nThank you.";
+
+const mailLink = `mailto:${email}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
 
 const services = [
   {
@@ -97,8 +99,6 @@ const finishes = [
         --line-strong: rgba(255, 255, 255, 0.22);
         --shadow: 0 30px 100px rgba(0, 0, 0, 0.45);
         --radius-xl: 34px;
-        --radius-lg: 26px;
-        --radius-md: 18px;
       }
 
       * {
@@ -149,6 +149,10 @@ const finishes = [
       a {
         color: inherit;
         text-decoration: none;
+      }
+
+      button {
+        font: inherit;
       }
 
       button,
@@ -271,6 +275,7 @@ const finishes = [
           border-color 0.2s ease,
           background 0.2s ease;
         white-space: nowrap;
+        cursor: pointer;
       }
 
       .btn:hover {
@@ -307,10 +312,6 @@ const finishes = [
         align-items: center;
         gap: clamp(2rem, 5vw, 5.5rem);
         padding: clamp(3rem, 7vw, 7rem) clamp(1rem, 4vw, 4.5rem);
-      }
-
-      .hero-copy {
-        position: relative;
       }
 
       .status-pill {
@@ -381,6 +382,7 @@ const finishes = [
         justify-content: space-between;
         gap: 1rem;
         min-height: 76px;
+        width: 100%;
         padding: 1rem;
         border-radius: 24px;
         background:
@@ -388,6 +390,9 @@ const finishes = [
           rgba(255, 255, 255, 0.055);
         border: 1px solid var(--line);
         box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
+        color: var(--text);
+        text-align: left;
+        cursor: pointer;
       }
 
       .contact-chip small {
@@ -404,7 +409,7 @@ const finishes = [
       }
 
       .arrow-icon {
-        width: 34px;
+        width: 42px;
         height: 34px;
         flex: 0 0 auto;
         display: grid;
@@ -412,6 +417,8 @@ const finishes = [
         border-radius: 999px;
         color: #130c05;
         background: linear-gradient(135deg, var(--gold-2), var(--gold));
+        font-size: 0.78rem;
+        font-weight: 900;
       }
 
       .hero-panel-wrap {
@@ -1016,6 +1023,32 @@ const finishes = [
         background: rgba(0, 0, 0, 0.14);
       }
 
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 6.8rem;
+        z-index: 100;
+        transform: translateX(-50%) translateY(18px);
+        opacity: 0;
+        pointer-events: none;
+        width: max-content;
+        max-width: calc(100vw - 2rem);
+        padding: 0.9rem 1.15rem;
+        border-radius: 999px;
+        color: #140c04;
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.45), transparent 35%),
+          linear-gradient(135deg, var(--gold-2), var(--gold));
+        font-weight: 950;
+        box-shadow: 0 22px 70px rgba(0, 0, 0, 0.38);
+        transition: 0.25s ease;
+      }
+
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+
       .mobile-sticky {
         display: none;
       }
@@ -1230,7 +1263,10 @@ const finishes = [
         </div>
 
         <div class="nav-actions">
-          <a class="btn btn-ghost" href={mailLink}>Email</a>
+          <button class="btn btn-ghost" type="button" data-copy-email>
+            Copy Email
+          </button>
+
           <a
             class="btn btn-primary"
             href={whatsappLink}
@@ -1271,19 +1307,23 @@ const finishes = [
                 Get a WhatsApp Quote
               </a>
 
+              <button class="btn btn-ghost" type="button" data-copy-email>
+                Copy Email Address
+              </button>
+
               <a class="btn btn-ghost" href={mailLink}>
-                Email Measurements
+                Open Email App
               </a>
             </div>
 
             <div class="contact-strip">
-              <a class="contact-chip" href={mailLink}>
+              <button class="contact-chip" type="button" data-copy-email>
                 <span>
                   <small>Email</small>
                   <strong>{email}</strong>
                 </span>
-                <span class="arrow-icon">↗</span>
-              </a>
+                <span class="arrow-icon">Copy</span>
+              </button>
 
               <a
                 class="contact-chip"
@@ -1293,9 +1333,9 @@ const finishes = [
               >
                 <span>
                   <small>WhatsApp</small>
-                  <strong>079 910 1465</strong>
+                  <strong>{displayPhone}</strong>
                 </span>
-                <span class="arrow-icon">↗</span>
+                <span class="arrow-icon">Open</span>
               </a>
             </div>
           </div>
@@ -1488,11 +1528,15 @@ const finishes = [
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                WhatsApp 079 910 1465
+                WhatsApp {displayPhone}
               </a>
 
+              <button class="btn btn-ghost" type="button" data-copy-email>
+                Copy {email}
+              </button>
+
               <a class="btn btn-ghost" href={mailLink}>
-                {email}
+                Open Email App
               </a>
             </div>
           </div>
@@ -1505,7 +1549,10 @@ const finishes = [
       </footer>
 
       <div class="mobile-sticky" aria-label="Quick contact buttons">
-        <a class="btn btn-ghost" href={mailLink}>Email</a>
+        <button class="btn btn-ghost" type="button" data-copy-email>
+          Email
+        </button>
+
         <a
           class="btn btn-primary"
           href={whatsappLink}
@@ -1515,6 +1562,69 @@ const finishes = [
           WhatsApp
         </a>
       </div>
+
+      <div class="toast" id="emailToast" role="status" aria-live="polite">
+        Email copied: {email}
+      </div>
     </div>
+
+    <script define:vars={{ email, mailLink }}>
+      const copyButtons = document.querySelectorAll("[data-copy-email]");
+      const toast = document.getElementById("emailToast");
+
+      function showToast(message) {
+        if (!toast) return;
+
+        toast.textContent = message;
+        toast.classList.add("show");
+
+        window.setTimeout(() => {
+          toast.classList.remove("show");
+        }, 2400);
+      }
+
+      function fallbackCopy(text) {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "fixed";
+        textarea.style.left = "-9999px";
+        textarea.style.top = "0";
+
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+
+        const successful = document.execCommand("copy");
+        document.body.removeChild(textarea);
+
+        return successful;
+      }
+
+      async function copyEmail() {
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(email);
+          } else {
+            const copied = fallbackCopy(email);
+
+            if (!copied) {
+              throw new Error("Fallback copy failed.");
+            }
+          }
+
+          showToast(`Email copied: ${email}`);
+        } catch {
+          showToast(`Email: ${email}`);
+          window.setTimeout(() => {
+            window.location.href = mailLink;
+          }, 900);
+        }
+      }
+
+      copyButtons.forEach((button) => {
+        button.addEventListener("click", copyEmail);
+      });
+    </script>
   </body>
 </html>
