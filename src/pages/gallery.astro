@@ -744,6 +744,10 @@ const sections = [
         cursor: zoom-in;
       }
 
+      .gallery-image-static {
+        cursor: default;
+      }
+
       .gallery-image:focus-visible {
         outline: 4px solid rgba(154, 101, 53, 0.35);
         outline-offset: -4px;
@@ -1367,30 +1371,43 @@ const sections = [
             <div class="gallery-grid">
               {section.items.map((item) => (
                 <article class="gallery-card">
-                  <button
-                    class="gallery-image"
-                    type="button"
-                    style={`background-image: url('${item.image}');`}
-                    data-lightbox-image={item.image}
-                    data-lightbox-title={item.title}
-                    data-lightbox-text={item.text}
-                    aria-label={`Open larger image for ${item.title}`}
-                  >
-                    <span class="gallery-badge">{section.label}</span>
-                  </button>
+                  {section.id === "custom-work" ? (
+                    <div
+                      class="gallery-image gallery-image-static"
+                      style={`background-image: url('${item.image}');`}
+                      aria-label={item.title}
+                    >
+                      <span class="gallery-badge">{section.label}</span>
+                    </div>
+                  ) : (
+                    <button
+                      class="gallery-image"
+                      type="button"
+                      style={`background-image: url('${item.image}');`}
+                      data-lightbox-image={item.image}
+                      data-lightbox-title={item.title}
+                      data-lightbox-text={item.text}
+                      aria-label={`Open larger image for ${item.title}`}
+                    >
+                      <span class="gallery-badge">{section.label}</span>
+                    </button>
+                  )}
 
                   <div class="gallery-content">
                     <h3>{item.title}</h3>
                     <p>{item.text}</p>
-                    <button
-                      class="card-link"
-                      type="button"
-                      data-ask-image={item.image}
-                      data-ask-title={item.title}
-                      data-ask-text={item.text}
-                    >
-                      Ask about this →
-                    </button>
+
+                    {section.id !== "custom-work" && (
+                      <button
+                        class="card-link"
+                        type="button"
+                        data-ask-image={item.image}
+                        data-ask-title={item.title}
+                        data-ask-text={item.text}
+                      >
+                        Ask about this →
+                      </button>
+                    )}
                   </div>
                 </article>
               ))}
