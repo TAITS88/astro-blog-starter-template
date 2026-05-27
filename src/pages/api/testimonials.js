@@ -27,12 +27,7 @@ function getRating(value) {
 }
 
 function getDatabase(context) {
-  return (
-    context?.locals?.runtime?.env?.DB ||
-    context?.locals?.runtime?.cf?.env?.DB ||
-    context?.env?.DB ||
-    null
-  );
+  return context?.locals?.runtime?.env?.DB || null;
 }
 
 export async function GET(context) {
