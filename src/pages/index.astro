@@ -16,37 +16,97 @@ const emailBody =
 
 const mailLink = `mailto:${email}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
 
-const products = [
+const featuredProjects = [
   {
-    no: "01",
-    title: "Kitchen Builds",
-    subtitle: "Design meets daily use",
-    text: "Fitted kitchens planned around storage, appliances, workflow, finishes and the exact room measurements.",
+    title: "Modern Kitchens",
+    tag: "Clean storage, daily workflow",
+    text: "Custom kitchen cabinetry planned around appliances, workflow, finishes and practical storage.",
     image: "/images/kitchen.jpg"
   },
   {
-    no: "02",
-    title: "Built-In Cupboards",
-    subtitle: "Storage made to fit",
-    text: "Bedroom cupboards, wardrobes, linen cupboards and wall-to-wall fitted storage with clean practical layouts.",
+    title: "Built-In Wardrobes",
+    tag: "Wall-to-wall fitted storage",
+    text: "Bedroom cupboards, hanging sections, drawers, shelves and smart wardrobe layouts.",
     image: "/images/cupboards.jpg"
   },
   {
-    no: "03",
-    title: "Interior Units",
-    subtitle: "Details that complete a room",
-    text: "TV units, vanities, shelves, office units, laundry cupboards and custom storage for awkward spaces.",
+    title: "TV Units & Interiors",
+    tag: "Statement fitted features",
+    text: "Floating TV units, vanities, office units, laundry cupboards and custom interior storage.",
     image: "/images/tv-unit.jpg"
   }
 ];
 
+const trustItems = [
+  {
+    value: "01",
+    title: "Measure first",
+    text: "Every wall, ceiling, plug, pipe and corner is considered before the build starts."
+  },
+  {
+    value: "02",
+    title: "Built to fit",
+    text: "No generic units. Every design is made around the actual space and how you use it."
+  },
+  {
+    value: "03",
+    title: "Clean finish",
+    text: "Modern lines, neat installation and practical storage that looks part of the home."
+  },
+  {
+    value: "04",
+    title: "Clear quoting",
+    text: "Photos, measurements and finish choices are used to quote faster and more accurately."
+  }
+];
+
+const processSteps = [
+  {
+    no: "01",
+    title: "Send your space",
+    text: "Send photos of the full wall, corners, plugs, pipes, ceiling and floor area."
+  },
+  {
+    no: "02",
+    title: "Share measurements",
+    text: "Width, height and depth are enough to start. Final measurements are confirmed before manufacturing."
+  },
+  {
+    no: "03",
+    title: "Choose finish",
+    text: "White, oak, grey, black, gloss, melamine or another finish. We can guide you."
+  },
+  {
+    no: "04",
+    title: "Get fitted",
+    text: "Once approved, the unit is manufactured and installed cleanly on site."
+  }
+];
+
 const services = [
-  "Site measuring",
-  "Layout planning",
-  "Material guidance",
-  "Custom manufacturing",
-  "Clean installation",
-  "After-job support"
+  "Custom kitchens",
+  "Built-in cupboards",
+  "Bedroom wardrobes",
+  "TV wall units",
+  "Bathroom vanities",
+  "Laundry cupboards",
+  "Office storage",
+  "Shelving & interior units"
+];
+
+const testimonials = [
+  {
+    quote: "The cupboards changed the whole room. Clean work and very practical storage.",
+    name: "Bedroom cupboard client"
+  },
+  {
+    quote: "The kitchen layout made better use of the space than we expected.",
+    name: "Kitchen client"
+  },
+  {
+    quote: "Neat installation, good communication and the unit fits perfectly.",
+    name: "TV unit client"
+  }
 ];
 ---
 
@@ -56,27 +116,43 @@ const services = [
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>WhichwoodFitters | Custom Kitchens, Cupboards & Fitted Storage</title>
+    <title>WhichwoodFitters | Premium Custom Kitchens, Cupboards & Fitted Storage</title>
 
     <meta
       name="description"
-      content="WhichwoodFitters designs and installs custom kitchens, built-in cupboards, wardrobes, TV units, vanities and fitted storage."
+      content="WhichwoodFitters designs and installs premium custom kitchens, built-in cupboards, wardrobes, TV units, vanities and fitted storage in South Africa."
     />
+
+    <meta property="og:title" content="WhichwoodFitters | Custom Kitchens & Built-In Cupboards" />
+    <meta
+      property="og:description"
+      content="Premium custom carpentry and fitted storage made to fit your exact space."
+    />
+    <meta property="og:image" content="/images/hero-main.jpg" />
+    <meta property="og:type" content="website" />
 
     <style>
       :root {
-        --paper: #f4efe5;
-        --paper-soft: #ebe1d1;
-        --cream: #fffaf1;
-        --ink: #201a13;
-        --muted: #74695c;
-        --soft: #9b8f80;
-        --wood: #9a6535;
-        --wood-dark: #4b2b16;
-        --olive: #626a4f;
-        --line: rgba(32, 26, 19, 0.16);
-        --line-dark: rgba(32, 26, 19, 0.32);
-        --shadow: 0 36px 110px rgba(58, 38, 18, 0.16);
+        --ink: #14110d;
+        --ink-soft: #211a13;
+        --paper: #f6f0e6;
+        --paper-2: #eee2d2;
+        --cream: #fffaf2;
+        --muted: #7b6c5c;
+        --muted-2: #a3927c;
+        --wood: #a66b35;
+        --wood-2: #c18a4a;
+        --bronze: #d9a85f;
+        --olive: #5d654c;
+        --white-soft: rgba(255, 250, 242, 0.82);
+        --line: rgba(20, 17, 13, 0.13);
+        --line-strong: rgba(20, 17, 13, 0.28);
+        --dark-line: rgba(255, 250, 242, 0.14);
+        --shadow: 0 36px 100px rgba(33, 23, 12, 0.18);
+        --shadow-dark: 0 44px 120px rgba(0, 0, 0, 0.28);
+        --radius-xl: 48px;
+        --radius-lg: 32px;
+        --radius-md: 22px;
       }
 
       * {
@@ -91,9 +167,9 @@ const services = [
         margin: 0;
         color: var(--ink);
         background:
-          radial-gradient(circle at 12% 5%, rgba(154, 101, 53, 0.15), transparent 30rem),
-          radial-gradient(circle at 88% 14%, rgba(98, 106, 79, 0.12), transparent 28rem),
-          linear-gradient(135deg, var(--paper), var(--paper-soft));
+          radial-gradient(circle at 10% 0%, rgba(217, 168, 95, 0.20), transparent 28rem),
+          radial-gradient(circle at 90% 8%, rgba(93, 101, 76, 0.16), transparent 34rem),
+          linear-gradient(135deg, var(--paper), var(--paper-2));
         font-family:
           Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
           "Segoe UI", sans-serif;
@@ -104,13 +180,14 @@ const services = [
         content: "";
         position: fixed;
         inset: 0;
+        z-index: 0;
         pointer-events: none;
-        opacity: 0.13;
+        opacity: 0.12;
         background-image:
-          linear-gradient(rgba(32, 26, 19, 0.14) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(32, 26, 19, 0.14) 1px, transparent 1px);
-        background-size: 86px 86px;
-        mask-image: linear-gradient(to bottom, black, transparent 82%);
+          linear-gradient(rgba(20, 17, 13, 0.11) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(20, 17, 13, 0.11) 1px, transparent 1px);
+        background-size: 92px 92px;
+        mask-image: linear-gradient(to bottom, black, transparent 78%);
       }
 
       a {
@@ -118,13 +195,19 @@ const services = [
         text-decoration: none;
       }
 
-      button {
+      button,
+      input,
+      select,
+      textarea {
         font: inherit;
       }
 
-      .site {
-        position: relative;
-        z-index: 1;
+      button {
+        cursor: pointer;
+      }
+
+      img {
+        max-width: 100%;
       }
 
       h1,
@@ -134,29 +217,33 @@ const services = [
         font-weight: 500;
       }
 
+      .site {
+        position: relative;
+        z-index: 1;
+      }
+
       .nav {
         position: fixed;
         inset: 0 0 auto;
-        z-index: 50;
+        z-index: 80;
         display: grid;
         grid-template-columns: 1fr auto 1fr;
         align-items: center;
         gap: 1rem;
-        padding: 1.1rem clamp(1rem, 4vw, 4.8rem);
-        background: rgba(244, 239, 229, 0.78);
-        border-bottom: 1px solid rgba(32, 26, 19, 0.08);
+        padding: 1rem clamp(1rem, 4vw, 4.8rem);
+        background: rgba(246, 240, 230, 0.76);
+        border-bottom: 1px solid rgba(20, 17, 13, 0.08);
         backdrop-filter: blur(22px);
       }
 
       .menu-button,
       .nav-email {
+        width: fit-content;
         border: 0;
         padding: 0;
-        width: fit-content;
         color: var(--ink);
         background: transparent;
-        cursor: pointer;
-        font-weight: 800;
+        font-weight: 900;
       }
 
       .menu-button {
@@ -186,18 +273,18 @@ const services = [
 
       .brand strong {
         font-family: Georgia, "Times New Roman", serif;
-        font-size: clamp(1.55rem, 3vw, 2.3rem);
+        font-size: clamp(1.65rem, 3vw, 2.4rem);
         letter-spacing: -0.085em;
         font-weight: 500;
       }
 
       .brand span {
-        margin-top: 0.28rem;
+        margin-top: 0.25rem;
         color: var(--muted);
-        font-size: 0.7rem;
+        font-size: 0.68rem;
         text-transform: uppercase;
-        letter-spacing: 0.2em;
-        font-weight: 850;
+        letter-spacing: 0.22em;
+        font-weight: 950;
       }
 
       .nav-email {
@@ -207,9 +294,11 @@ const services = [
       .menu-overlay {
         position: fixed;
         inset: 0;
-        z-index: 100;
+        z-index: 120;
         display: none;
-        background: var(--ink);
+        background:
+          radial-gradient(circle at 20% 10%, rgba(166, 107, 53, 0.22), transparent 26rem),
+          linear-gradient(135deg, #14110d, #21170f);
         color: var(--paper);
       }
 
@@ -224,33 +313,33 @@ const services = [
       }
 
       .menu-info {
-        padding: clamp(1.5rem, 4vw, 4rem);
-        border-right: 1px solid rgba(255, 250, 241, 0.14);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        gap: 2rem;
+        padding: clamp(1.5rem, 4vw, 4rem);
+        border-right: 1px solid var(--dark-line);
       }
 
       .close-menu {
         width: fit-content;
         border: 0;
-        background: transparent;
         color: var(--paper);
-        cursor: pointer;
-        font-weight: 850;
+        background: transparent;
+        font-weight: 950;
       }
 
       .menu-info p {
-        max-width: 390px;
-        color: rgba(244, 239, 229, 0.68);
-        line-height: 1.8;
+        max-width: 410px;
+        color: rgba(246, 240, 230, 0.68);
+        line-height: 1.85;
       }
 
       .menu-list {
-        padding: clamp(1.5rem, 5vw, 5rem);
         display: grid;
         align-content: center;
         gap: 1.2rem;
+        padding: clamp(1.5rem, 5vw, 5rem);
       }
 
       .menu-list a {
@@ -258,18 +347,18 @@ const services = [
         grid-template-columns: 76px 1fr;
         gap: 1rem;
         align-items: baseline;
-        padding-bottom: 1.15rem;
-        border-bottom: 1px solid rgba(255, 250, 241, 0.14);
+        padding-bottom: 1.1rem;
+        border-bottom: 1px solid var(--dark-line);
       }
 
       .menu-list small {
-        color: rgba(244, 239, 229, 0.45);
-        font-weight: 900;
+        color: rgba(246, 240, 230, 0.45);
+        font-weight: 950;
       }
 
       .menu-list strong {
         font-family: Georgia, "Times New Roman", serif;
-        font-size: clamp(2.5rem, 7.5vw, 7rem);
+        font-size: clamp(2.6rem, 7.6vw, 7rem);
         line-height: 0.86;
         letter-spacing: -0.095em;
         font-weight: 500;
@@ -278,33 +367,45 @@ const services = [
       .hero {
         min-height: 100vh;
         display: grid;
-        grid-template-columns: 0.85fr 1.15fr;
+        grid-template-columns: 0.86fr 1.14fr;
         gap: clamp(2rem, 5vw, 5.5rem);
         align-items: end;
         padding: 8rem clamp(1rem, 4vw, 4.8rem) 3rem;
       }
 
       .hero-copy {
-        padding-bottom: clamp(1rem, 5vw, 5.5rem);
+        padding-bottom: clamp(1rem, 5vw, 5.8rem);
       }
 
-      .page-label {
+      .eyebrow {
         display: inline-flex;
-        margin-bottom: 1.4rem;
-        padding: 0.54rem 0.85rem;
+        align-items: center;
+        gap: 0.55rem;
+        margin-bottom: 1.35rem;
+        padding: 0.52rem 0.82rem;
         border: 1px solid var(--line);
         border-radius: 999px;
-        color: var(--wood-dark);
-        background: rgba(255, 250, 241, 0.42);
-        font-size: 0.8rem;
-        font-weight: 900;
+        color: var(--wood);
+        background: rgba(255, 250, 242, 0.48);
+        font-size: 0.78rem;
+        font-weight: 950;
         text-transform: uppercase;
         letter-spacing: 0.14em;
       }
 
+      .eyebrow::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--bronze);
+        box-shadow: 0 0 0 6px rgba(217, 168, 95, 0.16);
+      }
+
       .hero h1 {
         margin: 0;
-        font-size: clamp(4.4rem, 12vw, 11.6rem);
+        max-width: 840px;
+        font-size: clamp(4.3rem, 11vw, 11.2rem);
         line-height: 0.76;
         letter-spacing: -0.105em;
       }
@@ -315,11 +416,11 @@ const services = [
       }
 
       .hero-text {
-        max-width: 620px;
-        margin: 1.6rem 0 0;
+        max-width: 660px;
+        margin: 1.7rem 0 0;
         color: var(--muted);
-        font-size: clamp(1.05rem, 1.55vw, 1.22rem);
-        line-height: 1.82;
+        font-size: clamp(1.04rem, 1.55vw, 1.23rem);
+        line-height: 1.84;
       }
 
       .hero-actions {
@@ -330,21 +431,20 @@ const services = [
       }
 
       .btn {
-        min-height: 48px;
+        min-height: 50px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 0.55rem;
         border-radius: 999px;
-        padding: 0.9rem 1.18rem;
-        border: 1px solid var(--line-dark);
-        cursor: pointer;
+        padding: 0.92rem 1.18rem;
+        border: 1px solid var(--line-strong);
         font-size: 0.9rem;
-        font-weight: 900;
+        font-weight: 950;
         transition:
           transform 0.2s ease,
-          background 0.2s ease,
-          border-color 0.2s ease;
+          border-color 0.2s ease,
+          background 0.2s ease;
       }
 
       .btn:hover {
@@ -357,57 +457,96 @@ const services = [
         border-color: var(--ink);
       }
 
+      .btn-gold {
+        color: #22160d;
+        background: linear-gradient(135deg, #f2cf89, #c88d3f);
+        border-color: rgba(139, 84, 31, 0.35);
+      }
+
       .btn-light {
         color: var(--ink);
-        background: rgba(255, 250, 241, 0.5);
+        background: rgba(255, 250, 242, 0.58);
       }
 
       .btn-outline-light {
         color: var(--paper);
         background: transparent;
-        border-color: rgba(244, 239, 229, 0.34);
+        border-color: rgba(246, 240, 230, 0.32);
+      }
+
+      .hero-proof {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+        margin-top: 2rem;
+        max-width: 660px;
+      }
+
+      .proof-pill {
+        padding: 0.85rem;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        background: rgba(255, 250, 242, 0.42);
+      }
+
+      .proof-pill strong {
+        display: block;
+        color: var(--ink);
+        font-size: 0.95rem;
+      }
+
+      .proof-pill span {
+        display: block;
+        margin-top: 0.25rem;
+        color: var(--muted);
+        font-size: 0.78rem;
+        line-height: 1.35;
       }
 
       .hero-gallery {
         display: grid;
-        grid-template-columns: 1.15fr 0.85fr;
+        grid-template-columns: 1.14fr 0.86fr;
         gap: 1rem;
         align-items: end;
       }
 
-      .hero-image,
-      .product-visual,
-      .feature-image {
+      .image-card,
+      .project-image,
+      .feature-image,
+      .visual-tile {
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
       }
 
-      .hero-image {
+      .image-card {
         position: relative;
-        min-height: 72vh;
+        min-height: 74vh;
         overflow: hidden;
         box-shadow: var(--shadow);
+        isolation: isolate;
       }
 
-      .hero-image.large {
-        border-radius: 0 0 48px 48px;
+      .image-card.large {
+        border-radius: 0 0 var(--radius-xl) var(--radius-xl);
       }
 
-      .hero-image.small {
-        min-height: 48vh;
-        border-radius: 48px 48px 0 0;
+      .image-card.small {
+        min-height: 50vh;
+        border-radius: var(--radius-xl) var(--radius-xl) 0 0;
       }
 
-      .hero-image::before,
-      .product-visual::after,
-      .feature-image::before {
+      .image-card::before,
+      .project-image::before,
+      .feature-image::before,
+      .visual-tile::before {
         content: "";
         position: absolute;
         inset: 0;
+        z-index: 1;
         background:
-          linear-gradient(0deg, rgba(32, 26, 19, 0.5), transparent 55%),
-          radial-gradient(circle at 26% 18%, rgba(255, 255, 255, 0.28), transparent 20rem);
+          linear-gradient(0deg, rgba(20, 17, 13, 0.56), transparent 56%),
+          radial-gradient(circle at 28% 18%, rgba(255, 255, 255, 0.28), transparent 18rem);
       }
 
       .image-caption {
@@ -417,18 +556,18 @@ const services = [
         right: 1rem;
         bottom: 1rem;
         padding: 1rem;
-        border-radius: 26px;
-        background: rgba(255, 250, 241, 0.82);
+        border: 1px solid rgba(255, 250, 242, 0.52);
+        border-radius: 28px;
+        background: rgba(255, 250, 242, 0.82);
         backdrop-filter: blur(18px);
-        border: 1px solid rgba(255, 250, 241, 0.55);
       }
 
       .image-caption strong {
         display: block;
         font-family: Georgia, "Times New Roman", serif;
-        font-size: clamp(1.4rem, 2.5vw, 2.25rem);
+        font-size: clamp(1.45rem, 2.7vw, 2.4rem);
         line-height: 0.95;
-        letter-spacing: -0.06em;
+        letter-spacing: -0.065em;
       }
 
       .image-caption span {
@@ -442,25 +581,39 @@ const services = [
         padding: clamp(4.8rem, 8vw, 8.5rem) clamp(1rem, 4vw, 4.8rem);
       }
 
+      .section-dark {
+        margin-inline: clamp(1rem, 4vw, 4.8rem);
+        border-radius: var(--radius-xl);
+        background:
+          radial-gradient(circle at 12% 10%, rgba(166, 107, 53, 0.25), transparent 26rem),
+          linear-gradient(135deg, #15110d, #23180f);
+        color: var(--paper);
+        box-shadow: var(--shadow-dark);
+      }
+
       .section-title {
         display: grid;
-        grid-template-columns: 120px 1fr;
+        grid-template-columns: 130px 1fr;
         gap: 1rem;
         align-items: start;
-        margin-bottom: 2rem;
+        margin-bottom: 2.2rem;
       }
 
       .section-title small {
-        color: var(--muted);
+        color: var(--wood);
         font-weight: 950;
         letter-spacing: 0.13em;
         text-transform: uppercase;
       }
 
+      .section-dark .section-title small {
+        color: var(--bronze);
+      }
+
       .section-title h2 {
         margin: 0;
         max-width: 1120px;
-        font-size: clamp(3.2rem, 8vw, 8.3rem);
+        font-size: clamp(3.1rem, 7.8vw, 8.2rem);
         line-height: 0.82;
         letter-spacing: -0.1em;
       }
@@ -476,8 +629,8 @@ const services = [
       .intro-quote {
         margin: 0;
         font-family: Georgia, "Times New Roman", serif;
-        font-size: clamp(2rem, 4.2vw, 4.2rem);
-        line-height: 1.05;
+        font-size: clamp(2rem, 4.2vw, 4.3rem);
+        line-height: 1.04;
         letter-spacing: -0.065em;
       }
 
@@ -488,58 +641,87 @@ const services = [
         line-height: 1.9;
       }
 
-      .product-grid {
+      .trust-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-top: 2.2rem;
+      }
+
+      .trust-card {
+        min-height: 240px;
+        display: grid;
+        align-content: space-between;
+        padding: 1.25rem;
+        border: 1px solid rgba(246, 240, 230, 0.14);
+        border-radius: var(--radius-lg);
+        background: rgba(255, 250, 242, 0.06);
+      }
+
+      .trust-card .value {
+        color: var(--bronze);
+        font-weight: 950;
+      }
+
+      .trust-card h3 {
+        margin: 2rem 0 0;
+        font-size: clamp(1.65rem, 3vw, 2.5rem);
+        line-height: 0.95;
+        letter-spacing: -0.065em;
+      }
+
+      .trust-card p {
+        margin: 0.8rem 0 0;
+        color: rgba(246, 240, 230, 0.68);
+        line-height: 1.7;
+      }
+
+      .project-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         border-top: 1px solid var(--line);
         border-left: 1px solid var(--line);
       }
 
-      .product-card {
-        min-height: 630px;
+      .project-card {
         display: grid;
+        min-height: 660px;
         align-content: space-between;
-        background: rgba(255, 250, 241, 0.22);
+        background: rgba(255, 250, 242, 0.26);
         border-right: 1px solid var(--line);
         border-bottom: 1px solid var(--line);
       }
 
-      .product-visual {
+      .project-image {
         position: relative;
-        min-height: 350px;
+        min-height: 380px;
         overflow: hidden;
       }
 
-      .product-content {
+      .project-content {
         padding: 1.45rem;
       }
 
-      .product-no {
+      .project-tag {
+        margin-bottom: 1rem;
         color: var(--wood);
         font-weight: 950;
-        margin-bottom: 1rem;
       }
 
-      .product-content h3 {
+      .project-content h3 {
         margin: 0;
-        font-size: clamp(2.1rem, 4vw, 4.2rem);
+        font-size: clamp(2.1rem, 3.8vw, 4.1rem);
         line-height: 0.9;
         letter-spacing: -0.08em;
       }
 
-      .product-content h4 {
-        margin: 0.95rem 0 0;
-        color: var(--wood-dark);
-        font-size: 1rem;
-      }
-
-      .product-content p {
+      .project-content p {
         margin: 1rem 0 0;
         color: var(--muted);
         line-height: 1.72;
       }
 
-      .feature {
+      .split-feature {
         display: grid;
         grid-template-columns: 0.9fr 1.1fr;
         gap: clamp(1rem, 4vw, 4rem);
@@ -547,10 +729,10 @@ const services = [
       }
 
       .feature-image {
-        min-height: 700px;
         position: relative;
+        min-height: 720px;
         overflow: hidden;
-        border-radius: 48px;
+        border-radius: var(--radius-xl);
         box-shadow: var(--shadow);
       }
 
@@ -562,8 +744,8 @@ const services = [
         bottom: 1.2rem;
         padding: 0.72rem 1rem;
         border-radius: 999px;
-        background: rgba(255, 250, 241, 0.82);
         color: var(--ink);
+        background: rgba(255, 250, 242, 0.82);
         font-weight: 950;
         backdrop-filter: blur(14px);
       }
@@ -591,17 +773,84 @@ const services = [
       .service-list {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
+        margin-top: 2rem;
         border-top: 1px solid var(--line);
         border-left: 1px solid var(--line);
-        margin-top: 2rem;
       }
 
       .service-item {
         padding: 1.1rem;
-        background: rgba(255, 250, 241, 0.28);
         border-right: 1px solid var(--line);
         border-bottom: 1px solid var(--line);
-        font-weight: 900;
+        background: rgba(255, 250, 242, 0.32);
+        font-weight: 950;
+      }
+
+      .visual-strip {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr 1fr;
+        gap: 1rem;
+        margin-top: 2.5rem;
+      }
+
+      .visual-tile {
+        position: relative;
+        min-height: 430px;
+        overflow: hidden;
+        border-radius: var(--radius-lg);
+      }
+
+      .visual-tile:nth-child(2) {
+        margin-top: 4rem;
+      }
+
+      .visual-tile span {
+        position: absolute;
+        z-index: 2;
+        left: 1rem;
+        bottom: 1rem;
+        display: inline-flex;
+        padding: 0.62rem 0.85rem;
+        border-radius: 999px;
+        background: rgba(255, 250, 242, 0.82);
+        color: var(--ink);
+        font-weight: 950;
+        backdrop-filter: blur(14px);
+      }
+
+      .process-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        border-top: 1px solid rgba(246, 240, 230, 0.15);
+        padding-top: 2rem;
+      }
+
+      .process-card {
+        min-height: 260px;
+        display: grid;
+        align-content: space-between;
+        padding: 1.15rem;
+        border: 1px solid rgba(246, 240, 230, 0.14);
+        border-radius: var(--radius-lg);
+        background: rgba(255, 250, 242, 0.06);
+      }
+
+      .process-card small {
+        color: var(--bronze);
+        font-weight: 950;
+      }
+
+      .process-card h3 {
+        margin: 2.2rem 0 0;
+        font-size: clamp(1.7rem, 3vw, 2.7rem);
+        line-height: 0.95;
+        letter-spacing: -0.065em;
+      }
+
+      .process-card p {
+        color: rgba(246, 240, 230, 0.68);
+        line-height: 1.7;
       }
 
       .estimate-section {
@@ -620,7 +869,7 @@ const services = [
         padding: clamp(1rem, 3vw, 2rem);
         border: 1px solid var(--line);
         border-radius: 42px;
-        background: rgba(255, 250, 241, 0.34);
+        background: rgba(255, 250, 242, 0.36);
         box-shadow: var(--shadow);
       }
 
@@ -642,7 +891,7 @@ const services = [
 
       .field label,
       .field-title {
-        color: var(--wood-dark);
+        color: var(--wood);
         font-weight: 950;
         font-size: 0.9rem;
       }
@@ -651,18 +900,17 @@ const services = [
       .select,
       .textarea {
         width: 100%;
-        min-height: 48px;
-        border: 1px solid var(--line-dark);
+        min-height: 50px;
+        border: 1px solid var(--line-strong);
         border-radius: 18px;
         padding: 0.85rem 1rem;
-        background: rgba(255, 250, 241, 0.72);
         color: var(--ink);
+        background: rgba(255, 250, 242, 0.74);
         outline: none;
-        font: inherit;
       }
 
       .textarea {
-        min-height: 120px;
+        min-height: 122px;
         resize: vertical;
         line-height: 1.5;
       }
@@ -671,16 +919,16 @@ const services = [
       .select:focus,
       .textarea:focus {
         border-color: var(--wood);
-        box-shadow: 0 0 0 4px rgba(154, 101, 53, 0.12);
+        box-shadow: 0 0 0 4px rgba(166, 107, 53, 0.13);
       }
 
       .photo-box {
         display: grid;
         gap: 0.8rem;
         padding: 1rem;
-        border: 1px dashed var(--line-dark);
+        border: 1px dashed var(--line-strong);
         border-radius: 24px;
-        background: rgba(255, 250, 241, 0.42);
+        background: rgba(255, 250, 242, 0.46);
       }
 
       .photo-box p {
@@ -690,46 +938,46 @@ const services = [
       }
 
       .photo-list {
-  display: grid;
-  gap: 0.75rem;
-}
+        display: grid;
+        gap: 0.75rem;
+      }
 
-.photo-list-text {
-  color: var(--wood-dark);
-  font-size: 0.9rem;
-  font-weight: 850;
-}
+      .photo-list-text {
+        color: var(--wood);
+        font-size: 0.9rem;
+        font-weight: 850;
+      }
 
-.photo-preview-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.75rem;
-}
+      .photo-preview-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+      }
 
-.photo-preview-card {
-  overflow: hidden;
-  border-radius: 18px;
-  border: 1px solid var(--line);
-  background: rgba(255, 250, 241, 0.68);
-}
+      .photo-preview-card {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: rgba(255, 250, 242, 0.68);
+      }
 
-.photo-preview-card img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-}
+      .photo-preview-card img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+      }
 
-.photo-preview-card span {
-  display: block;
-  padding: 0.55rem;
-  color: var(--muted);
-  font-size: 0.74rem;
-  font-weight: 800;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
+      .photo-preview-card span {
+        display: block;
+        padding: 0.55rem;
+        color: var(--muted);
+        font-size: 0.74rem;
+        font-weight: 800;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
 
       .checkbox-grid,
       .colour-grid {
@@ -743,12 +991,11 @@ const services = [
         display: flex;
         align-items: center;
         gap: 0.7rem;
-        min-height: 54px;
+        min-height: 56px;
         padding: 0.85rem;
         border: 1px solid var(--line);
         border-radius: 18px;
-        background: rgba(255, 250, 241, 0.5);
-        cursor: pointer;
+        background: rgba(255, 250, 242, 0.54);
         font-weight: 850;
       }
 
@@ -780,34 +1027,17 @@ const services = [
         width: 22px;
         height: 22px;
         flex: 0 0 22px;
-        border-radius: 999px;
-        border: 1px solid rgba(32, 26, 19, 0.24);
         margin-top: 0.1rem;
+        border: 1px solid rgba(20, 17, 13, 0.24);
+        border-radius: 999px;
       }
 
-      .swatch-white {
-        background: #f7f4ea;
-      }
-
-      .swatch-grey {
-        background: #b8b6ae;
-      }
-
-      .swatch-black {
-        background: #171717;
-      }
-
-      .swatch-oak {
-        background: #b9824b;
-      }
-
-      .swatch-gloss {
-        background: linear-gradient(135deg, #ffffff, #d9d9d9, #ffffff);
-      }
-
-      .swatch-other {
-        background: linear-gradient(135deg, #9a6535, #626a4f);
-      }
+      .swatch-white { background: #f7f4ea; }
+      .swatch-grey { background: #b8b6ae; }
+      .swatch-black { background: #171717; }
+      .swatch-oak { background: #b9824b; }
+      .swatch-gloss { background: linear-gradient(135deg, #ffffff, #d9d9d9, #ffffff); }
+      .swatch-other { background: linear-gradient(135deg, #a66b35, #5d654c); }
 
       .estimate-preview-card {
         display: grid;
@@ -815,33 +1045,35 @@ const services = [
         gap: 1.2rem;
         padding: clamp(1rem, 3vw, 2rem);
         border-radius: 42px;
-        background: var(--ink);
         color: var(--paper);
-        box-shadow: var(--shadow);
+        background:
+          radial-gradient(circle at 15% 10%, rgba(217, 168, 95, 0.20), transparent 20rem),
+          var(--ink);
+        box-shadow: var(--shadow-dark);
       }
 
       .estimate-preview-card h3 {
         margin: 0;
-        font-size: clamp(2.2rem, 4vw, 4.2rem);
+        font-size: clamp(2.2rem, 4vw, 4.3rem);
         line-height: 0.88;
         letter-spacing: -0.08em;
       }
 
       .estimate-preview-card p {
         margin: 0;
-        color: rgba(244, 239, 229, 0.68);
+        color: rgba(246, 240, 230, 0.68);
         line-height: 1.75;
       }
 
       .estimate-preview {
-        min-height: 260px;
+        min-height: 270px;
         white-space: pre-wrap;
         overflow-wrap: break-word;
         padding: 1rem;
+        border: 1px solid rgba(246, 240, 230, 0.14);
         border-radius: 24px;
-        background: rgba(255, 250, 241, 0.08);
-        border: 1px solid rgba(255, 250, 241, 0.14);
-        color: rgba(244, 239, 229, 0.88);
+        color: rgba(246, 240, 230, 0.9);
+        background: rgba(255, 250, 242, 0.08);
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         font-size: 0.86rem;
         line-height: 1.65;
@@ -853,11 +1085,41 @@ const services = [
         line-height: 1.7;
       }
 
+      .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        border-top: 1px solid var(--line);
+        padding-top: 2rem;
+      }
+
+      .testimonial-card {
+        min-height: 260px;
+        display: grid;
+        align-content: space-between;
+        padding: 1.25rem;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-lg);
+        background: rgba(255, 250, 242, 0.36);
+      }
+
+      .testimonial-card p {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(1.4rem, 2.4vw, 2.2rem);
+        line-height: 1.05;
+        letter-spacing: -0.055em;
+      }
+
+      .testimonial-card strong {
+        color: var(--wood);
+      }
+
       .quote-section {
-        margin: 0 clamp(1rem, 4vw, 4.8rem) clamp(4.8rem, 8vw, 8rem);
         display: grid;
         grid-template-columns: 1fr 0.82fr;
         min-height: 640px;
+        margin: 0 clamp(1rem, 4vw, 4.8rem) clamp(4.8rem, 8vw, 8rem);
         border-top: 1px solid var(--line);
         border-bottom: 1px solid var(--line);
       }
@@ -884,14 +1146,16 @@ const services = [
       }
 
       .contact-card {
-        margin: clamp(2rem, 4vw, 4rem) 0 clamp(2rem, 4vw, 4rem) clamp(1rem, 4vw, 4rem);
-        padding: 1.4rem;
         display: grid;
         align-content: space-between;
-        background: var(--ink);
+        margin: clamp(2rem, 4vw, 4rem) 0 clamp(2rem, 4vw, 4rem) clamp(1rem, 4vw, 4rem);
+        padding: 1.4rem;
+        border-radius: var(--radius-xl);
         color: var(--paper);
-        border-radius: 48px;
-        box-shadow: var(--shadow);
+        background:
+          radial-gradient(circle at 20% 10%, rgba(217, 168, 95, 0.18), transparent 20rem),
+          var(--ink);
+        box-shadow: var(--shadow-dark);
       }
 
       .contact-card h3 {
@@ -902,7 +1166,7 @@ const services = [
       }
 
       .contact-card p {
-        color: rgba(244, 239, 229, 0.68);
+        color: rgba(246, 240, 230, 0.68);
         line-height: 1.75;
       }
 
@@ -912,8 +1176,8 @@ const services = [
       }
 
       .contact-card .btn-light {
-        background: var(--paper);
         color: var(--ink);
+        background: var(--paper);
         border-color: var(--paper);
       }
 
@@ -928,8 +1192,8 @@ const services = [
 
       .footer strong {
         display: block;
-        color: var(--ink);
         margin-bottom: 0.7rem;
+        color: var(--ink);
       }
 
       .footer a,
@@ -939,26 +1203,25 @@ const services = [
         border: 0;
         padding: 0;
         margin-top: 0.35rem;
-        background: transparent;
         color: var(--muted);
-        cursor: pointer;
+        background: transparent;
       }
 
       .toast {
         position: fixed;
         left: 50%;
         bottom: 2rem;
-        z-index: 120;
-        transform: translateX(-50%) translateY(18px);
-        opacity: 0;
-        pointer-events: none;
+        z-index: 140;
         max-width: calc(100vw - 2rem);
         padding: 0.9rem 1.1rem;
         border-radius: 999px;
-        background: var(--ink);
         color: var(--paper);
+        background: var(--ink);
         font-weight: 950;
         box-shadow: var(--shadow);
+        transform: translateX(-50%) translateY(18px);
+        opacity: 0;
+        pointer-events: none;
         transition: 0.25s ease;
       }
 
@@ -971,9 +1234,9 @@ const services = [
         display: none;
       }
 
-      @media (max-width: 1100px) {
+      @media (max-width: 1180px) {
         .hero,
-        .feature,
+        .split-feature,
         .quote-section,
         .menu-inner,
         .estimate-builder {
@@ -984,19 +1247,18 @@ const services = [
           grid-template-columns: 1fr;
         }
 
-        .hero-image,
-        .hero-image.small,
+        .image-card,
+        .image-card.small,
         .feature-image {
-          min-height: 520px;
-          border-radius: 42px;
+          min-height: 540px;
+          border-radius: var(--radius-xl);
         }
 
-        .product-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .product-card {
-          min-height: auto;
+        .project-grid,
+        .trust-grid,
+        .process-grid,
+        .testimonials-grid {
+          grid-template-columns: 1fr 1fr;
         }
 
         .contact-card {
@@ -1008,7 +1270,7 @@ const services = [
         }
       }
 
-      @media (max-width: 720px) {
+      @media (max-width: 760px) {
         .nav {
           grid-template-columns: auto 1fr auto;
           padding: 0.85rem 1rem;
@@ -1019,7 +1281,7 @@ const services = [
         }
 
         .brand strong {
-          font-size: 1.3rem;
+          font-size: 1.32rem;
         }
 
         .brand span,
@@ -1033,11 +1295,13 @@ const services = [
         }
 
         .hero h1 {
-          font-size: clamp(4.1rem, 20vw, 6.5rem);
+          font-size: clamp(4rem, 20vw, 6.5rem);
         }
 
-        .hero-actions {
+        .hero-actions,
+        .hero-proof {
           display: grid;
+          grid-template-columns: 1fr;
         }
 
         .btn {
@@ -1048,6 +1312,11 @@ const services = [
           padding: 4rem 1rem;
         }
 
+        .section-dark {
+          margin-inline: 1rem;
+          border-radius: var(--radius-lg);
+        }
+
         .section-title {
           grid-template-columns: 1fr;
         }
@@ -1055,23 +1324,36 @@ const services = [
         .section-title h2,
         .feature-copy h2,
         .quote-copy h2 {
-          font-size: clamp(3.4rem, 17vw, 5.8rem);
+          font-size: clamp(3.25rem, 17vw, 5.8rem);
         }
 
         .intro-grid,
-.service-list,
-.estimate-grid,
-.checkbox-grid,
-.colour-grid {
-  grid-template-columns: 1fr;
-}
+        .service-list,
+        .estimate-grid,
+        .checkbox-grid,
+        .colour-grid,
+        .project-grid,
+        .trust-grid,
+        .process-grid,
+        .testimonials-grid,
+        .visual-strip {
+          grid-template-columns: 1fr;
+        }
 
-.photo-preview-grid {
-  grid-template-columns: repeat(2, 1fr);
-}
+        .visual-tile:nth-child(2) {
+          margin-top: 0;
+        }
 
-        .product-visual {
-          min-height: 260px;
+        .photo-preview-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .project-card {
+          min-height: auto;
+        }
+
+        .project-image {
+          min-height: 285px;
         }
 
         .quote-section {
@@ -1080,8 +1362,7 @@ const services = [
 
         .menu-info {
           border-right: 0;
-          border-bottom: 1px solid rgba(255, 250, 241, 0.14);
-          gap: 2rem;
+          border-bottom: 1px solid var(--dark-line);
         }
 
         .menu-list {
@@ -1101,16 +1382,16 @@ const services = [
           left: 0.85rem;
           right: 0.85rem;
           bottom: 0.85rem;
-          z-index: 60;
+          z-index: 90;
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 0.65rem;
           padding: 0.6rem;
-          border-radius: 22px;
-          background: rgba(244, 239, 229, 0.86);
-          backdrop-filter: blur(18px);
           border: 1px solid var(--line);
+          border-radius: 22px;
+          background: rgba(246, 240, 230, 0.88);
           box-shadow: var(--shadow);
+          backdrop-filter: blur(18px);
         }
 
         .mobile-sticky .btn {
@@ -1155,40 +1436,40 @@ const services = [
             </button>
 
             <p>
-              WhichwoodFitters designs and installs custom kitchens, cupboards,
-              wardrobes, TV units, vanities and storage solutions made to fit
-              your exact space.
+              WhichwoodFitters designs and installs premium custom kitchens,
+              cupboards, wardrobes, TV units, vanities and fitted storage made
+              around exact measurements.
             </p>
 
-            <a class="btn btn-light" href={whatsappLink} target="_blank" rel="noopener noreferrer">
+            <a class="btn btn-gold" href={whatsappLink} target="_blank" rel="noopener noreferrer">
               WhatsApp {displayPhone}
             </a>
           </div>
 
           <div class="menu-list">
-            <a href="#products" data-menu-link>
+            <a href="#work" data-menu-link>
               <small>01</small>
-              <strong>Products</strong>
+              <strong>Work</strong>
             </a>
 
-            <a href="/gallery" data-menu-link>
+            <a href="#why" data-menu-link>
               <small>02</small>
-              <strong>Gallery</strong>
+              <strong>Why Us</strong>
+            </a>
+
+            <a href="#process" data-menu-link>
+              <small>03</small>
+              <strong>Process</strong>
             </a>
 
             <a href="#estimate" data-menu-link>
-              <small>03</small>
+              <small>04</small>
               <strong>Estimate</strong>
             </a>
 
-            <a href="#philosophy" data-menu-link>
-              <small>04</small>
-              <strong>Philosophy</strong>
-            </a>
-
-            <a href="#service" data-menu-link>
+            <a href="/gallery" data-menu-link>
               <small>05</small>
-              <strong>Service</strong>
+              <strong>Gallery</strong>
             </a>
 
             <a href="#quote" data-menu-link>
@@ -1202,59 +1483,72 @@ const services = [
       <main>
         <section class="hero">
           <div class="hero-copy">
-            <span class="page-label">Custom Carpentry</span>
+            <span class="eyebrow">Premium fitted carpentry</span>
 
             <h1>
-              Connected
-              <span>with wood</span>
+              Custom spaces
+              <span>built properly.</span>
             </h1>
 
             <p class="hero-text">
-              Custom kitchens, built-in cupboards, wardrobes, TV units and
-              fitted storage — created around your home, your measurements and
-              the way you use the space.
+              WhichwoodFitters creates custom kitchens, built-in cupboards,
+              wardrobes, TV units and fitted storage for homes that need better
+              function, cleaner lines and a stronger finish.
             </p>
 
             <div class="hero-actions">
-              <a class="btn btn-dark" href={whatsappLink} target="_blank" rel="noopener noreferrer">
-                WhatsApp for quote
+              <a class="btn btn-gold" href={whatsappLink} target="_blank" rel="noopener noreferrer">
+                WhatsApp for a quote
               </a>
 
-              <a class="btn btn-light" href="#estimate">
-                Build estimate
+              <a class="btn btn-dark" href="#estimate">
+                Build fast estimate
               </a>
 
               <a class="btn btn-light" href="/gallery">
                 View gallery
               </a>
+            </div>
 
-              <button class="btn btn-light" type="button" data-copy-email>
-                Copy email
-              </button>
+            <div class="hero-proof">
+              <div class="proof-pill">
+                <strong>Made to measure</strong>
+                <span>Built around your exact space</span>
+              </div>
+
+              <div class="proof-pill">
+                <strong>Modern finishes</strong>
+                <span>Melamine, wood-look, gloss and more</span>
+              </div>
+
+              <div class="proof-pill">
+                <strong>Clean install</strong>
+                <span>Practical, strong and neat</span>
+              </div>
             </div>
           </div>
 
           <div class="hero-gallery">
-            <div class="hero-image large" style={`background-image: url('/images/hero-main.jpg');`}>
+            <div class="image-card large" style={`background-image: url('/images/hero-main.jpg');`}>
               <div class="image-caption">
                 <strong>Kitchens, cupboards & fitted interiors</strong>
-                <span>Modern storage with a clean custom-made finish.</span>
+                <span>Premium storage made for real homes and daily use.</span>
               </div>
             </div>
 
-            <div class="hero-image small" style={`background-image: url('/images/hero-small.jpg');`}>
+            <div class="image-card small" style={`background-image: url('/images/hero-small.jpg');`}>
               <div class="image-caption">
-                <strong>Measured properly</strong>
-                <span>Every wall, corner, plug and ceiling height matters.</span>
+                <strong>Measured first</strong>
+                <span>Walls, corners, plugs and ceiling heights all matter.</span>
               </div>
             </div>
           </div>
         </section>
 
-        <section class="section" id="philosophy">
+        <section class="section" id="why">
           <div class="section-title">
             <small>Philosophy</small>
-            <h2>Good carpentry begins before the first board is cut.</h2>
+            <h2>Good carpentry starts before the first board is cut.</h2>
           </div>
 
           <div class="intro-grid">
@@ -1263,48 +1557,65 @@ const services = [
             </p>
 
             <p class="intro-text">
-              WhichwoodFitters focuses on accurate measuring, practical layouts,
-              honest material choices and clean installation. The goal is simple:
-              more useful storage, better-looking rooms and work that fits the
-              home properly.
+              We focus on accurate measuring, strong layouts, practical storage,
+              honest material choices and neat installation. The goal is simple:
+              to turn unused or messy spaces into clean, useful, fitted interiors.
             </p>
           </div>
         </section>
 
-        <section class="section" id="products">
+        <section class="section section-dark">
           <div class="section-title">
-            <small>Products</small>
-            <h2>Designed for spaces that need better storage.</h2>
+            <small>Trust</small>
+            <h2>Built for people who want it done right.</h2>
           </div>
 
-          <div class="product-grid">
-            {products.map((product) => (
-              <article class="product-card">
-                <div class="product-visual" style={`background-image: url('${product.image}');`}></div>
-
-                <div class="product-content">
-                  <div class="product-no">{product.no}</div>
-                  <h3>{product.title}</h3>
-                  <h4>{product.subtitle}</h4>
-                  <p>{product.text}</p>
+          <div class="trust-grid">
+            {trustItems.map((item) => (
+              <article class="trust-card">
+                <div class="value">{item.value}</div>
+                <div>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
                 </div>
               </article>
             ))}
           </div>
         </section>
 
-        <section class="section" id="service">
-          <div class="feature">
+        <section class="section" id="work">
+          <div class="section-title">
+            <small>Featured Work</small>
+            <h2>Custom builds for kitchens, bedrooms and living spaces.</h2>
+          </div>
+
+          <div class="project-grid">
+            {featuredProjects.map((project) => (
+              <article class="project-card">
+                <div class="project-image" style={`background-image: url('${project.image}');`}></div>
+
+                <div class="project-content">
+                  <div class="project-tag">{project.tag}</div>
+                  <h3>{project.title}</h3>
+                  <p>{project.text}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="split-feature">
             <div class="feature-image" style={`background-image: url('/images/service.jpg');`}></div>
 
             <div class="feature-copy">
-              <span class="page-label">Service</span>
+              <span class="eyebrow">Services</span>
               <h2>From idea to fitted result.</h2>
 
               <p>
-                Send photos, rough measurements and the type of unit you want.
-                The clearer the space and finish choice, the cleaner the quote
-                and the fewer costly surprises later.
+                Send photos, rough measurements, finish ideas and your location.
+                The clearer the space, the cleaner the quote and the fewer
+                expensive surprises later.
               </p>
 
               <div class="service-list">
@@ -1312,6 +1623,39 @@ const services = [
                   <div class="service-item">{service}</div>
                 ))}
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section section-dark" id="process">
+          <div class="section-title">
+            <small>Process</small>
+            <h2>Simple steps from first photo to final fit.</h2>
+          </div>
+
+          <div class="process-grid">
+            {processSteps.map((step) => (
+              <article class="process-card">
+                <small>{step.no}</small>
+                <div>
+                  <h3>{step.title}</h3>
+                  <p>{step.text}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div class="visual-strip">
+            <div class="visual-tile" style={`background-image: url('/images/kitchen.jpg');`}>
+              <span>Kitchen storage</span>
+            </div>
+
+            <div class="visual-tile" style={`background-image: url('/images/cupboards.jpg');`}>
+              <span>Wardrobes</span>
+            </div>
+
+            <div class="visual-tile" style={`background-image: url('/images/tv-unit.jpg');`}>
+              <span>Interior units</span>
             </div>
           </div>
         </section>
@@ -1356,13 +1700,13 @@ const services = [
                 />
 
                 <div class="photo-list" id="selectedPhotos">
-  <div class="photo-list-text">No photos selected yet.</div>
-</div>
+                  <div class="photo-list-text">No photos selected yet.</div>
+                </div>
 
-<p class="estimate-note">
-  On mobile, the button will try to share the selected photos and message together.
-  Choose WhatsApp when your phone asks where to share.
-</p>
+                <p class="estimate-note">
+                  On mobile, the button will try to share the selected photos and message together.
+                  Choose WhatsApp when your phone asks where to share.
+                </p>
               </div>
 
               <div class="estimate-grid">
@@ -1492,34 +1836,49 @@ const services = [
               <div>
                 <h3>Your WhatsApp request.</h3>
                 <p>
-                  This message updates as the client fills in the form. When they click
-                  the button, WhatsApp opens with the quote details ready.
+                  This message updates while the client fills in the form. When
+                  they click the button, WhatsApp opens with the quote details ready.
                 </p>
               </div>
 
               <pre class="estimate-preview" id="estimatePreview"></pre>
 
-              <button class="btn btn-light" id="estimateWhatsAppButton" type="button">
-  Share Photos + Estimate to WhatsApp
-</button>
+              <button class="btn btn-gold" id="estimateWhatsAppButton" type="button">
+                Share photos + estimate to WhatsApp
+              </button>
 
               <p>
-  Best on mobile. The site will try to share the selected photos with the estimate message.
-  If the browser blocks file sharing, WhatsApp will open with the message only.
-</p>
+                Best on mobile. If the browser blocks file sharing, WhatsApp will open with the message only.
+              </p>
             </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-title">
+            <small>Reviews</small>
+            <h2>Proof that makes people feel safe to message.</h2>
+          </div>
+
+          <div class="testimonials-grid">
+            {testimonials.map((testimonial) => (
+              <article class="testimonial-card">
+                <p>“{testimonial.quote}”</p>
+                <strong>{testimonial.name}</strong>
+              </article>
+            ))}
           </div>
         </section>
 
         <section class="quote-section" id="quote">
           <div class="quote-copy">
-            <span class="page-label">Personal Quote</span>
+            <span class="eyebrow">Personal Quote</span>
             <h2>Send your space.</h2>
 
             <p>
               WhatsApp is the fastest way. Send photos, rough measurements,
-              finish ideas and your location. You can also copy the email
-              address or open your email app.
+              finish ideas and your location. You can also copy the email address
+              or open your email app.
             </p>
           </div>
 
@@ -1533,7 +1892,7 @@ const services = [
             </div>
 
             <div class="contact-actions">
-              <a class="btn btn-light" href={whatsappLink} target="_blank" rel="noopener noreferrer">
+              <a class="btn btn-gold" href={whatsappLink} target="_blank" rel="noopener noreferrer">
                 WhatsApp {displayPhone}
               </a>
 
@@ -1560,7 +1919,7 @@ const services = [
       <footer class="footer">
         <div>
           <strong>WhichwoodFitters</strong>
-          <span>Custom carpentry and fitted storage.</span>
+          <span>Premium custom carpentry and fitted storage.</span>
         </div>
 
         <div>
@@ -1595,178 +1954,178 @@ const services = [
     </div>
 
     <script define:vars={{ email, mailLink, whatsappNumber }}>
-  const openMenuButton = document.querySelector("[data-open-menu]");
-  const closeMenuButton = document.querySelector("[data-close-menu]");
-  const menuOverlay = document.getElementById("menuOverlay");
-  const menuLinks = document.querySelectorAll("[data-menu-link]");
-  const copyButtons = document.querySelectorAll("[data-copy-email]");
-  const toast = document.getElementById("emailToast");
+      const openMenuButton = document.querySelector("[data-open-menu]");
+      const closeMenuButton = document.querySelector("[data-close-menu]");
+      const menuOverlay = document.getElementById("menuOverlay");
+      const menuLinks = document.querySelectorAll("[data-menu-link]");
+      const copyButtons = document.querySelectorAll("[data-copy-email]");
+      const toast = document.getElementById("emailToast");
 
-  const estimateForm = document.getElementById("estimateForm");
-  const estimatePhotos = document.getElementById("estimatePhotos");
-  const selectedPhotos = document.getElementById("selectedPhotos");
-  const estimatePreview = document.getElementById("estimatePreview");
-  const estimateWhatsAppButton = document.getElementById("estimateWhatsAppButton");
+      const estimateForm = document.getElementById("estimateForm");
+      const estimatePhotos = document.getElementById("estimatePhotos");
+      const selectedPhotos = document.getElementById("selectedPhotos");
+      const estimatePreview = document.getElementById("estimatePreview");
+      const estimateWhatsAppButton = document.getElementById("estimateWhatsAppButton");
 
-  let activePhotoUrls = [];
+      let activePhotoUrls = [];
 
-  function openMenu() {
-    if (!menuOverlay) return;
-    menuOverlay.classList.add("open");
-    document.body.style.overflow = "hidden";
-  }
+      function openMenu() {
+        if (!menuOverlay) return;
+        menuOverlay.classList.add("open");
+        document.body.style.overflow = "hidden";
+      }
 
-  function closeMenu() {
-    if (!menuOverlay) return;
-    menuOverlay.classList.remove("open");
-    document.body.style.overflow = "";
-  }
+      function closeMenu() {
+        if (!menuOverlay) return;
+        menuOverlay.classList.remove("open");
+        document.body.style.overflow = "";
+      }
 
-  function showToast(message) {
-    if (!toast) return;
+      function showToast(message) {
+        if (!toast) return;
 
-    toast.textContent = message;
-    toast.classList.add("show");
+        toast.textContent = message;
+        toast.classList.add("show");
 
-    window.setTimeout(() => {
-      toast.classList.remove("show");
-    }, 2400);
-  }
+        window.setTimeout(() => {
+          toast.classList.remove("show");
+        }, 2400);
+      }
 
-  function fallbackCopy(text) {
-    const textarea = document.createElement("textarea");
-    textarea.value = text;
-    textarea.setAttribute("readonly", "");
-    textarea.style.position = "fixed";
-    textarea.style.left = "-9999px";
-    textarea.style.top = "0";
+      function fallbackCopy(text) {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "fixed";
+        textarea.style.left = "-9999px";
+        textarea.style.top = "0";
 
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
 
-    const successful = document.execCommand("copy");
-    document.body.removeChild(textarea);
+        const successful = document.execCommand("copy");
+        document.body.removeChild(textarea);
 
-    return successful;
-  }
+        return successful;
+      }
 
-  async function copyEmail() {
-    try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(email);
-      } else {
-        const copied = fallbackCopy(email);
+      async function copyEmail() {
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(email);
+          } else {
+            const copied = fallbackCopy(email);
 
-        if (!copied) {
-          throw new Error("Fallback copy failed.");
+            if (!copied) {
+              throw new Error("Fallback copy failed.");
+            }
+          }
+
+          showToast(`Email copied: ${email}`);
+        } catch {
+          showToast(`Email: ${email}`);
+
+          window.setTimeout(() => {
+            window.location.href = mailLink;
+          }, 900);
         }
       }
 
-      showToast(`Email copied: ${email}`);
-    } catch {
-      showToast(`Email: ${email}`);
+      function getInputValue(id) {
+        const element = document.getElementById(id);
+        const value = element?.value?.trim();
 
-      window.setTimeout(() => {
-        window.location.href = mailLink;
-      }, 900);
-    }
-  }
+        return value && value.length > 0 ? value : "Not supplied";
+      }
 
-  function getInputValue(id) {
-    const element = document.getElementById(id);
-    const value = element?.value?.trim();
+      function getCheckedValues(name) {
+        const checked = Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
+          .map((input) => input.value);
 
-    return value && value.length > 0 ? value : "Not supplied";
-  }
+        return checked.length > 0 ? checked.join(", ") : "Not supplied";
+      }
 
-  function getCheckedValues(name) {
-    const checked = Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
-      .map((input) => input.value);
+      function getSelectedFinish() {
+        const selected = document.querySelector('input[name="finishOption"]:checked');
+        return selected?.value || "Not supplied";
+      }
 
-    return checked.length > 0 ? checked.join(", ") : "Not supplied";
-  }
+      function getSelectedPhotoFiles() {
+        return Array.from(estimatePhotos?.files || []);
+      }
 
-  function getSelectedFinish() {
-    const selected = document.querySelector('input[name="finishOption"]:checked');
-    return selected?.value || "Not supplied";
-  }
+      function getSelectedPhotoNames() {
+        return getSelectedPhotoFiles().map((file) => file.name);
+      }
 
-  function getSelectedPhotoFiles() {
-    return Array.from(estimatePhotos?.files || []);
-  }
+      function clearPhotoUrls() {
+        activePhotoUrls.forEach((url) => URL.revokeObjectURL(url));
+        activePhotoUrls = [];
+      }
 
-  function getSelectedPhotoNames() {
-    return getSelectedPhotoFiles().map((file) => file.name);
-  }
+      function updateSelectedPhotos() {
+        if (!selectedPhotos) return;
 
-  function clearPhotoUrls() {
-    activePhotoUrls.forEach((url) => URL.revokeObjectURL(url));
-    activePhotoUrls = [];
-  }
+        clearPhotoUrls();
 
-  function updateSelectedPhotos() {
-    if (!selectedPhotos) return;
+        const files = getSelectedPhotoFiles();
+        selectedPhotos.replaceChildren();
 
-    clearPhotoUrls();
+        if (files.length === 0) {
+          const emptyText = document.createElement("div");
+          emptyText.className = "photo-list-text";
+          emptyText.textContent = "No photos selected yet.";
+          selectedPhotos.appendChild(emptyText);
+          return;
+        }
 
-    const files = getSelectedPhotoFiles();
-    selectedPhotos.replaceChildren();
+        const countText = document.createElement("div");
+        countText.className = "photo-list-text";
+        countText.textContent = `${files.length} photo(s) selected and ready to share.`;
+        selectedPhotos.appendChild(countText);
 
-    if (files.length === 0) {
-      const emptyText = document.createElement("div");
-      emptyText.className = "photo-list-text";
-      emptyText.textContent = "No photos selected yet.";
-      selectedPhotos.appendChild(emptyText);
-      return;
-    }
+        const previewGrid = document.createElement("div");
+        previewGrid.className = "photo-preview-grid";
 
-    const countText = document.createElement("div");
-    countText.className = "photo-list-text";
-    countText.textContent = `${files.length} photo(s) selected and ready to share.`;
-    selectedPhotos.appendChild(countText);
+        files.forEach((file, index) => {
+          const imageUrl = URL.createObjectURL(file);
+          activePhotoUrls.push(imageUrl);
 
-    const previewGrid = document.createElement("div");
-    previewGrid.className = "photo-preview-grid";
+          const card = document.createElement("div");
+          card.className = "photo-preview-card";
 
-    files.forEach((file, index) => {
-      const imageUrl = URL.createObjectURL(file);
-      activePhotoUrls.push(imageUrl);
+          const image = document.createElement("img");
+          image.src = imageUrl;
+          image.alt = `Selected estimate photo ${index + 1}`;
 
-      const card = document.createElement("div");
-      card.className = "photo-preview-card";
+          const label = document.createElement("span");
+          label.textContent = `${index + 1}. ${file.name}`;
 
-      const image = document.createElement("img");
-      image.src = imageUrl;
-      image.alt = `Selected estimate photo ${index + 1}`;
+          card.appendChild(image);
+          card.appendChild(label);
+          previewGrid.appendChild(card);
+        });
 
-      const label = document.createElement("span");
-      label.textContent = `${index + 1}. ${file.name}`;
+        selectedPhotos.appendChild(previewGrid);
+      }
 
-      card.appendChild(image);
-      card.appendChild(label);
-      previewGrid.appendChild(card);
-    });
+      function buildEstimateMessage() {
+        const projectType = getInputValue("projectType");
+        const width = getInputValue("widthMeasure");
+        const height = getInputValue("heightMeasure");
+        const depth = getInputValue("depthMeasure");
+        const visibleDetails = getCheckedValues("siteDetails");
+        const finish = getSelectedFinish();
+        const notes = getInputValue("estimateNotes");
+        const photos = getSelectedPhotoNames();
 
-    selectedPhotos.appendChild(previewGrid);
-  }
+        const photoText =
+          photos.length > 0
+            ? `${photos.length} photo(s) selected. I will attach them in WhatsApp.`
+            : "No photos selected yet. I still need to attach photos.";
 
-  function buildEstimateMessage() {
-    const projectType = getInputValue("projectType");
-    const width = getInputValue("widthMeasure");
-    const height = getInputValue("heightMeasure");
-    const depth = getInputValue("depthMeasure");
-    const visibleDetails = getCheckedValues("siteDetails");
-    const finish = getSelectedFinish();
-    const notes = getInputValue("estimateNotes");
-    const photos = getSelectedPhotoNames();
-
-    const photoText =
-      photos.length > 0
-        ? `${photos.length} photo(s) selected. I will attach them in WhatsApp.`
-        : "No photos selected yet. I still need to attach photos.";
-
-    const message =
+        const message =
 `Hi WhichwoodFitters, I need a fast estimate.
 
 Project type: ${projectType}
@@ -1788,77 +2147,82 @@ ${finish}
 Extra notes:
 ${notes}
 
+Location:
+Not supplied yet.
+
 Please let me know what else you need for the quote.`;
 
-    if (estimatePreview) {
-      estimatePreview.textContent = message;
-    }
+        if (estimatePreview) {
+          estimatePreview.textContent = message;
+        }
 
-    return message;
-  }
-
-  async function openEstimateWhatsApp() {
-    const message = buildEstimateMessage();
-    const files = getSelectedPhotoFiles();
-
-    try {
-      if (
-        files.length > 0 &&
-        navigator.canShare &&
-        navigator.share &&
-        navigator.canShare({ files })
-      ) {
-        await navigator.share({
-          title: "WhichwoodFitters Estimate Request",
-          text: message,
-          files
-        });
-
-        showToast("Photos and estimate shared. Choose WhatsApp if asked.");
-        return;
+        return message;
       }
-    } catch {
-      showToast("Photo sharing was cancelled or blocked.");
-    }
 
-    const link = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-    window.open(link, "_blank", "noopener,noreferrer");
+      async function openEstimateWhatsApp() {
+        const message = buildEstimateMessage();
+        const files = getSelectedPhotoFiles();
 
-    if (files.length > 0) {
-      showToast("WhatsApp opened with text. Attach the selected photos manually if they did not share.");
-    } else {
-      showToast("WhatsApp estimate request opened.");
-    }
-  }
+        try {
+          if (
+            files.length > 0 &&
+            navigator.canShare &&
+            navigator.share &&
+            navigator.canShare({ files })
+          ) {
+            await navigator.share({
+              title: "WhichwoodFitters Estimate Request",
+              text: message,
+              files
+            });
 
-  openMenuButton?.addEventListener("click", openMenu);
-  closeMenuButton?.addEventListener("click", closeMenu);
+            showToast("Photos and estimate shared. Choose WhatsApp if asked.");
+            return;
+          }
+        } catch {
+          showToast("Photo sharing was cancelled or blocked.");
+        }
 
-  menuLinks.forEach((link) => {
-    link.addEventListener("click", closeMenu);
-  });
+        const link = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+        window.open(link, "_blank", "noopener,noreferrer");
 
-  copyButtons.forEach((button) => {
-    button.addEventListener("click", copyEmail);
-  });
+        if (files.length > 0) {
+          showToast("WhatsApp opened with text. Attach the selected photos manually if they did not share.");
+        } else {
+          showToast("WhatsApp estimate request opened.");
+        }
+      }
 
-  estimatePhotos?.addEventListener("change", () => {
-    updateSelectedPhotos();
-    buildEstimateMessage();
-  });
+      openMenuButton?.addEventListener("click", openMenu);
+      closeMenuButton?.addEventListener("click", closeMenu);
 
-  estimateForm?.addEventListener("input", buildEstimateMessage);
-  estimateForm?.addEventListener("change", buildEstimateMessage);
+      menuLinks.forEach((link) => {
+        link.addEventListener("click", closeMenu);
+      });
 
-  estimateWhatsAppButton?.addEventListener("click", openEstimateWhatsApp);
+      copyButtons.forEach((button) => {
+        button.addEventListener("click", copyEmail);
+      });
 
-  buildEstimateMessage();
+      estimatePhotos?.addEventListener("change", () => {
+        updateSelectedPhotos();
+        buildEstimateMessage();
+      });
 
-  window.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      closeMenu();
-    }
-  });
-</script>
+      estimateForm?.addEventListener("input", buildEstimateMessage);
+      estimateForm?.addEventListener("change", buildEstimateMessage);
+
+      estimateWhatsAppButton?.addEventListener("click", openEstimateWhatsApp);
+
+      buildEstimateMessage();
+
+      window.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeMenu();
+        }
+      });
+
+      window.addEventListener("beforeunload", clearPhotoUrls);
+    </script>
   </body>
 </html>
