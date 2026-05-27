@@ -227,13 +227,57 @@ const testimonials = [
         inset: 0 0 auto;
         z-index: 80;
         display: grid;
-        grid-template-columns: 1fr auto 1fr;
+        grid-template-columns: auto auto minmax(0, 1fr) auto;
         align-items: center;
         gap: 1rem;
-        padding: 1rem clamp(1rem, 4vw, 4.8rem);
-        background: rgba(246, 240, 230, 0.76);
+        padding: 0.9rem clamp(1rem, 4vw, 4.8rem);
+        background: rgba(246, 240, 230, 0.82);
         border-bottom: 1px solid rgba(20, 17, 13, 0.08);
         backdrop-filter: blur(22px);
+      }
+
+      .nav-links {
+        justify-self: center;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.35rem;
+        border: 1px solid rgba(20, 17, 13, 0.10);
+        border-radius: 999px;
+        background: rgba(255, 250, 242, 0.52);
+        box-shadow: 0 12px 32px rgba(33, 23, 12, 0.08);
+      }
+
+      .nav-links a {
+        min-height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.62rem 0.9rem;
+        border-radius: 999px;
+        color: var(--ink);
+        font-size: 0.82rem;
+        font-weight: 950;
+        transition:
+          transform 0.2s ease,
+          background 0.2s ease,
+          color 0.2s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--paper);
+        background: var(--ink);
+        transform: translateY(-1px);
+      }
+
+      .nav-links a.nav-quote-link {
+        color: #22160d;
+        background: linear-gradient(135deg, #f2cf89, #c88d3f);
+      }
+
+      .section,
+      .quote-section {
+        scroll-margin-top: 96px;
       }
 
       .menu-button,
@@ -265,9 +309,9 @@ const testimonials = [
       }
 
       .brand {
-        justify-self: center;
+        justify-self: start;
         display: grid;
-        justify-items: center;
+        justify-items: start;
         line-height: 1;
       }
 
@@ -1276,6 +1320,32 @@ const testimonials = [
           padding: 0.85rem 1rem;
         }
 
+        .nav-links {
+          position: fixed;
+          left: 0.85rem;
+          right: 0.85rem;
+          top: 4.5rem;
+          justify-self: stretch;
+          display: flex;
+          overflow-x: auto;
+          gap: 0.35rem;
+          padding: 0.38rem;
+          border-radius: 18px;
+          background: rgba(246, 240, 230, 0.92);
+          scrollbar-width: none;
+        }
+
+        .nav-links::-webkit-scrollbar {
+          display: none;
+        }
+
+        .nav-links a {
+          flex: 0 0 auto;
+          min-height: 36px;
+          padding: 0.55rem 0.75rem;
+          font-size: 0.78rem;
+        }
+
         .brand {
           justify-self: start;
         }
@@ -1290,8 +1360,13 @@ const testimonials = [
           display: none;
         }
 
+        .section,
+        .quote-section {
+          scroll-margin-top: 128px;
+        }
+
         .hero {
-          padding: 6.4rem 1rem 2rem;
+          padding: 9.4rem 1rem 2rem;
         }
 
         .hero h1 {
@@ -1422,6 +1497,14 @@ const testimonials = [
           <strong>Whichwood</strong>
           <span>Fitters</span>
         </a>
+
+        <div class="nav-links" aria-label="Quick section navigation">
+          <a href="#work">Work</a>
+          <a href="#why">Why Us</a>
+          <a href="#process">Process</a>
+          <a class="nav-quote-link" href="#estimate">Estimate</a>
+          <a href="#quote">Contact</a>
+        </div>
 
         <button class="nav-email" type="button" data-copy-email>
           {email}
