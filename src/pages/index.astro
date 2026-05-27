@@ -1129,34 +1129,160 @@ const testimonials = [
         line-height: 1.7;
       }
 
-      .testimonials-grid {
+      .testimonial-lab {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
+        grid-template-columns: 1.08fr 0.92fr;
+        gap: clamp(1rem, 4vw, 4rem);
+        align-items: start;
         border-top: 1px solid var(--line);
         padding-top: 2rem;
       }
 
+      .testimonial-stack {
+        perspective: 1400px;
+      }
+
+      .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
       .testimonial-card {
-        min-height: 260px;
+        min-height: 285px;
         display: grid;
         align-content: space-between;
-        padding: 1.25rem;
-        border: 1px solid var(--line);
+        gap: 1.2rem;
+        padding: 1.35rem;
+        border: 1px solid rgba(255, 250, 242, 0.42);
         border-radius: var(--radius-lg);
-        background: rgba(255, 250, 242, 0.36);
+        background:
+          linear-gradient(145deg, rgba(255, 250, 242, 0.82), rgba(238, 226, 210, 0.46)),
+          radial-gradient(circle at 20% 10%, rgba(217, 168, 95, 0.20), transparent 16rem);
+        box-shadow:
+          0 24px 55px rgba(33, 23, 12, 0.15),
+          inset 0 1px 0 rgba(255, 255, 255, 0.72),
+          inset 0 -18px 38px rgba(70, 42, 18, 0.06);
+        transform-style: preserve-3d;
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.25s ease,
+          border-color 0.25s ease;
+      }
+
+      .testimonial-card:nth-child(1) { transform: rotateY(-7deg) rotateX(3deg); }
+      .testimonial-card:nth-child(2) { transform: translateY(22px) rotateY(0deg) rotateX(2deg); }
+      .testimonial-card:nth-child(3) { transform: rotateY(7deg) rotateX(3deg); }
+
+      .testimonial-card:hover {
+        transform: translateY(-8px) rotateY(0deg) rotateX(0deg) scale(1.015);
+        border-color: rgba(217, 168, 95, 0.72);
+        box-shadow:
+          0 36px 80px rgba(33, 23, 12, 0.24),
+          inset 0 1px 0 rgba(255, 255, 255, 0.84);
+      }
+
+      .testimonial-stars {
+        color: #9b642f;
+        font-weight: 950;
+        letter-spacing: 0.12em;
       }
 
       .testimonial-card p {
         margin: 0;
         font-family: Georgia, "Times New Roman", serif;
-        font-size: clamp(1.4rem, 2.4vw, 2.2rem);
-        line-height: 1.05;
+        font-size: clamp(1.35rem, 2.35vw, 2.05rem);
+        line-height: 1.08;
         letter-spacing: -0.055em;
       }
 
-      .testimonial-card strong {
+      .testimonial-meta {
+        display: grid;
+        gap: 0.2rem;
+      }
+
+      .testimonial-meta strong {
         color: var(--wood);
+      }
+
+      .testimonial-meta span {
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 800;
+      }
+
+      .testimonial-form-card {
+        position: sticky;
+        top: 112px;
+        display: grid;
+        gap: 1rem;
+        padding: clamp(1.1rem, 3vw, 2rem);
+        border-radius: 42px;
+        color: var(--paper);
+        background:
+          radial-gradient(circle at 20% 0%, rgba(217, 168, 95, 0.22), transparent 20rem),
+          linear-gradient(145deg, #21170f, #100d0a);
+        box-shadow: var(--shadow-dark);
+        transform: rotateX(1deg) rotateY(-2deg);
+        transform-style: preserve-3d;
+      }
+
+      .testimonial-form-card::before {
+        content: "";
+        position: absolute;
+        inset: 14px;
+        z-index: -1;
+        border-radius: 36px;
+        background: rgba(217, 168, 95, 0.16);
+        filter: blur(24px);
+        transform: translateZ(-24px);
+      }
+
+      .testimonial-form-card h3 {
+        margin: 0;
+        font-size: clamp(2.2rem, 4vw, 4.2rem);
+        line-height: 0.88;
+        letter-spacing: -0.08em;
+      }
+
+      .testimonial-form-card p {
+        margin: 0;
+        color: rgba(246, 240, 230, 0.68);
+        line-height: 1.75;
+      }
+
+      .testimonial-form {
+        display: grid;
+        gap: 0.9rem;
+      }
+
+      .testimonial-form .input,
+      .testimonial-form .select,
+      .testimonial-form .textarea {
+        color: var(--paper);
+        border-color: rgba(246, 240, 230, 0.18);
+        background: rgba(255, 250, 242, 0.08);
+      }
+
+      .testimonial-form .input::placeholder,
+      .testimonial-form .textarea::placeholder {
+        color: rgba(246, 240, 230, 0.42);
+      }
+
+      .testimonial-form .field label {
+        color: rgba(246, 240, 230, 0.88);
+      }
+
+      .testimonial-form-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+      }
+
+      .testimonial-form-note {
+        color: rgba(246, 240, 230, 0.56);
+        font-size: 0.88rem;
+        line-height: 1.6;
       }
 
       .quote-section {
@@ -1503,6 +1629,7 @@ const testimonials = [
           <a href="#why">Why Us</a>
           <a href="#process">Process</a>
           <a class="nav-quote-link" href="#estimate">Estimate</a>
+          <a href="#reviews">Reviews</a>
           <a href="#quote">Contact</a>
         </div>
 
@@ -1937,19 +2064,80 @@ const testimonials = [
           </div>
         </section>
 
-        <section class="section">
+        <section class="section" id="reviews">
           <div class="section-title">
             <small>Reviews</small>
-            <h2>Proof that makes people feel safe to message.</h2>
+            <h2>Real words from people who trust fitted work.</h2>
           </div>
 
-          <div class="testimonials-grid">
-            {testimonials.map((testimonial) => (
-              <article class="testimonial-card">
-                <p>“{testimonial.quote}”</p>
-                <strong>{testimonial.name}</strong>
-              </article>
-            ))}
+          <div class="testimonial-lab">
+            <div class="testimonial-stack">
+              <div class="testimonials-grid" id="testimonialsGrid">
+                {testimonials.map((testimonial) => (
+                  <article class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p>“{testimonial.quote}”</p>
+                    <div class="testimonial-meta">
+                      <strong>{testimonial.name}</strong>
+                      <span>WhichwoodFitters client</span>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+
+            <aside class="testimonial-form-card" aria-label="Add a testimonial">
+              <div>
+                <span class="eyebrow">Add Your Testimonial</span>
+                <h3>Leave a review.</h3>
+                <p>
+                  Clients can write a quick review here. It saves permanently and appears publicly after approval.
+                </p>
+              </div>
+
+              <form class="testimonial-form" id="testimonialForm">
+                <input id="testimonialCompany" name="company" type="text" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0;" aria-hidden="true" />
+                <div class="field">
+                  <label for="testimonialName">Your name</label>
+                  <input class="input" id="testimonialName" type="text" placeholder="Example: Johan" required />
+                </div>
+
+                <div class="field">
+                  <label for="testimonialProject">Project type</label>
+                  <select class="select" id="testimonialProject">
+                    <option value="Kitchen">Kitchen</option>
+                    <option value="Built-in cupboards">Built-in cupboards</option>
+                    <option value="Wardrobe">Wardrobe</option>
+                    <option value="TV unit">TV unit</option>
+                    <option value="Vanity">Vanity</option>
+                    <option value="Custom storage">Custom storage</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="testimonialRating">Rating</label>
+                  <select class="select" id="testimonialRating">
+                    <option value="5">★★★★★ 5 stars</option>
+                    <option value="4">★★★★☆ 4 stars</option>
+                    <option value="3">★★★☆☆ 3 stars</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="testimonialMessage">Your testimonial</label>
+                  <textarea class="textarea" id="testimonialMessage" maxlength="220" placeholder="Example: Neat installation, great finish and the cupboards fit perfectly." required></textarea>
+                </div>
+
+                <div class="testimonial-form-actions">
+                  <button class="btn btn-light" type="submit">Submit Review</button>
+                  <button class="btn btn-outline-light" id="testimonialWhatsAppButton" type="button">Send WhatsApp</button>
+                </div>
+
+                <div class="testimonial-form-note">
+                  Reviews are stored permanently and stay private until approved. This protects the site from spam and fake reviews.
+                </div>
+              </form>
+            </aside>
           </div>
         </section>
 
@@ -2049,6 +2237,14 @@ const testimonials = [
       const selectedPhotos = document.getElementById("selectedPhotos");
       const estimatePreview = document.getElementById("estimatePreview");
       const estimateWhatsAppButton = document.getElementById("estimateWhatsAppButton");
+      const testimonialForm = document.getElementById("testimonialForm");
+      const testimonialName = document.getElementById("testimonialName");
+      const testimonialProject = document.getElementById("testimonialProject");
+      const testimonialRating = document.getElementById("testimonialRating");
+      const testimonialMessage = document.getElementById("testimonialMessage");
+      const testimonialsGrid = document.getElementById("testimonialsGrid");
+      const testimonialWhatsAppButton = document.getElementById("testimonialWhatsAppButton");
+      const testimonialCompany = document.getElementById("testimonialCompany");
 
       let activePhotoUrls = [];
 
@@ -2276,6 +2472,143 @@ Please let me know what else you need for the quote.`;
         }
       }
 
+      function getStars(rating) {
+        const safeRating = Math.max(1, Math.min(5, Number(rating) || 5));
+        return "★".repeat(safeRating) + "☆".repeat(5 - safeRating);
+      }
+
+      function createTestimonialCard(testimonial, placement = "append") {
+        if (!testimonialsGrid) return;
+
+        const card = document.createElement("article");
+        card.className = "testimonial-card";
+
+        const stars = document.createElement("div");
+        stars.className = "testimonial-stars";
+        stars.textContent = getStars(testimonial.rating);
+
+        const quote = document.createElement("p");
+        quote.textContent = `“${testimonial.message}”`;
+
+        const meta = document.createElement("div");
+        meta.className = "testimonial-meta";
+
+        const name = document.createElement("strong");
+        name.textContent = testimonial.name || "WhichwoodFitters client";
+
+        const project = document.createElement("span");
+        project.textContent = testimonial.project || "Custom carpentry";
+
+        meta.appendChild(name);
+        meta.appendChild(project);
+
+        card.appendChild(stars);
+        card.appendChild(quote);
+        card.appendChild(meta);
+
+        if (placement === "prepend") {
+          testimonialsGrid.prepend(card);
+        } else {
+          testimonialsGrid.appendChild(card);
+        }
+      }
+
+      async function loadDatabaseTestimonials() {
+        if (!testimonialsGrid) return;
+
+        try {
+          const response = await fetch("/api/testimonials", {
+            method: "GET",
+            headers: {
+              "Accept": "application/json"
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error("Could not load testimonials.");
+          }
+
+          const data = await response.json();
+          const testimonials = Array.isArray(data.testimonials) ? data.testimonials : [];
+
+          if (testimonials.length === 0) {
+            return;
+          }
+
+          testimonialsGrid.replaceChildren();
+          testimonials.forEach((testimonial) => createTestimonialCard(testimonial));
+        } catch {
+          // Keep the built-in starter reviews visible if the database is not ready yet.
+        }
+      }
+
+      function getTestimonialData() {
+        return {
+          name: testimonialName?.value?.trim() || "Happy client",
+          project: testimonialProject?.value || "Custom carpentry",
+          rating: testimonialRating?.value || "5",
+          message: testimonialMessage?.value?.trim() || "Great service and a clean finish.",
+          company: testimonialCompany?.value?.trim() || ""
+        };
+      }
+
+      function buildTestimonialWhatsAppMessage() {
+        const testimonial = getTestimonialData();
+        return `Hi WhichwoodFitters, I want to leave a testimonial.
+
+Name: ${testimonial.name}
+Project: ${testimonial.project}
+Rating: ${getStars(testimonial.rating)}
+
+Testimonial:
+${testimonial.message}`;
+      }
+
+      async function addTestimonial(event) {
+        event?.preventDefault();
+
+        const testimonial = getTestimonialData();
+
+        if (testimonial.company) {
+          showToast("Review submitted.");
+          testimonialForm?.reset();
+          return;
+        }
+
+        if (!testimonial.message || testimonial.message.length < 8) {
+          showToast("Please write a slightly longer testimonial.");
+          return;
+        }
+
+        try {
+          const response = await fetch("/api/testimonials", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
+            body: JSON.stringify(testimonial)
+          });
+
+          const result = await response.json().catch(() => ({}));
+
+          if (!response.ok) {
+            throw new Error(result.error || "Could not submit review.");
+          }
+
+          testimonialForm?.reset();
+          showToast("Review saved. It will show after approval.");
+        } catch {
+          showToast("Review could not save. Send it on WhatsApp instead.");
+        }
+      }
+
+      function sendTestimonialToWhatsApp() {
+        const message = buildTestimonialWhatsAppMessage();
+        const link = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+        window.open(link, "_blank", "noopener,noreferrer");
+      }
+
       openMenuButton?.addEventListener("click", openMenu);
       closeMenuButton?.addEventListener("click", closeMenu);
 
@@ -2296,7 +2629,10 @@ Please let me know what else you need for the quote.`;
       estimateForm?.addEventListener("change", buildEstimateMessage);
 
       estimateWhatsAppButton?.addEventListener("click", openEstimateWhatsApp);
+      testimonialForm?.addEventListener("submit", addTestimonial);
+      testimonialWhatsAppButton?.addEventListener("click", sendTestimonialToWhatsApp);
 
+      loadDatabaseTestimonials();
       buildEstimateMessage();
 
       window.addEventListener("keydown", (event) => {
