@@ -793,6 +793,12 @@ const sections = [
         margin-top: 1.2rem;
         color: var(--wood-dark);
         font-weight: 950;
+        border: 0;
+        padding: 0;
+        background: transparent;
+        cursor: pointer;
+        font: inherit;
+        text-align: left;
       }
 
       .image-lightbox {
@@ -1376,9 +1382,15 @@ const sections = [
                   <div class="gallery-content">
                     <h3>{item.title}</h3>
                     <p>{item.text}</p>
-                    <a class="card-link" href={whatsappLink} target="_blank" rel="noopener noreferrer">
+                    <button
+                      class="card-link"
+                      type="button"
+                      data-ask-image={item.image}
+                      data-ask-title={item.title}
+                      data-ask-text={item.text}
+                    >
                       Ask about this →
-                    </a>
+                    </button>
                   </div>
                 </article>
               ))}
@@ -1472,9 +1484,9 @@ const sections = [
             <span id="lightboxText"></span>
 
             <div class="lightbox-actions">
-              <a class="btn btn-light" href={whatsappLink} target="_blank" rel="noopener noreferrer">
+              <button class="btn btn-light" type="button" id="lightboxAskButton">
                 Ask about this design
-              </a>
+              </button>
 
               <button class="btn btn-outline-light" type="button" id="lightboxCloseBottom">
                 Close preview
@@ -1489,7 +1501,7 @@ const sections = [
       </div>
     </div>
 
-    <script define:vars={{ email, mailLink }}>
+    <script define:vars={{ email, mailLink, whatsappNumber }}>
       const copyButtons = document.querySelectorAll("[data-copy-email]");
       const galleryImageButtons = document.querySelectorAll("[data-lightbox-image]");
       const toast = document.getElementById("emailToast");
@@ -1499,6 +1511,10 @@ const sections = [
       const lightboxText = document.getElementById("lightboxText");
       const lightboxClose = document.getElementById("lightboxClose");
       const lightboxCloseBottom = document.getElementById("lightboxCloseBottom");
+      const askDesignButtons = document.querySelectorAll("[data-ask-image]");
+      const lightboxAskButton = document.getElementById("lightboxAskButton");
+
+      let currentLightboxDesign = null;
 
       function showToast(message) {
         if (!toast) return;
@@ -1551,12 +1567,103 @@ const sections = [
         }
       }
 
+      function getImageUrl(imagePath) {
+        return new URL(imagePath, window.location.origin).href;
+      }
+
+      function sanitizeFilename(value) {
+        return String(value || "whichwood-design")
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+          .slice(0, 70) || "whichwood-design";
+      }
+
+      function getExtensionFromType(type, imagePath) {
+        if (type === "image/png") return "png";
+        if (type === "image/webp") return "webp";
+        if (type === "image/gif") return "gif";
+
+        const pathExtension = String(imagePath || "")
+          .split("?")[0]
+          .split(".")
+          .pop();
+
+        if (pathExtension && pathExtension.length <= 5) {
+          return pathExtension;
+        }
+
+        return "jpg";
+      }
+
+      function buildDesignMessage(design) {
+        const imageUrl = getImageUrl(design.image);
+
+        return `Hi WhichwoodFitters, I saw this design in your gallery and I would like a quote for something similar.
+
+Design: ${design.title}
+Details: ${design.text}
+Image reference: ${imageUrl}
+
+My project type:
+Measurements:
+Location:
+Photos of my space attached:
+
+Please let me know what else you need.`;
+      }
+
+      async function createImageShareFile(design) {
+        const imageUrl = getImageUrl(design.image);
+        const response = await fetch(imageUrl, { cache: "force-cache" });
+
+        if (!response.ok) {
+          throw new Error("Image could not be loaded for sharing.");
+        }
+
+        const blob = await response.blob();
+        const extension = getExtensionFromType(blob.type, design.image);
+        const filename = `${sanitizeFilename(design.title)}.${extension}`;
+
+        return new File([blob], filename, {
+          type: blob.type || "image/jpeg"
+        });
+      }
+
+      async function askAboutDesign(design) {
+        const message = buildDesignMessage(design);
+
+        try {
+          if (navigator.share && navigator.canShare) {
+            const file = await createImageShareFile(design);
+
+            if (navigator.canShare({ files: [file] })) {
+              await navigator.share({
+                title: `WhichwoodFitters - ${design.title}`,
+                text: message,
+                files: [file]
+              });
+
+              showToast("Image and message ready. Choose WhatsApp to send.");
+              return;
+            }
+          }
+        } catch {
+          showToast("Image sharing is blocked here. Opening WhatsApp with image link.");
+        }
+
+        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+      }
+
       function openImageLightbox(button) {
         if (!imageLightbox || !lightboxImage || !lightboxTitle || !lightboxText) return;
 
         const image = button.dataset.lightboxImage || "";
         const title = button.dataset.lightboxTitle || "Gallery image";
         const text = button.dataset.lightboxText || "";
+
+        currentLightboxDesign = { image, title, text };
 
         lightboxImage.src = image;
         lightboxImage.alt = title;
@@ -1577,6 +1684,7 @@ const sections = [
         document.body.style.overflow = "";
         lightboxImage.src = "";
         lightboxImage.alt = "";
+        currentLightboxDesign = null;
       }
 
       copyButtons.forEach((button) => {
@@ -1585,6 +1693,22 @@ const sections = [
 
       galleryImageButtons.forEach((button) => {
         button.addEventListener("click", () => openImageLightbox(button));
+      });
+
+      askDesignButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          askAboutDesign({
+            image: button.dataset.askImage || "",
+            title: button.dataset.askTitle || "Gallery design",
+            text: button.dataset.askText || ""
+          });
+        });
+      });
+
+      lightboxAskButton?.addEventListener("click", () => {
+        if (currentLightboxDesign) {
+          askAboutDesign(currentLightboxDesign);
+        }
       });
 
       lightboxClose?.addEventListener("click", closeImageLightbox);
