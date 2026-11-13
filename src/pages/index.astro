@@ -45,10 +45,10 @@ const residential = [
 ];
 
 const commercial = [
-  { title: "Pharmacy fitouts", text: "Dispensary units, front-shop wall shelving, counters and storage built to the shopfitting drawings." },
-  { title: "Retail & shopfitting", text: "Display shelving, wall bays, cash-wrap counters and back-of-house storage." },
-  { title: "Offices & consulting rooms", text: "Reception desks, workstations, filing and storage for offices and medical rooms." },
-  { title: "Coffee shops & kitchenettes", text: "Service counters, back-bar units and staff kitchenettes." }
+  { title: "Pharmacy fitouts", text: "Dispensary units, drawer banks and storage built to the shopfitting drawings.", image: "/images/commercial/dispensary.svg", alt: "Line drawing of a pharmacy dispensary unit with shelving above and drawers below" },
+  { title: "Retail & shopfitting", text: "Front-shop wall bays, display shelving and back-of-house storage.", image: "/images/commercial/wall-shelving.svg", alt: "Line drawing of front-shop wall shelving bays" },
+  { title: "Counters & till points", text: "Service counters, cash-wrap and dispensing counters with screens.", image: "/images/commercial/counter.svg", alt: "Line drawing of a service counter with till and screen" },
+  { title: "Consulting rooms & offices", text: "Clinic rooms, reception desks, workstations and storage. Coffee shops and kitchenettes too.", image: "/images/commercial/consulting-room.svg", alt: "Line drawing of consulting room joinery with overhead cupboards, desk and basin" }
 ];
 
 const standards = [
@@ -124,12 +124,15 @@ const finishes = [
     @media (max-width: 600px) { .cards { grid-template-columns: 1fr; } }
 
     /* Commercial */
-    .com-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(32px, 6vw, 80px); align-items: start; }
+    .com-grid { display: grid; grid-template-columns: 1fr 1.35fr; gap: clamp(32px, 6vw, 80px); align-items: start; }
     .com-grid .lead { font-size: 1.1rem; margin: 18px 0 28px; color: #d6d6d6; }
-    .com-list { display: grid; gap: 0; border-top: 1px solid #333; }
-    .com-list article { display: grid; grid-template-columns: 40px 1fr; gap: 16px; padding: 22px 0; border-bottom: 1px solid #333; }
-    .com-list article::before { content: ""; width: 12px; height: 12px; margin-top: 8px; background: var(--red); }
-    .com-list p { color: #b9b9b9; margin-top: 4px; }
+    .com-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .com-card { margin: 0; border: 1px solid #2e2e2e; border-radius: var(--radius); overflow: hidden; background: #161616; }
+    .com-card img { width: 100%; aspect-ratio: 10 / 7; object-fit: cover; }
+    .com-card figcaption { padding: 14px 16px 18px; border-top: 1px solid #2e2e2e; }
+    .com-card h3 { font-size: 1.1rem; }
+    .com-card p { color: #b9b9b9; margin-top: 4px; font-size: .92rem; }
+    @media (max-width: 560px) { .com-cards { grid-template-columns: 1fr; } }
     .com-send { margin-top: 28px; padding: 22px; border: 1px solid #333; border-radius: var(--radius); }
     .com-send h3 { font-size: 1.05rem; font-family: var(--sans); font-weight: 700; }
     .com-send ul { margin: 10px 0 0; padding-left: 18px; color: #b9b9b9; }
@@ -300,15 +303,18 @@ const finishes = [
           </ul>
         </div>
       </div>
-      <div class="com-list">
-        {commercial.map((item) => (
-          <article>
-            <div>
-              <h3>{item.title}</h3>
-              <p>{item.text}</p>
-            </div>
-          </article>
-        ))}
+      <div>
+        <div class="com-cards">
+          {commercial.map((item) => (
+            <figure class="com-card">
+              <img src={item.image} width="800" height="560" alt={item.alt} loading="lazy" decoding="async" />
+              <figcaption>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
         <p class="muted" style="padding-top:18px;font-size:.92rem">
           Based in Pretoria. Work outside Gauteng by arrangement.
         </p>
