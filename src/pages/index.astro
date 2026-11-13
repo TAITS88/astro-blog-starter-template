@@ -51,6 +51,13 @@ const commercial = [
   { title: "Consulting rooms & offices", text: "Clinic rooms, reception desks, workstations and storage. Coffee shops and kitchenettes too.", image: "/images/commercial/consulting-room.svg", alt: "Line drawing of consulting room joinery with overhead cupboards, desk and basin" }
 ];
 
+const sunCity = [
+  { src: "/images/projects/sun-city-pharmacy/counters-and-shelving.jpg", alt: "Pharmacy service counters and wall shelving being installed", w: 1400, h: 1050, col: 4 },
+  { src: "/images/projects/sun-city-pharmacy/wall-shelving-install.jpg", alt: "Front-shop wall shelving and counters during installation", w: 1400, h: 1050, col: 4 },
+  { src: "/images/projects/sun-city-pharmacy/shop-floor-in-progress.jpg", alt: "Pharmacy shop floor with counters and gondola units in progress", w: 1054, h: 1400, col: 3 },
+  { src: "/images/projects/sun-city-pharmacy/bulkhead-and-wall-panels.jpg", alt: "Bulkhead and wall panels fitted in the pharmacy", w: 1054, h: 1400, col: 3 }
+];
+
 const standards = [
   { no: "01", title: "Measured before we build", text: "Final measurements are taken on site and confirmed before anything goes into manufacturing." },
   { no: "02", title: "Built to your drawing", text: "Commercial work is built box for box to the drawing sizes. No guessed parts, no swapped sizes." },
@@ -138,6 +145,17 @@ const finishes = [
     .com-send ul { margin: 10px 0 0; padding-left: 18px; color: #b9b9b9; }
     .com-actions { display: flex; flex-wrap: wrap; gap: 12px; }
     @media (max-width: 900px) { .com-grid { grid-template-columns: 1fr; } }
+
+    .project { margin-top: clamp(48px, 7vw, 80px); padding-top: clamp(32px, 5vw, 48px); border-top: 1px solid #2e2e2e; }
+    .project-head { display: flex; flex-wrap: wrap; gap: 12px 48px; align-items: end; justify-content: space-between; margin-bottom: 24px; }
+    .project-head h3 { font-size: clamp(1.5rem, 2.6vw, 2rem); }
+    .project-head p { max-width: 520px; color: #b9b9b9; }
+    .project-grid { display: grid; grid-template-columns: 4fr 4fr 3fr 3fr; gap: 12px; }
+    .project-grid a { display: block; border-radius: var(--radius); overflow: hidden; background: #1d1d1d; }
+    .project-grid img { width: 100%; height: 340px; object-fit: cover; transition: transform .3s; }
+    .project-grid a:hover img { transform: scale(1.03); }
+    @media (max-width: 900px) { .project-grid { grid-template-columns: 1fr 1fr; } .project-grid img { height: 240px; } }
+    @media (max-width: 480px) { .project-grid img { height: 180px; } }
 
     /* Standards */
     .std { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 2px solid var(--ink); }
@@ -318,6 +336,23 @@ const finishes = [
         <p class="muted" style="padding-top:18px;font-size:.92rem">
           Based in Pretoria. Work outside Gauteng by arrangement.
         </p>
+      </div>
+    </div>
+
+    <div class="wrap project">
+      <div class="project-head">
+        <div>
+          <span class="eyebrow">Recent project</span>
+          <h3>Pharmacy fitout, Sun City Resort</h3>
+        </div>
+        <p>Counters, wall shelving, bulkheads and wall panels for a full pharmacy fitout, completed September 2026. Photos taken on site during installation.</p>
+      </div>
+      <div class="project-grid">
+        {sunCity.map((img) => (
+          <a href={img.src} target="_blank" rel="noopener" style={`--col:${img.col}`} aria-label={`Open photo: ${img.alt}`}>
+            <img src={img.src} width={img.w} height={img.h} alt={img.alt} loading="lazy" decoding="async" />
+          </a>
+        ))}
       </div>
     </div>
   </section>
