@@ -58,10 +58,10 @@ const sunCityVideos = [
   { src: P + "install-in-progress.mp4", poster: P + "install-in-progress-poster.jpg", title: "Install in progress", note: "Units arriving and going in on site", length: "0:31" }
 ];
 const sunCityPhotos = [
-  { src: P + "counters-and-shelving.jpg", alt: "Orange service counters and wall shelving being installed", caption: "Service counters", w: 1400, h: 1050, col: 4 },
-  { src: P + "wall-shelving-install.jpg", alt: "Front-shop wall shelving during installation", caption: "Wall shelving", w: 1400, h: 1050, col: 4 },
-  { src: P + "shop-floor-in-progress.jpg", alt: "Pharmacy shop floor with counters and gondola units in progress", caption: "Shop floor", w: 1054, h: 1400, col: 3 },
-  { src: P + "bulkhead-and-wall-panels.jpg", alt: "Bulkhead and wall panels fitted in the pharmacy", caption: "Bulkhead & panels", w: 1054, h: 1400, col: 3 }
+  { src: P + "counters-and-shelving.jpg", alt: "Orange service counters and wall shelving being installed", caption: "Service counters", w: 1000, h: 750, col: 4 },
+  { src: P + "wall-shelving-install.jpg", alt: "Front-shop wall shelving during installation", caption: "Wall shelving", w: 1000, h: 750, col: 4 },
+  { src: P + "shop-floor-in-progress.jpg", alt: "Pharmacy shop floor with counters and gondola units in progress", caption: "Shop floor", w: 753, h: 1000, col: 3 },
+  { src: P + "bulkhead-and-wall-panels.jpg", alt: "Bulkhead and wall panels fitted in the pharmacy", caption: "Bulkhead & panels", w: 753, h: 1000, col: 3 }
 ];
 
 const standards = [
@@ -184,10 +184,19 @@ const finishes = [
 
     .fp-photos { display: grid; grid-template-columns: 4fr 4fr 3fr 3fr; gap: 12px; margin-top: 32px; }
     .fp-photos a { position: relative; display: block; border-radius: 8px; overflow: hidden; background: #ddd; text-decoration: none; }
-    .fp-photos img { width: 100%; height: 260px; object-fit: cover; transition: transform .35s; }
-    .fp-photos a:hover img { transform: scale(1.04); }
+    .fp-photos img { width: 100%; height: 260px; object-fit: cover; }
+    .fp-photos a { cursor: zoom-in; }
+    .fp-photos a:hover { outline: 3px solid var(--red); outline-offset: -3px; }
     .fp-photos span { position: absolute; left: 10px; bottom: 10px; background: rgba(17,17,17,.82); color: #fff; font: 600 .78rem var(--sans); padding: 5px 9px; border-radius: 4px; }
 
+    dialog.pbox { padding: 0; border: 0; background: transparent; max-width: 100vw; max-height: 100vh; width: 100vw; height: 100vh; }
+    dialog.pbox::backdrop { background: rgba(0,0,0,.92); }
+    .pbox { display: none; }
+    .pbox[open] { display: flex; flex-direction: column; }
+    .pbox img { flex: 1; min-height: 0; width: 100%; object-fit: contain; image-rendering: auto; }
+    .pbox-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 20px 18px; color: #fff; font-weight: 600; }
+    .pbox-btn { width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(255,255,255,.35); background: transparent; color: #fff; font-size: 1.4rem; cursor: pointer; margin-left: 6px; }
+    .pbox-btn:hover { background: var(--red); border-color: var(--red); }
     .fp-foot { margin-top: 36px; display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; justify-content: space-between; padding: 24px 28px; background: var(--ink); color: #fff; border-radius: 10px; }
     .fp-foot p { font: 700 1.3rem var(--serif); }
 
@@ -424,12 +433,24 @@ const finishes = [
 
       <div class="fp-photos">
         {sunCityPhotos.map((img) => (
-          <a href={img.src} target="_blank" rel="noopener" style={`--col:${img.col}`} aria-label={`Open photo: ${img.alt}`}>
+          <a href={img.src.replace(P, P + "full/")} data-photo={img.src.replace(P, P + "full/")} data-caption={img.caption} style={`--col:${img.col}`} aria-label={`Open photo: ${img.alt}`}>
             <img src={img.src} width={img.w} height={img.h} alt={img.alt} loading="lazy" decoding="async" />
             <span>{img.caption}</span>
           </a>
         ))}
       </div>
+
+      <dialog class="pbox" id="photoBox" aria-label="Photo viewer">
+        <img id="pboxImg" src="" alt="" />
+        <div class="pbox-bar">
+          <span id="pboxCap"></span>
+          <div>
+            <button type="button" class="pbox-btn" id="pboxPrev" aria-label="Previous photo">‹</button>
+            <button type="button" class="pbox-btn" id="pboxNext" aria-label="Next photo">›</button>
+            <button type="button" class="pbox-btn" id="pboxClose" aria-label="Close">✕</button>
+          </div>
+        </div>
+      </dialog>
 
       <div class="fp-foot">
         <p>Have a pharmacy or shop to fit out?</p>
@@ -769,6 +790,41 @@ const finishes = [
         v.addEventListener("pause", function () { if (!v.seeking) reel.classList.remove("playing"); });
         v.addEventListener("ended", function () { reel.classList.remove("playing"); v.controls = false; v.currentTime = 0; v.load(); });
       });
+
+
+      /* ---------- Project photo viewer ---------- */
+      var box = $("photoBox");
+      var links = Array.prototype.slice.call(document.querySelectorAll("[data-photo]"));
+      var idx = 0;
+      function show(i) {
+        idx = (i + links.length) % links.length;
+        var a = links[idx];
+        $("pboxImg").src = a.dataset.photo;
+        $("pboxImg").alt = a.getAttribute("aria-label") || "";
+        $("pboxCap").textContent = a.dataset.caption + "  ·  " + (idx + 1) + " / " + links.length;
+      }
+      if (box && box.showModal) {
+        links.forEach(function (a, i) {
+          a.addEventListener("click", function (e) { e.preventDefault(); show(i); box.showModal(); });
+        });
+        $("pboxPrev").addEventListener("click", function () { show(idx - 1); });
+        $("pboxNext").addEventListener("click", function () { show(idx + 1); });
+        $("pboxClose").addEventListener("click", function () { box.close(); });
+        box.addEventListener("click", function (e) { if (e.target === box || e.target.id === "pboxImg") box.close(); });
+        box.addEventListener("keydown", function (e) {
+          if (e.key === "ArrowLeft") show(idx - 1);
+          if (e.key === "ArrowRight") show(idx + 1);
+        });
+        var sx = null;
+        box.addEventListener("touchstart", function (e) { sx = e.touches[0].clientX; }, { passive: true });
+        box.addEventListener("touchend", function (e) {
+          if (sx === null) return;
+          var dx = e.changedTouches[0].clientX - sx;
+          if (Math.abs(dx) > 50) show(dx < 0 ? idx + 1 : idx - 1);
+          sx = null;
+        });
+        box.addEventListener("close", function () { $("pboxImg").src = ""; });
+      }
 
       /* ---------- Review form ---------- */
       var rf = $("reviewForm");
