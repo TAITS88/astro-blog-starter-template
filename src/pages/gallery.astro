@@ -383,9 +383,9 @@ const sections = [
     .g-cta .wrap { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between; }
     .g-cta p { color: #cfcfcf; margin-top: 12px; }
 
-    dialog.lb { width: min(100% - 24px, 1100px); max-height: calc(100% - 24px); padding: 0; border: 0; border-radius: var(--radius); background: #fff; }
+    dialog.lb { width: min(100% - 24px, 1400px); max-height: calc(100% - 24px); padding: 0; border: 0; border-radius: var(--radius); background: #fff; }
     dialog.lb::backdrop { background: rgba(0,0,0,.82); }
-    .lb img { width: 100%; max-height: 72vh; object-fit: contain; background: #111; }
+    .lb img { width: 100%; max-height: 78vh; object-fit: contain; background: #111; }
     .lb .lb-body { padding: 18px 22px 22px; display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; }
     .lb .lb-body p { color: var(--muted); margin-top: 4px; }
     .lb .lb-actions { display: flex; gap: 10px; }
@@ -415,7 +415,7 @@ const sections = [
         <div class="g-grid">
           {section.items.map((item) => (
             <article class="g-card">
-              <button class="img" type="button" data-lb={item.image} data-title={item.title} data-text={item.text} aria-label={`View larger: ${item.title}`}>
+              <button class="img" type="button" data-lb={item.image.replace(/\/([^/]+)$/, "/full/$1")} data-title={item.title} data-text={item.text} aria-label={`View larger: ${item.title}`}>
                 <img src={item.image} alt={item.title} width="1200" height="720" loading="lazy" decoding="async" />
               </button>
               <div class="body">
