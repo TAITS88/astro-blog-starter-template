@@ -5,9 +5,14 @@ import sitemap from "@astrojs/sitemap";
 import cloudflare from "@astrojs/cloudflare";
 
 export default defineConfig({
-  site: "https://whichwood.co.za",
+  site: "https://www.whichwood.co.za",
   output: "server",
-  integrations: [mdx(), sitemap()],
+  integrations: [
+    mdx(),
+    sitemap({
+      customPages: ["https://www.whichwood.co.za/"]
+    })
+  ],
   adapter: cloudflare({
     platformProxy: {
       enabled: true

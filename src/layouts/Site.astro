@@ -1,0 +1,348 @@
+---
+import { SITE, DEFAULT_WHATSAPP, DEFAULT_MAIL } from "../data/site";
+
+interface Props {
+  title: string;
+  description: string;
+  path?: string;
+  ogImage?: string;
+  nav?: { href: string; label: string }[];
+}
+
+const {
+  title,
+  description,
+  path = "/",
+  ogImage = "/images/kitchens/kitchen-02.jpg",
+  nav = [
+    { href: "/#residential", label: "Residential" },
+    { href: "/#commercial", label: "Commercial" },
+    { href: "/#process", label: "Process" },
+    { href: "/gallery", label: "Gallery" },
+    { href: "/#contact", label: "Contact" }
+  ]
+} = Astro.props;
+
+const canonical = new URL(path, SITE.url).href;
+const ogImageUrl = new URL(ogImage, SITE.url).href;
+const year = new Date().getFullYear();
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "HomeAndConstructionBusiness",
+  name: SITE.name,
+  legalName: SITE.legalName,
+  url: SITE.url,
+  image: ogImageUrl,
+  telephone: SITE.intlPhone,
+  email: SITE.email,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Pretoria",
+    addressRegion: SITE.region,
+    addressCountry: SITE.country
+  },
+  areaServed: [{ "@type": "State", name: "Gauteng" }],
+  description
+};
+---
+
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#111111" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap"
+    />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    <style is:global>
+      :root {
+        --ink: #111111;
+        --ink-2: #2b2b2b;
+        --muted: #5f5f5f;
+        --paper: #ffffff;
+        --paper-2: #f5f4f2;
+        --line: #e4e2de;
+        --red: #c8102e;
+        --red-dark: #9e0c24;
+        --radius: 6px;
+        --max: 1200px;
+        --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+        --sans: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      }
+
+      *, *::before, *::after { box-sizing: border-box; }
+      html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+      body {
+        margin: 0;
+        font-family: var(--sans);
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--ink);
+        background: var(--paper);
+        -webkit-font-smoothing: antialiased;
+      }
+      img { max-width: 100%; height: auto; display: block; }
+      a { color: inherit; }
+      h1, h2, h3 { font-family: var(--serif); line-height: 1.12; margin: 0; letter-spacing: -0.01em; }
+      h1 { font-size: clamp(2.4rem, 5.4vw, 4.2rem); }
+      h2 { font-size: clamp(1.9rem, 3.6vw, 2.8rem); }
+      h3 { font-size: 1.3rem; }
+      p { margin: 0; }
+
+      .wrap { width: min(100% - 40px, var(--max)); margin-inline: auto; }
+      .section { padding: clamp(64px, 9vw, 112px) 0; }
+      .section-alt { background: var(--paper-2); }
+      .section-dark { background: var(--ink); color: #fff; }
+      .section-dark .muted { color: #b9b9b9; }
+      .muted { color: var(--muted); }
+
+      .eyebrow {
+        display: inline-flex; align-items: center; gap: 10px;
+        font-size: 0.78rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+        color: var(--red); margin-bottom: 16px;
+      }
+      .eyebrow::before { content: ""; width: 28px; height: 2px; background: var(--red); }
+
+      .section-head { max-width: 720px; margin-bottom: 48px; }
+      .section-head p { margin-top: 16px; font-size: 1.08rem; }
+
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        min-height: 48px; padding: 0 22px; border-radius: var(--radius);
+        font: 600 0.95rem/1 var(--sans); text-decoration: none; cursor: pointer;
+        border: 2px solid transparent; transition: background .15s, color .15s, border-color .15s;
+        white-space: nowrap;
+      }
+      .btn-red { background: var(--red); color: #fff; }
+      .btn-red:hover { background: var(--red-dark); }
+      .btn-dark { background: var(--ink); color: #fff; }
+      .btn-dark:hover { background: #000; }
+      .btn-line { background: transparent; color: var(--ink); border-color: var(--ink); }
+      .btn-line:hover { background: var(--ink); color: #fff; }
+      .btn-line-light { background: transparent; color: #fff; border-color: rgba(255,255,255,.5); }
+      .btn-line-light:hover { background: #fff; color: var(--ink); border-color: #fff; }
+      .btn svg { width: 18px; height: 18px; flex: none; }
+
+      :focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
+
+      /* Wordmark */
+      .wordmark { display: inline-flex; flex-direction: column; text-decoration: none; line-height: 1; }
+      .wordmark b { font: 700 1.5rem/1 var(--serif); letter-spacing: 0.06em; color: var(--ink); }
+      .wordmark b i { font-style: normal; color: var(--red); }
+      .wordmark small { font: 600 0.62rem/1 var(--sans); letter-spacing: 0.32em; color: var(--muted); margin-top: 5px; }
+      .on-dark .wordmark b { color: #fff; }
+      .on-dark .wordmark small { color: #9a9a9a; }
+
+      /* Header */
+      .header {
+        position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,.96);
+        backdrop-filter: saturate(1.4) blur(8px); border-bottom: 1px solid var(--line);
+      }
+      .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 72px; }
+      .nav-links { display: flex; gap: 28px; }
+      .nav-links a { text-decoration: none; font-weight: 500; font-size: 0.95rem; color: var(--ink-2); }
+      .nav-links a:hover { color: var(--red); }
+      .header-cta { display: flex; align-items: center; gap: 12px; }
+      .header-cta .btn { min-height: 42px; padding: 0 16px; }
+      .menu-toggle {
+        display: none; width: 44px; height: 44px; border: 1px solid var(--line); background: #fff;
+        border-radius: var(--radius); cursor: pointer; align-items: center; justify-content: center;
+      }
+      .menu-toggle span, .menu-toggle span::before, .menu-toggle span::after {
+        display: block; width: 18px; height: 2px; background: var(--ink); position: relative; content: "";
+      }
+      .menu-toggle span::before { position: absolute; top: -6px; }
+      .menu-toggle span::after { position: absolute; top: 6px; }
+
+      .mobile-menu {
+        position: fixed; inset: 72px 0 0 0; z-index: 49; background: #fff; padding: 24px 20px 120px;
+        display: none; flex-direction: column; gap: 4px; overflow-y: auto;
+      }
+      .mobile-menu.open { display: flex; }
+      .mobile-menu a.m-link {
+        text-decoration: none; font: 600 1.6rem/1.2 var(--serif); padding: 14px 0; border-bottom: 1px solid var(--line);
+      }
+      .mobile-menu .btn { margin-top: 20px; }
+
+      @media (max-width: 900px) {
+        .nav-links, .header-cta .hide-sm { display: none; }
+        .menu-toggle { display: inline-flex; }
+      }
+
+      /* Footer */
+      .footer { background: var(--ink); color: #cfcfcf; padding: 64px 0 110px; font-size: 0.95rem; }
+      .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 40px; }
+      .footer h4 { color: #fff; font: 600 0.8rem/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; margin: 0 0 16px; }
+      .footer a, .footer button.linklike { color: #cfcfcf; text-decoration: none; display: block; margin-bottom: 8px; }
+      .footer a:hover, .footer button.linklike:hover { color: #fff; }
+      .footer a.wordmark { display: inline-flex; margin-bottom: 0; }
+      .footer .tagline { color: var(--red); font-weight: 600; letter-spacing: .14em; font-size: .75rem; margin: 14px 0 12px; text-transform: uppercase; }
+      .footer-legal { border-top: 1px solid #2c2c2c; margin-top: 48px; padding-top: 24px; font-size: .82rem; color: #8a8a8a; display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+      button.linklike { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; text-align: left; }
+      @media (max-width: 760px) { .footer-grid { grid-template-columns: 1fr; } .footer { padding-bottom: 120px; } }
+      @media (min-width: 761px) { .footer { padding-bottom: 48px; } }
+
+      /* Mobile sticky actions */
+      .sticky-actions {
+        position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 40;
+        display: none; grid-template-columns: 1fr 1fr; gap: 8px;
+        padding: 8px; background: #fff; border: 1px solid var(--line); border-radius: 10px;
+        box-shadow: 0 12px 40px rgba(0,0,0,.18);
+      }
+      @media (max-width: 760px) { .sticky-actions { display: grid; } }
+
+      .toast {
+        position: fixed; left: 50%; bottom: 96px; transform: translate(-50%, 20px); opacity: 0;
+        background: var(--ink); color: #fff; padding: 12px 18px; border-radius: var(--radius);
+        font-size: .9rem; z-index: 60; pointer-events: none; transition: opacity .2s, transform .2s;
+        max-width: calc(100% - 32px); text-align: center;
+      }
+      .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+      /* Forms */
+      .field { display: grid; gap: 6px; }
+      .field label, .field-title { font-weight: 600; font-size: .9rem; }
+      .input, .select, .textarea {
+        width: 100%; min-height: 48px; padding: 12px 14px; font: 400 1rem var(--sans); color: var(--ink);
+        background: #fff; border: 1px solid #cfccc6; border-radius: var(--radius);
+      }
+      .textarea { min-height: 110px; resize: vertical; }
+      .input:focus, .select:focus, .textarea:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(200,16,46,.15); }
+      .hint { font-size: .85rem; color: var(--muted); }
+
+      @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+    </style>
+    <slot name="head" />
+  </head>
+
+  <body>
+    <a class="btn btn-dark" href="#main" style="position:absolute;left:-9999px;top:0" onfocus="this.style.left='8px'" onblur="this.style.left='-9999px'">Skip to content</a>
+
+    <header class="header">
+      <div class="wrap header-inner">
+        <a class="wordmark" href="/" aria-label="WhichwoodFitters home">
+          <b>WHICH<i>?</i>WOOD</b>
+          <small>FITTERS</small>
+        </a>
+
+        <nav class="nav-links" aria-label="Main">
+          {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+        </nav>
+
+        <div class="header-cta">
+          <a class="btn btn-line hide-sm" href={`tel:${SITE.intlPhone.replace(/\s/g, "")}`}>{SITE.displayPhone}</a>
+          <a class="btn btn-red hide-sm" href={DEFAULT_WHATSAPP} target="_blank" rel="noopener noreferrer">WhatsApp us</a>
+          <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu" data-menu-toggle>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <nav class="mobile-menu" id="mobileMenu" aria-label="Mobile">
+      {nav.map((item) => <a class="m-link" href={item.href} data-menu-link>{item.label}</a>)}
+      <a class="btn btn-red" href={DEFAULT_WHATSAPP} target="_blank" rel="noopener noreferrer">WhatsApp {SITE.displayPhone}</a>
+      <a class="btn btn-line" href={`tel:${SITE.intlPhone.replace(/\s/g, "")}`}>Call {SITE.displayPhone}</a>
+    </nav>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="footer on-dark">
+      <div class="wrap">
+        <div class="footer-grid">
+          <div>
+            <a class="wordmark" href="/" aria-label="WhichwoodFitters home">
+              <b>WHICH<i>?</i>WOOD</b>
+              <small>FITTERS</small>
+            </a>
+            <p class="tagline">{SITE.tagline}</p>
+            <p>Custom joinery for homes and businesses — kitchens, built-in cupboards, vanities, and pharmacy, retail and office fitouts. Based in {SITE.locality}.</p>
+          </div>
+          <div>
+            <h4>Contact</h4>
+            <a href={DEFAULT_WHATSAPP} target="_blank" rel="noopener noreferrer">WhatsApp {SITE.displayPhone}</a>
+            <a href={`tel:${SITE.intlPhone.replace(/\s/g, "")}`}>Call {SITE.displayPhone}</a>
+            <a href={DEFAULT_MAIL}>{SITE.email}</a>
+            <span>{SITE.locality}, {SITE.region}</span>
+          </div>
+          <div>
+            <h4>Site</h4>
+            <a href="/#residential">Residential</a>
+            <a href="/#commercial">Commercial fitouts</a>
+            <a href="/#estimate">Quick estimate</a>
+            <a href="/gallery">Gallery</a>
+          </div>
+        </div>
+        <div class="footer-legal">
+          <span>© {year} {SITE.legalName} · Reg. No. {SITE.regNo}</span>
+          <span>{SITE.locality}, {SITE.region}, South Africa</span>
+        </div>
+      </div>
+    </footer>
+
+    <div class="sticky-actions">
+      <a class="btn btn-line" href={`tel:${SITE.intlPhone.replace(/\s/g, "")}`}>Call</a>
+      <a class="btn btn-red" href={DEFAULT_WHATSAPP} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script is:inline>
+      (function () {
+        var toggle = document.querySelector("[data-menu-toggle]");
+        var menu = document.getElementById("mobileMenu");
+        var toastEl = document.getElementById("toast");
+        var timer;
+
+        function setMenu(open) {
+          if (!menu || !toggle) return;
+          menu.classList.toggle("open", open);
+          toggle.setAttribute("aria-expanded", String(open));
+          toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+          document.body.style.overflow = open ? "hidden" : "";
+        }
+
+        toggle && toggle.addEventListener("click", function () {
+          setMenu(!menu.classList.contains("open"));
+        });
+        document.querySelectorAll("[data-menu-link]").forEach(function (link) {
+          link.addEventListener("click", function () { setMenu(false); });
+        });
+        window.addEventListener("keydown", function (e) { if (e.key === "Escape") setMenu(false); });
+        window.addEventListener("resize", function () { if (window.innerWidth > 900) setMenu(false); });
+
+        window.wwToast = function (message) {
+          if (!toastEl) return;
+          toastEl.textContent = message;
+          toastEl.classList.add("show");
+          clearTimeout(timer);
+          timer = setTimeout(function () { toastEl.classList.remove("show"); }, 2800);
+        };
+      })();
+    </script>
+    <slot name="scripts" />
+  </body>
+</html>
