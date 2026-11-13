@@ -51,11 +51,17 @@ const commercial = [
   { title: "Consulting rooms & offices", text: "Clinic rooms, reception desks, workstations and storage. Coffee shops and kitchenettes too.", image: "/images/commercial/consulting-room.svg", alt: "Line drawing of consulting room joinery with overhead cupboards, desk and basin" }
 ];
 
-const sunCity = [
-  { src: "/images/projects/sun-city-pharmacy/counters-and-shelving.jpg", alt: "Pharmacy service counters and wall shelving being installed", w: 1400, h: 1050, col: 4 },
-  { src: "/images/projects/sun-city-pharmacy/wall-shelving-install.jpg", alt: "Front-shop wall shelving and counters during installation", w: 1400, h: 1050, col: 4 },
-  { src: "/images/projects/sun-city-pharmacy/shop-floor-in-progress.jpg", alt: "Pharmacy shop floor with counters and gondola units in progress", w: 1054, h: 1400, col: 3 },
-  { src: "/images/projects/sun-city-pharmacy/bulkhead-and-wall-panels.jpg", alt: "Bulkhead and wall panels fitted in the pharmacy", w: 1054, h: 1400, col: 3 }
+const P = "/images/projects/sun-city-pharmacy/";
+const sunCityVideos = [
+  { src: P + "walkthrough.mp4", poster: P + "walkthrough-poster.jpg", title: "Shop walkthrough", note: "Gondolas, store rooms and wall shelving", length: "1:35" },
+  { src: P + "counters-dispensary.mp4", poster: P + "counters-dispensary-poster.jpg", title: "Counters & dispensary", note: "Service counters, dispensary shelving, staff kitchen", length: "1:02" },
+  { src: P + "install-in-progress.mp4", poster: P + "install-in-progress-poster.jpg", title: "Install in progress", note: "Units arriving and going in on site", length: "0:31" }
+];
+const sunCityPhotos = [
+  { src: P + "counters-and-shelving.jpg", alt: "Orange service counters and wall shelving being installed", caption: "Service counters", w: 1400, h: 1050, col: 4 },
+  { src: P + "wall-shelving-install.jpg", alt: "Front-shop wall shelving during installation", caption: "Wall shelving", w: 1400, h: 1050, col: 4 },
+  { src: P + "shop-floor-in-progress.jpg", alt: "Pharmacy shop floor with counters and gondola units in progress", caption: "Shop floor", w: 1054, h: 1400, col: 3 },
+  { src: P + "bulkhead-and-wall-panels.jpg", alt: "Bulkhead and wall panels fitted in the pharmacy", caption: "Bulkhead & panels", w: 1054, h: 1400, col: 3 }
 ];
 
 const standards = [
@@ -146,16 +152,54 @@ const finishes = [
     .com-actions { display: flex; flex-wrap: wrap; gap: 12px; }
     @media (max-width: 900px) { .com-grid { grid-template-columns: 1fr; } }
 
-    .project { margin-top: clamp(48px, 7vw, 80px); padding-top: clamp(32px, 5vw, 48px); border-top: 1px solid #2e2e2e; }
-    .project-head { display: flex; flex-wrap: wrap; gap: 12px 48px; align-items: end; justify-content: space-between; margin-bottom: 24px; }
-    .project-head h3 { font-size: clamp(1.5rem, 2.6vw, 2rem); }
-    .project-head p { max-width: 520px; color: #b9b9b9; }
-    .project-grid { display: grid; grid-template-columns: 4fr 4fr 3fr 3fr; gap: 12px; }
-    .project-grid a { display: block; border-radius: var(--radius); overflow: hidden; background: #1d1d1d; }
-    .project-grid img { width: 100%; height: 340px; object-fit: cover; transition: transform .3s; }
-    .project-grid a:hover img { transform: scale(1.03); }
-    @media (max-width: 900px) { .project-grid { grid-template-columns: 1fr 1fr; } .project-grid img { height: 240px; } }
-    @media (max-width: 480px) { .project-grid img { height: 180px; } }
+    /* Featured project */
+    .fp { background: var(--paper-2); }
+    .fp-head { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px 64px; align-items: end; margin-bottom: 40px; }
+    .fp-head p { margin-top: 16px; font-size: 1.06rem; max-width: 36em; }
+    .fp-facts { margin: 0; display: grid; grid-template-columns: 1fr 1fr; border-top: 2px solid var(--ink); }
+    .fp-facts div { padding: 14px 16px 14px 0; border-bottom: 1px solid var(--line); }
+    .fp-facts .wide { grid-column: 1 / -1; }
+    .fp-facts dt { font-size: .74rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--red); }
+    .fp-facts dd { margin: 4px 0 0; font-weight: 500; }
+
+    .reels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .reel { margin: 0; }
+    .reel-media { position: relative; aspect-ratio: 9 / 16; border-radius: 10px; overflow: hidden; background: #111; box-shadow: 0 18px 50px rgba(0,0,0,.18); }
+    .reel-media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .reel-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,.55)); pointer-events: none; transition: opacity .2s; }
+    .reel.playing .reel-media::after, .reel.playing .reel-play, .reel.playing .reel-len { opacity: 0; pointer-events: none; }
+    .reel-play {
+      position: absolute; left: 50%; top: 50%; translate: -50% -50%; z-index: 2;
+      width: 76px; height: 76px; border-radius: 50%; border: 0; cursor: pointer;
+      background: var(--red); color: #fff; display: grid; place-items: center;
+      box-shadow: 0 0 0 10px rgba(200,16,46,.25); transition: transform .15s, opacity .2s;
+    }
+    .reel-play:hover { transform: scale(1.06); }
+    .reel-play svg { width: 30px; height: 30px; margin-left: 4px; }
+    .reel-len { position: absolute; right: 12px; bottom: 12px; z-index: 2; color: #fff; font: 600 .8rem var(--sans); background: rgba(0,0,0,.55); padding: 4px 8px; border-radius: 4px; transition: opacity .2s; }
+    .reel figcaption { display: flex; gap: 14px; align-items: baseline; padding: 16px 4px 0; }
+    .reel-no { font: 700 .85rem var(--sans); color: var(--red); }
+    .reel figcaption strong { display: block; font: 700 1.15rem/1.3 var(--serif); }
+    .reel figcaption span:not(.reel-no) { color: var(--muted); font-size: .92rem; }
+
+    .fp-photos { display: grid; grid-template-columns: 4fr 4fr 3fr 3fr; gap: 12px; margin-top: 32px; }
+    .fp-photos a { position: relative; display: block; border-radius: 8px; overflow: hidden; background: #ddd; text-decoration: none; }
+    .fp-photos img { width: 100%; height: 260px; object-fit: cover; transition: transform .35s; }
+    .fp-photos a:hover img { transform: scale(1.04); }
+    .fp-photos span { position: absolute; left: 10px; bottom: 10px; background: rgba(17,17,17,.82); color: #fff; font: 600 .78rem var(--sans); padding: 5px 9px; border-radius: 4px; }
+
+    .fp-foot { margin-top: 36px; display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; justify-content: space-between; padding: 24px 28px; background: var(--ink); color: #fff; border-radius: 10px; }
+    .fp-foot p { font: 700 1.3rem var(--serif); }
+
+    @media (max-width: 900px) {
+      .fp-head { grid-template-columns: 1fr; }
+      .reels { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 20px; gap: 14px; margin-inline: -20px; padding: 0 20px 8px; scrollbar-width: none; }
+      .reels::-webkit-scrollbar { display: none; }
+      .reel { flex: 0 0 68%; scroll-snap-align: start; }
+      .fp-photos { grid-template-columns: 1fr 1fr; }
+      .fp-photos img { height: 200px; }
+    }
+    @media (max-width: 480px) { .reel { flex-basis: 78%; } .fp-photos img { height: 160px; } .fp-foot .btn { width: 100%; } }
 
     /* Standards */
     .std { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 2px solid var(--ink); }
@@ -339,20 +383,57 @@ const finishes = [
       </div>
     </div>
 
-    <div class="wrap project">
-      <div class="project-head">
+  </section>
+
+  <!-- FEATURED PROJECT -->
+  <section class="section fp" id="project">
+    <div class="wrap">
+      <div class="fp-head">
         <div>
-          <span class="eyebrow">Recent project</span>
-          <h3>The Local Choice Pharmacy, Sun City</h3>
+          <span class="eyebrow">Featured project</span>
+          <h2>The Local Choice Pharmacy, Sun City</h2>
+          <p class="muted">A full pharmacy fitout inside the Sun City Resort entertainment centre — built to the shopfitting drawings, with the resort's site rules and a fixed handover date.</p>
         </div>
-        <p>Counters, wall shelving, bulkheads and wall panels for a full pharmacy fitout, completed September 2026. Photos taken on site during installation.</p>
+        <dl class="fp-facts">
+          <div><dt>Location</dt><dd>Sun City Resort, North West</dd></div>
+          <div><dt>Completed</dt><dd>September 2026</dd></div>
+          <div class="wide"><dt>Scope</dt><dd>Service counters, dispensary units, wall shelving, store rooms, bulkheads and wall panels</dd></div>
+        </dl>
       </div>
-      <div class="project-grid">
-        {sunCity.map((img) => (
+
+      <div class="reels" role="list">
+        {sunCityVideos.map((v, i) => (
+          <figure class="reel" role="listitem">
+            <div class="reel-media">
+              <video src={v.src} poster={v.poster} preload="none" playsinline muted width="720" height="1280" aria-label={`${v.title} video`}></video>
+              <button class="reel-play" type="button" aria-label={`Play: ${v.title}`}>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>
+              </button>
+              <span class="reel-len">{v.length}</span>
+            </div>
+            <figcaption>
+              <span class="reel-no">0{i + 1}</span>
+              <div>
+                <strong>{v.title}</strong>
+                <span>{v.note}</span>
+              </div>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+
+      <div class="fp-photos">
+        {sunCityPhotos.map((img) => (
           <a href={img.src} target="_blank" rel="noopener" style={`--col:${img.col}`} aria-label={`Open photo: ${img.alt}`}>
             <img src={img.src} width={img.w} height={img.h} alt={img.alt} loading="lazy" decoding="async" />
+            <span>{img.caption}</span>
           </a>
         ))}
+      </div>
+
+      <div class="fp-foot">
+        <p>Have a pharmacy or shop to fit out?</p>
+        <a class="btn btn-red" href={commercialWhatsApp} target="_blank" rel="noopener noreferrer">Send us your drawings</a>
       </div>
     </div>
   </section>
@@ -670,6 +751,24 @@ const finishes = [
         build();
       }
       window.addEventListener("pagehide", function () { urls.forEach(function (u) { URL.revokeObjectURL(u); }); });
+
+
+      /* ---------- Project videos ---------- */
+      var reels = Array.prototype.slice.call(document.querySelectorAll(".reel"));
+      reels.forEach(function (reel) {
+        var v = reel.querySelector("video");
+        var btn = reel.querySelector(".reel-play");
+        function start() {
+          reels.forEach(function (o) { if (o !== reel) { var ov = o.querySelector("video"); ov.pause(); } });
+          v.controls = true;
+          var p = v.play();
+          if (p && p.catch) p.catch(function () {});
+        }
+        btn.addEventListener("click", start);
+        v.addEventListener("play", function () { reel.classList.add("playing"); });
+        v.addEventListener("pause", function () { if (!v.seeking) reel.classList.remove("playing"); });
+        v.addEventListener("ended", function () { reel.classList.remove("playing"); v.controls = false; v.currentTime = 0; v.load(); });
+      });
 
       /* ---------- Review form ---------- */
       var rf = $("reviewForm");

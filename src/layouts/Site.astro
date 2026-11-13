@@ -17,6 +17,7 @@ const {
   nav = [
     { href: "/#residential", label: "Residential" },
     { href: "/#commercial", label: "Commercial" },
+    { href: "/#project", label: "Projects" },
     { href: "/#process", label: "Process" },
     { href: "/gallery", label: "Gallery" },
     { href: "/#contact", label: "Contact" }
@@ -185,7 +186,7 @@ const jsonLd = {
       }
       .mobile-menu .btn { margin-top: 20px; }
 
-      @media (max-width: 900px) {
+      @media (max-width: 1080px) {
         .nav-links, .header-cta .hide-sm { display: none; }
         .menu-toggle { display: inline-flex; }
       }
@@ -332,7 +333,7 @@ const jsonLd = {
           link.addEventListener("click", function () { setMenu(false); });
         });
         window.addEventListener("keydown", function (e) { if (e.key === "Escape") setMenu(false); });
-        window.addEventListener("resize", function () { if (window.innerWidth > 900) setMenu(false); });
+        window.addEventListener("resize", function () { if (window.innerWidth > 1080) setMenu(false); });
 
         window.wwToast = function (message) {
           if (!toastEl) return;
