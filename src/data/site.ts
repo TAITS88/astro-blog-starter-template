@@ -7,7 +7,7 @@ export const SITE = {
   regNo: "2019/540120/07",
   tagline: "Smart · Reliable · Professional",
   url: "https://www.whichwood.co.za",
-  email: "ruhantait@yahoo.com",
+  email: "admin@whichwood.co.za",
   displayPhone: "079 910 1465",
   intlPhone: "+27 79 910 1465",
   whatsappNumber: "27799101465",
