@@ -25,7 +25,13 @@ export const prerender = true;
     .dz-tools { position: absolute; top: 10px; right: 10px; display: flex; gap: 6px; }
     .dz-tool { min-width: 40px; min-height: 40px; padding: 0 10px; border: 1px solid #cfccc6; background: rgba(255,255,255,.92); border-radius: var(--radius); font: 600 .85rem var(--sans); cursor: pointer; color: var(--ink); }
     .dz-tool:hover { border-color: var(--ink); }
-    .dz-hint { position: absolute; left: 12px; bottom: 10px; font-size: .8rem; color: #6d6a65; pointer-events: none; }
+    .dz-bar { position: absolute; left: 10px; right: 10px; bottom: 10px; display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; flex-wrap: wrap; pointer-events: none; }
+    .dz-bar-b { display: flex; gap: 6px; pointer-events: auto; }
+    .dz-chip { font: 500 .8rem/1.2 var(--sans); color: #fff; background: rgba(17,17,17,.72); padding: 6px 10px; border-radius: 99px; font-variant-numeric: tabular-nums; }
+    .dz-tool[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+    #dzSave { background: var(--red); color: #fff; border-color: var(--red); }
+    .dz-labels.off { display: none; }
+    @media (max-width: 560px) { .dz-bar .dz-tool { min-width: 0; padding: 0 8px; font-size: .78rem; } .dz-chip { font-size: .72rem; } }
     .dz-meters { display: grid; gap: 8px; }
     .dz-meter { display: grid; grid-template-columns: 9.5em minmax(0, 1fr) auto; gap: 10px; align-items: center; font-size: .88rem; }
     .dz-meter b { font-weight: 600; }
@@ -104,7 +110,14 @@ export const prerender = true;
               <button class="dz-tool" type="button" id="dzZoomIn" aria-label="Zoom in">+</button>
               <button class="dz-tool" type="button" id="dzFront">Front view</button>
             </div>
-            <span class="dz-hint">Drag to look around</span>
+            <div class="dz-bar">
+              <span class="dz-chip" id="dzPhotoStat">Drag to look around</span>
+              <div class="dz-bar-b">
+                <button class="dz-tool" type="button" id="dzSizes" aria-pressed="true">Sizes</button>
+                <button class="dz-tool" type="button" id="dzPhoto" aria-pressed="true">Photo-real</button>
+                <button class="dz-tool" type="button" id="dzSave">Save picture</button>
+              </div>
+            </div>
           </div>
           <div class="dz-meters">
             <div class="dz-meter"><b id="dzMeterFloorL">Floor units</b><div class="dz-track"><div class="dz-fill" id="dzFillFloor"></div></div><span id="dzTxtFloor"></span></div>
@@ -184,7 +197,12 @@ export const prerender = true;
 
   <script>
     import * as THREE from "three";
-    import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
+    import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
+    import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+    import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+    import { GTAOPass } from "three/examples/jsm/postprocessing/GTAOPass.js";
+    import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
+    import { WebGLPathTracer } from "three-gpu-pathtracer";
     import { SITE } from "../data/site";
 
     // ================= catalogue =================
@@ -442,7 +460,7 @@ export const prerender = true;
     // ================= 3D =================
     const stage = $("dzStage"), labelsEl = $("dzLabels");
     let renderer: THREE.WebGLRenderer | null = null;
-    try { renderer = new THREE.WebGLRenderer({ antialias: true }); } catch { stage.append(el("p", "dz-note", "Your browser can't show the 3D preview, but you can still build and send your design.")); }
+    try { renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true }); } catch { stage.append(el("p", "dz-note", "Your browser can't show the 3D preview, but you can still build and send your design.")); }
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(35, 1, .05, 60);
     const root = new THREE.Group(); scene.add(root);
@@ -470,17 +488,72 @@ export const prerender = true;
     const matCache: Record<string, THREE.Material> = {};
     const mat = (key: string, make: () => THREE.Material) => matCache[key] || (matCache[key] = make());
     const std = (c: number, r = .5, m = 0) => mat(`s${c}-${r}-${m}`, () => new THREE.MeshStandardMaterial({ color: c, roughness: r, metalness: m }));
-    const carcassM = () => std(0xeeebe5, .55);
-    const doorM = (horizontal = false) => { const d = DOORS[st.d]; return d.wood ? mat(`dw${st.d}${horizontal}`, () => new THREE.MeshStandardMaterial({ map: wood(d.wood!, horizontal), roughness: .5 })) : std(d.c, .45); };
-    const topM = () => { const t = TOPS[st.k]; return t.wood ? mat(`tw${st.k}`, () => new THREE.MeshStandardMaterial({ map: wood(t.wood!, true), roughness: .5 })) : std(t.c, t.r); };
-    const steel = () => std(0xc9ccd0, .25, .9), glass = () => std(0x0b0b0c, .08, .3), ceramic = () => std(0xfafafa, .15);
-    const edgeM = new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: .18 });
+    const carcassM = () => std(0xf2f0ec, .6);
+    const doorM = (horizontal = false) => { const d = DOORS[st.d]; return d.wood ? mat(`dw${st.d}${horizontal}`, () => new THREE.MeshStandardMaterial({ map: wood(d.wood!, horizontal), roughness: .58 })) : std(d.c, st.d === "sprayed" ? .35 : .62); };
+    const phys = (key: string, o: THREE.MeshPhysicalMaterialParameters) => mat(key, () => new THREE.MeshPhysicalMaterial(o));
+    const steel = () => std(0xc4c7cb, .32, 1), glass = () => phys("glass", { color: 0x070708, roughness: .04, clearcoat: 1, clearcoatRoughness: .02 });
+    const ceramic = () => phys("ceramic", { color: 0xf7f7f5, roughness: .12, clearcoat: .6 });
+    const mirrorM = () => phys("mirror", { color: 0xeef3f5, roughness: .02, metalness: 1 });
+    // procedural surface textures
+    function canvasTex(key: string, size: number, draw: (g: CanvasRenderingContext2D, rnd: () => number) => void, rep = 1) {
+      if (texCache[key]) return texCache[key];
+      const c = document.createElement("canvas"); c.width = c.height = size; const g = c.getContext("2d")!;
+      let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+      draw(g, rnd); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
+      t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rep, rep); return texCache[key] = t;
+    }
+    const speckle = (base: string, dots: string[], n: number) => (g: CanvasRenderingContext2D, rnd: () => number) => {
+      g.fillStyle = base; g.fillRect(0, 0, 512, 512);
+      for (let i = 0; i < 40; i++) { g.fillStyle = dots[0] + "10"; g.beginPath(); g.arc(rnd() * 512, rnd() * 512, 30 + rnd() * 80, 0, 7); g.fill(); }
+      for (let i = 0; i < n; i++) { g.fillStyle = dots[(rnd() * dots.length) | 0]; const r = .4 + rnd() * 1.6; g.fillRect(rnd() * 512, rnd() * 512, r, r); }
+    };
+    const TOPTEX: Record<string, () => THREE.Texture> = {
+      quartz: () => canvasTex("q", 512, speckle("#ebe8e2", ["#bdb7ae", "#d6d1c9", "#9e978d", "#ffffff"], 9000), 2),
+      black: () => canvasTex("b", 512, speckle("#1e1e20", ["#5d5a57", "#8b8782", "#3a3836", "#c9c4bd"], 12000), 2),
+      concrete: () => canvasTex("c", 512, speckle("#9c9994", ["#8a8782", "#b0ada7", "#77746f", "#a7a49e"], 20000), 1.5),
+    };
+    const topM = () => { const t = TOPS[st.k]; return t.wood ? mat(`tw${st.k}`, () => new THREE.MeshStandardMaterial({ map: wood(t.wood!, true), roughness: .45 }))
+      : phys(`tp${st.k}`, { map: TOPTEX[st.k](), roughness: st.k === "concrete" ? .7 : .18, clearcoat: st.k === "concrete" ? 0 : .5, clearcoatRoughness: .1 }); };
+    const floorM = (L: number) => mat(`floor${L}`, () => new THREE.MeshStandardMaterial({ roughness: .42, map: (() => {
+      // engineered oak planks, 190 mm wide; texture covers 1.52 m x 1.52 m
+      const t = canvasTex("floor", 1024, (g, rnd) => {
+        const pw = 1024 / 8;
+        for (let i = 0; i < 8; i++) {
+          let y = -rnd() * 600;
+          while (y < 1024) {
+            const len = 500 + rnd() * 700, tone = rnd() * 26 - 13;
+            g.fillStyle = `rgb(${158 + tone},${121 + tone * .9},${86 + tone * .8})`; g.fillRect(i * pw, y, pw, len);
+            for (let k = 0; k < 26; k++) {
+              const x0 = i * pw + rnd() * pw, amp = 1 + rnd() * 3, f = .01 + rnd() * .02, ph = rnd() * 6;
+              g.strokeStyle = rnd() < .6 ? `rgba(95,62,35,${.08 + rnd() * .18})` : `rgba(215,175,130,${.06 + rnd() * .12})`; g.lineWidth = .5 + rnd() * 1.6; g.beginPath();
+              for (let yy = Math.max(0, y); yy <= Math.min(1024, y + len); yy += 8) g.lineTo(Math.min(i * pw + pw - 1, Math.max(i * pw + 1, x0 + Math.sin(yy * f + ph) * amp)), yy);
+              g.stroke();
+            }
+            g.fillStyle = "rgba(55,38,22,.55)"; g.fillRect(i * pw, y, pw, 2);
+            y += len;
+          }
+          g.fillStyle = "rgba(55,38,22,.5)"; g.fillRect(i * pw, 0, 2, 1024);
+        }
+      }); const c = t.clone(); c.needsUpdate = true; c.rotation = Math.PI / 2; c.repeat.set(9 / 1.52, (L / 1000) / 1.52); return c; })() }));
+    const wallM = () => std(0xe4dfd6, .93);
+    const tileM = (w: number, h: number) => phys(`tile${w}x${h}`, { roughness: .12, clearcoat: .4, map: (() => {
+      const t = canvasTex("subway", 512, (g, rnd) => {
+        g.fillStyle = "#d2cdc5"; g.fillRect(0, 0, 512, 512);
+        for (let r = 0; r < 8; r++) for (let c = -1; c < 4; c++) {
+          const x = c * 128 + (r % 2 ? 64 : 0) + 2, y = r * 64 + 2, v = 243 - rnd() * 5;
+          const gr = g.createLinearGradient(x, y, x, y + 60); gr.addColorStop(0, `rgb(${v + 4},${v + 3},${v})`); gr.addColorStop(1, `rgb(${v - 6},${v - 7},${v - 10})`);
+          g.fillStyle = gr; g.fillRect(x, y, 124, 60);
+        }
+      }); const c = t.clone(); c.needsUpdate = true; c.repeat.set(w / 600, h / 600); return c; })() });
     const mm = (v: number) => v / 1000;
     function box(w: number, h: number, d: number, x: number, y: number, z: number, m: THREE.Material, edges = true, parent: THREE.Object3D = root) {
       const geo = new THREE.BoxGeometry(mm(w), mm(h), mm(d)); const o = new THREE.Mesh(geo, m);
       o.position.set(mm(x), mm(y), mm(z)); o.castShadow = o.receiveShadow = true;
-      if (edges) o.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo), edgeM));
       parent.add(o); return o;
+    }
+    function rbox(w: number, h: number, d: number, x: number, y: number, z: number, m: THREE.Material, r = 2.5) {
+      const geo = new RoundedBoxGeometry(mm(w), mm(h), mm(d), 2, mm(Math.min(r, w / 4, h / 4, d / 4)));
+      const o = new THREE.Mesh(geo, m); o.position.set(mm(x), mm(y), mm(z)); o.castShadow = o.receiveShadow = true; root.add(o); return o;
     }
     function handle(cx: number, cy: number, z: number, len: number, vertical: boolean) {
       const hd = HANDLES[st.h]; if (st.h === "none") return;
@@ -531,9 +604,15 @@ export const prerender = true;
       let maxTop = pr.up.y0 + pr.up.h;
       // room
       const wallH = Math.max(2400, maxTop + 200);
-      box(L, wallH, 20, 0, wallH / 2, -10, std(0xe4e0d9, .9), false);
-      const fl = new THREE.Mesh(new THREE.PlaneGeometry(mm(L) + 3, 4), std(0xd2ccc3, .85)); fl.rotation.x = -Math.PI / 2; fl.position.set(0, 0, 1.6); fl.receiveShadow = true; root.add(fl);
-      for (const s of [-1, 1]) box(60, wallH, 900, s * (L / 2 + 30), wallH / 2, 440, std(0xd9d4cc, .9), false);
+      const RD = 9;
+      const back = new THREE.Mesh(new THREE.PlaneGeometry(mm(L), mm(wallH)), wallM()); back.position.set(0, mm(wallH) / 2, 0); back.receiveShadow = true; root.add(back);
+      for (const s of [-1, 1]) { const sw = new THREE.Mesh(new THREE.PlaneGeometry(RD, mm(wallH)), wallM()); sw.rotation.y = -s * Math.PI / 2; sw.position.set(s * mm(L) / 2, mm(wallH) / 2, RD / 2); sw.receiveShadow = true; root.add(sw);
+        box(16, 80, RD * 1000, s * (L / 2 - 8), 40, RD * 500, std(0xf4f2ee, .5)); }
+      const fl = new THREE.Mesh(new THREE.PlaneGeometry(mm(L), RD), floorM(L)); fl.rotation.x = -Math.PI / 2; fl.position.set(0, 0, RD / 2); fl.receiveShadow = true; root.add(fl);
+      if (st.p === "kitchen" && st.f.length) {
+        const y0 = pr.floor.y0 + pr.floor.h + pr.topT, y1 = pr.up.y0, w = Math.min(L, used(st.f));
+        const sb = new THREE.Mesh(new THREE.PlaneGeometry(mm(w), mm(y1 - y0)), tileM(w, y1 - y0)); sb.position.set(mm(X0 + w / 2), mm((y0 + y1) / 2), .004); sb.receiveShadow = true; root.add(sb);
+      }
       // wall length dimension
       label(`Wall ${L} mm`, 0, 0, (pr.floor.d || 600) + 420);
 
@@ -543,7 +622,7 @@ export const prerender = true;
           const ut = T[t]; const h = ut.h || r.h; const y0 = r.y0, d = r.d, fz = d + 9;
           const over = x + w > L / 2 + 1;
           if (t === "space") {
-            if (isFloor) { const o = box(w - 6, 4, d - 40, x + w / 2, 2, d / 2, std(0xbcb5aa, .9), false); o.castShadow = false; }
+            /* gap: nothing built */
           } else {
             if (ut.carcass !== false) {
               if (ut.front === "open") {
@@ -555,8 +634,8 @@ export const prerender = true;
             }
             for (const pc of fronts(ut.front, w, h)) {
               const cx = x + pc.x + pc.w / 2, cy = y0 + pc.y + pc.h / 2;
-              const m = pc.kind === "glass" ? glass() : pc.kind === "mirror" ? std(0xdfe6ea, .05, 1) : doorM(pc.kind === "drawer");
-              box(pc.w, pc.h, 18, cx, cy, fz, m);
+              const m = pc.kind === "glass" ? glass() : pc.kind === "mirror" ? mirrorM() : doorM(pc.kind === "drawer");
+              rbox(pc.w, pc.h, 18, cx, cy, fz, m, pc.kind === "glass" ? 1.5 : 2.5);
               if (pc.kind === "glass") { box(pc.w, 60, 20, cx, y0 + pc.y + pc.h - 30, fz + 1, steel(), false); handle(cx, y0 + pc.y + pc.h - 110, fz + 9, Math.min(460, pc.w - 80), false); continue; }
               const hl = st.h === "none" ? 0 : 1;
               if (!hl) continue;
@@ -573,7 +652,7 @@ export const prerender = true;
             // extras
             const cx = x + w / 2, topY = y0 + h + pr.topT;
             if (ut.extra === "fridge") {
-              const fh = 1850; box(w - 20, fh, 640, cx, fh / 2, 330, std(0xbfc3c8, .3, .6));
+              const fh = 1850; rbox(w - 20, fh, 640, cx, fh / 2, 330, std(0xbfc3c8, .3, .85), 12);
               box(w - 22, 4, 4, cx, 1150, 652, std(0x6f7378, .4, .6), false);
               handle(x + w - 70, 1300, 650, 400, true); handle(x + w - 70, 700, 650, 300, true);
             }
@@ -595,16 +674,20 @@ export const prerender = true;
               const chTop = Math.max(y0 + h + 200, 2350); box(260, chTop - y0 - 130, 220, cx, (chTop + y0 + 130) / 2, 120, steel(), false);
             }
             if (ut.extra === "shelf") box(w, 32, d - 50, cx, y0 + (isFloor ? 0 : h / 2), (d - 50) / 2, doorM(true));
-            if (ut.extra === "mirror") box(w, h, 6, cx, y0 + h / 2, 6, std(0xdfe6ea, .05, 1));
+            if (ut.extra === "mirror") rbox(w, h, 6, cx, y0 + h / 2, 6, mirrorM(), 2);
             if (ut.extra === "basin" || ut.extra === "basin2") {
               const n = ut.extra === "basin2" ? 2 : 1;
               for (let i = 0; i < n; i++) {
                 const bx = x + (w / (n * 2)) * (2 * i + 1);
-                box(460, 130, 360, bx, topY + 65, 240, ceramic(), false);
+                rbox(460, 130, 360, bx, topY + 65, 240, ceramic(), 20);
                 const tp = new THREE.Mesh(new THREE.CylinderGeometry(.01, .014, .22, 12), steel()); tp.position.set(mm(bx), mm(topY) + .11, .05); root.add(tp);
               }
             }
             if (ut.top) tops.push([x, x + w]);
+            if (!isFloor && st.p === "kitchen" && ut.carcass !== false) {
+              const led = new THREE.Mesh(new THREE.BoxGeometry(mm(w - 60), .004, .012), mat("led", () => new THREE.MeshStandardMaterial({ color: 0x222222, emissive: 0xffd9a8, emissiveIntensity: 4 })));
+              led.position.set(mm(x + w / 2), mm(y0) - .003, mm(d - 50)); root.add(led);
+            }
           }
           label(String(w), x + w / 2, isFloor ? y0 - (pr.plinthH ? pr.plinthH / 2 : 60) : y0 + h + 60, isFloor ? d + 30 : d + 20, !isFloor);
           if (over) label("too long", x + w / 2, y0 + (ut.h || r.h) / 2, d + 40);
@@ -615,7 +698,7 @@ export const prerender = true;
           if (pr.worktop) {
             const segs: [number, number][] = [];
             for (const s of tops) { const l = segs[segs.length - 1]; if (l && Math.abs(l[1] - s[0]) < 1) l[1] = s[1]; else segs.push([...s]); }
-            for (const [a, b] of segs) box(b - a, pr.topT, pr.topD, (a + b) / 2, r.y0 + r.h + pr.topT / 2, pr.topD / 2, topM());
+            for (const [a, b] of segs) rbox(b - a, pr.topT, pr.topD, (a + b) / 2, r.y0 + r.h + pr.topT / 2, pr.topD / 2, topM(), 3);
           }
           if (pr.plinthH) {
             let px = X0;
@@ -626,7 +709,7 @@ export const prerender = true;
       placeRow(st.f, pr.floor, true);
       placeRow(st.u, pr.up, false);
       if (st.p === "tv") { box(1230, 710, 30, 0, 1150, 40, glass(), false); box(1210, 690, 2, 0, 1150, 56, std(0x1b2430, .2, .2), false); }
-      setLabelsPos();
+      setLabelsPos(); sceneDirty = true; lastChange = performance.now();
     }
 
     // camera
@@ -651,27 +734,81 @@ export const prerender = true;
         l.el.style.left = `${(v.x * .5 + .5) * W}px`; l.el.style.top = `${(-v.y * .5 + .5) * H}px`;
       }
     }
+    let sceneDirty = true, lastChange = 0;
     if (renderer) {
-      renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-      renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      const coarse = matchMedia("(pointer: coarse)").matches;
+      renderer.setPixelRatio(Math.min(devicePixelRatio, coarse ? 1.25 : 1.5));
+      renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = .95;
       renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-      renderer.setClearColor(0xefece7);
       stage.prepend(renderer.domElement);
-      scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), .04).texture;
-      const key = new THREE.DirectionalLight(0xffffff, 1.3); key.position.set(2.5, 5, 5); key.castShadow = true;
-      key.shadow.mapSize.set(2048, 2048); Object.assign(key.shadow.camera, { left: -5, right: 5, top: 4, bottom: -2, near: .5, far: 20 }); key.shadow.radius = 4; key.shadow.bias = -.0004;
-      scene.add(key, new THREE.HemisphereLight(0xffffff, 0xb9b2a8, .45));
-      const resize = () => { W = stage.clientWidth; H = stage.clientHeight; renderer!.setSize(W, H, false); camera.aspect = W / H; camera.updateProjectionMatrix(); };
+      scene.background = new THREE.Color(0xf3f1ed);
+      // soft daylight studio: bright sky above, big window behind the viewer
+      { const EW = 512, EH = 256, data = new Float32Array(EW * EH * 4);
+        for (let y = 0; y < EH; y++) { const el = ((y + .5) / EH - .5) * Math.PI;
+          for (let x = 0; x < EW; x++) { const az = ((x + .5) / EW - .5) * 2 * Math.PI, dz = Math.cos(el) * Math.sin(az), dx = Math.cos(el) * Math.cos(az);
+            let b = el > 0 ? .32 + .6 * Math.sin(el) : .16;
+            const win = Math.max(0, Math.min(1, (dz - .6) * 6)) * Math.max(0, Math.min(1, (.75 - Math.abs(el - .25)) * 5)) * Math.max(0, Math.min(1, (.5 - Math.abs(dx)) * 4 + 1));
+            b += win * 1.9; const i = (y * EW + x) * 4;
+            data[i] = b * 1.0; data[i + 1] = b * .965; data[i + 2] = b * .91; data[i + 3] = 1; } }
+        const env = new THREE.DataTexture(data, EW, EH, THREE.RGBAFormat, THREE.FloatType);
+        env.mapping = THREE.EquirectangularReflectionMapping; env.magFilter = env.minFilter = THREE.LinearFilter; env.needsUpdate = true;
+        scene.environment = env; }
+      const key = new THREE.DirectionalLight(0xfff4e6, .75); key.position.set(1.8, 5.5, 4.5); key.castShadow = true;
+      key.shadow.mapSize.set(2048, 2048); Object.assign(key.shadow.camera, { left: -5, right: 5, top: 4, bottom: -2, near: .5, far: 20 }); key.shadow.radius = 6; key.shadow.bias = -.0003; key.shadow.normalBias = .01;
+      scene.add(key);
+
+      const composer = new EffectComposer(renderer);
+      composer.addPass(new RenderPass(scene, camera));
+      const ao = new GTAOPass(scene, camera, 1, 1); ao.blendIntensity = .9; composer.addPass(ao);
+      composer.addPass(new OutputPass());
+
+      // three r160 scenes lack these newer fields the path tracer reads
+      for (const k of ["environmentRotation", "backgroundRotation"]) if (!(k in THREE.Scene.prototype)) Object.defineProperty(THREE.Scene.prototype, k, { value: new THREE.Euler(), writable: true, configurable: true });
+      const pt = new WebGLPathTracer(renderer);
+      pt.tiles.set(2, 2); pt.bounces = 5; pt.filterGlossyFactor = .5; pt.minSamples = 3; pt.renderDelay = 0; pt.fadeDuration = 350;
+      pt.rasterizeSceneCallback = () => composer.render();
+      const MAXS = coarse ? 120 : 500;
+      let photo = true; try { photo = localStorage.getItem("ww-photo") !== "0"; } catch {}
+      const photoBtn = $("dzPhoto") as HTMLButtonElement, statEl = $("dzPhotoStat");
+      const syncPhoto = () => { photoBtn.setAttribute("aria-pressed", String(photo)); };
+      syncPhoto();
+      photoBtn.addEventListener("click", () => { photo = !photo; syncPhoto(); lastChange = performance.now(); try { localStorage.setItem("ww-photo", photo ? "1" : "0"); } catch {} });
+      const sizesBtn = $("dzSizes");
+      sizesBtn.addEventListener("click", () => { const on = labelsEl.classList.toggle("off"); sizesBtn.setAttribute("aria-pressed", String(!on)); });
+      $("dzSave").addEventListener("click", () => {
+        renderer!.domElement.toBlob(b => { if (!b) return; const a = document.createElement("a"); a.href = URL.createObjectURL(b);
+          a.download = `whichwood-${st.p}-design.png`; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }, "image/png");
+        toast(photo && pt.samples >= MAXS * .5 ? "Picture saved" : "Picture saved — let the photo finish for the best quality");
+      });
+
+      const resize = () => { W = stage.clientWidth; H = stage.clientHeight; renderer!.setSize(W, H, false); composer.setSize(W, H); ao.setSize(W, H); camera.aspect = W / H; camera.updateProjectionMatrix(); lastChange = performance.now(); };
       const ro = new ResizeObserver(resize); ro.observe(stage); resize();
       let drag = false, lx = 0, ly = 0;
       stage.addEventListener("pointerdown", e => { if ((e.target as HTMLElement).closest("button")) return; drag = true; lx = e.clientX; ly = e.clientY; stage.setPointerCapture(e.pointerId); });
-      stage.addEventListener("pointermove", e => { if (!drag) return; yaw -= (e.clientX - lx) * .006; pitch = Math.max(-.05, Math.min(.9, pitch + (e.clientY - ly) * .004)); lx = e.clientX; ly = e.clientY; });
+      stage.addEventListener("pointermove", e => { if (!drag) return; yaw -= (e.clientX - lx) * .006; pitch = Math.max(-.05, Math.min(.6, pitch + (e.clientY - ly) * .004)); lx = e.clientX; ly = e.clientY; });
       const end = () => { drag = false; }; stage.addEventListener("pointerup", end); stage.addEventListener("pointercancel", end);
       $("dzZoomIn").addEventListener("click", () => { zoom = Math.min(2.5, zoom * 1.2); });
       $("dzZoomOut").addEventListener("click", () => { zoom = Math.max(.6, zoom / 1.2); });
       $("dzFront").addEventListener("click", () => { yaw = 0; pitch = .08; zoom = 1; });
       let visible = true; const io = new IntersectionObserver(es => { visible = es[0].isIntersecting; }); io.observe(stage);
-      const loop = () => { requestAnimationFrame(loop); if (!visible || document.hidden) return; placeCam(); setLabelsPos(); renderer!.render(scene, camera); };
+      const lastPos = new THREE.Vector3(1e9, 0, 0), lastQ = new THREE.Quaternion();
+      let camDirty = true, lastStat = "";
+      const setStat = (t: string) => { if (t !== lastStat) { lastStat = t; statEl.textContent = t; } };
+      const loop = () => {
+        requestAnimationFrame(loop); if (!visible || document.hidden) return;
+        const now = performance.now();
+        placeCam();
+        if (camera.position.distanceToSquared(lastPos) > 1e-10 || 1 - Math.abs(camera.quaternion.dot(lastQ)) > 1e-10) { lastPos.copy(camera.position); lastQ.copy(camera.quaternion); lastChange = now; camDirty = true; }
+        setLabelsPos();
+        if (photo && now - lastChange > 450) {
+          try {
+            if (sceneDirty) { pt.setScene(scene, camera); sceneDirty = false; camDirty = false; }
+            else if (camDirty) { pt.updateCamera(); camDirty = false; }
+            if (pt.samples < MAXS) { pt.renderSample(); setStat(`Developing photo… ${Math.min(99, Math.round(pt.samples / MAXS * 100))}%`); }
+            else setStat("Photo ready · save it or keep designing");
+          } catch (err) { photo = false; syncPhoto(); setStat("Drag to look around"); composer.render(); }
+        } else { composer.render(); camDirty = true; setStat(photo ? "Hold still for the photo…" : "Drag to look around"); }
+      };
       requestAnimationFrame(loop);
     }
     renderUI(); rebuild();
