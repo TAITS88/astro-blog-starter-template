@@ -1,5 +1,6 @@
 ---
 import Site from "../layouts/Site.astro";
+import Cupboard3D from "../components/Cupboard3D.astro";
 import { SITE, whatsappLink, mailLink, DEFAULT_WHATSAPP } from "../data/site";
 
 // Approved reviews are read straight from D1 on the server, so they are in the
@@ -301,7 +302,7 @@ const finishes = [
         </div>
       </div>
       <div class="hero-media">
-        <img src="/images/kitchens/kitchen-02.jpg" width="1200" height="720" alt="Fitted kitchen with wood-look cupboards and a white island" fetchpriority="high" decoding="async" />
+        <Cupboard3D />
       </div>
     </div>
   </section>
