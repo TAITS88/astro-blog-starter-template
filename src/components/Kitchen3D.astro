@@ -1,0 +1,442 @@
+---
+// Home hero: a kitchen that goes from cutting list → cut panels → carcasses built → fronts,
+// worktop and appliances installed → complete. Workshop standards: base/tall sides 600 deep,
+// carcass parts 20 mm shallower than the sides (580), 16 mm board, 6 mm backs.
+---
+<div class="k3d" id="k3d" role="img" aria-label="3D kitchen built from its cutting list: panels are cut, assembled into cabinets, then doors, worktop and appliances are installed">
+  <div class="k3d-list" id="k3d-list" aria-hidden="true">
+    <div class="k3d-list-h"><b>Cutting list</b><span id="k3d-count"></span></div>
+    <div id="k3d-rows"></div>
+  </div>
+  <div class="k3d-steps" id="k3d-steps" aria-hidden="true"></div>
+  <span class="k3d-hint" id="k3d-hint">Drag to turn</span>
+  <div class="k3d-bar">
+    <span class="k3d-stat" id="k3d-stat"><b>Cutting list</b></span>
+    <button class="k3d-ctl" id="k3d-play" type="button" aria-pressed="false">Pause</button>
+  </div>
+  <div class="k3d-fade" id="k3d-fade"></div>
+  <noscript><img src="/images/kitchens/kitchen-02.jpg" alt="Fitted kitchen with wood-look cupboards and a white island" /></noscript>
+</div>
+
+<style>
+  .k3d { position: relative; aspect-ratio: 5 / 4; border-radius: var(--radius); overflow: hidden; background: #121212;
+    touch-action: pan-y; cursor: grab; isolation: isolate; color: #f4f2ee; font-family: var(--sans); }
+  .k3d:active { cursor: grabbing; }
+  .k3d :global(canvas) { position: absolute; inset: 0; width: 100% !important; height: 100% !important; display: block; }
+  .k3d noscript img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .k3d-list { position: absolute; top: 12px; left: 12px; bottom: 64px; display: flex; flex-direction: column; width: 216px; padding: 10px 10px 8px; background: rgba(12,12,12,.82);
+    border-top: 3px solid var(--red); border-radius: 2px; font-size: 12px; line-height: 1.3; pointer-events: none; z-index: 2; }
+  #k3d-rows { flex: 1 1 auto; min-height: 0; overflow: hidden; -webkit-mask: linear-gradient(#000 85%, transparent); mask: linear-gradient(#000 85%, transparent); }
+  .k3d-list-h { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; font-size: 13px; }
+  .k3d-list-h span { color: #a9a5a0; font-size: 12px; font-variant-numeric: tabular-nums; }
+  .k3d :global(.k3d-row) { display: grid; grid-template-columns: 1fr auto 22px 12px; gap: 6px; padding: 2px 0; opacity: 0;
+    transition: opacity .25s, color .25s; color: #cfcac4; font-variant-numeric: tabular-nums; border-bottom: 1px solid rgba(255,255,255,.06); }
+  .k3d :global(.k3d-row.on) { opacity: 1; }
+  .k3d :global(.k3d-row i) { font-style: normal; color: #8f8a85; text-align: right; }
+  .k3d :global(.k3d-row em) { font-style: normal; color: var(--red); font-weight: 700; opacity: 0; transition: opacity .2s; }
+  .k3d :global(.k3d-row.cut) { color: #fff; }
+  .k3d :global(.k3d-row.cut em) { opacity: 1; }
+  .k3d-steps { position: absolute; top: 12px; right: 12px; display: flex; gap: 4px; z-index: 2; pointer-events: none; }
+  .k3d :global(.k3d-steps span) { font-size: 11px; padding: 3px 7px; border-radius: 2px; color: #8a8681; background: rgba(12,12,12,.7); transition: background .3s, color .3s; }
+  .k3d :global(.k3d-steps span.now) { background: var(--red); color: #fff; }
+  .k3d :global(.k3d-steps span.done) { color: #e9e6e1; }
+  .k3d-bar { position: absolute; left: 14px; right: 14px; bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; pointer-events: none; z-index: 2; }
+  .k3d-stat { font-size: 14px; color: #bdb8b2; text-shadow: 0 1px 3px #000, 0 0 8px #000; }
+  .k3d-stat :global(b) { color: #fff; font-weight: 600; }
+  .k3d-ctl { pointer-events: auto; min-width: 44px; min-height: 40px; padding: 0 14px; border-radius: var(--radius); border: 1px solid #3d3a37;
+    background: rgba(17,17,17,.75); color: #fff; font: 600 14px var(--sans); cursor: pointer; }
+  .k3d-ctl:hover { border-color: #fff; }
+  .k3d-ctl:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
+  .k3d-hint { position: absolute; right: 14px; bottom: 60px; font-size: 12px; color: #8a8681; pointer-events: none; transition: opacity .6s; z-index: 2; }
+  .k3d-fade { position: absolute; inset: 0; background: #121212; opacity: 1; pointer-events: none; z-index: 3; }
+  @media (max-width: 600px) {
+    .k3d-list { display: none; }
+    .k3d-steps { left: 10px; right: 10px; top: 10px; justify-content: center; }
+    .k3d-stat { font-size: 13px; }
+  }
+</style>
+
+<script>
+  import * as THREE from "three";
+  import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
+
+  const stage = document.getElementById("k3d");
+  if (stage) init(stage);
+
+  function init(stage: HTMLElement) {
+    const $ = (id: string) => document.getElementById(id)!;
+    const listEl = $("k3d-list"), rowsEl = $("k3d-rows"), countEl = $("k3d-count"), stepsEl = $("k3d-steps");
+    const statEl = $("k3d-stat"), playBtn = $("k3d-play"), hintEl = $("k3d-hint"), fadeEl = $("k3d-fade");
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let renderer: THREE.WebGLRenderer;
+    try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false }); }
+    catch { fadeEl.style.opacity = "0"; statEl.textContent = "3D view needs WebGL"; return; }
+    renderer.setClearColor(0x121212);
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.0;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    stage.prepend(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+    scene.fog = new THREE.Fog(0x121212, 9, 18);
+    const camera = new THREE.PerspectiveCamera(34, 1, 0.05, 60);
+
+    const key = new THREE.DirectionalLight(0xffffff, 1.5);
+    key.position.set(2.5, 6, 5);
+    key.castShadow = true;
+    key.shadow.mapSize.set(2048, 2048);
+    Object.assign(key.shadow.camera, { left: -4, right: 4, top: 5, bottom: -3, near: 0.5, far: 20 });
+    key.shadow.radius = 5; key.shadow.bias = -0.0004;
+    const rim = new THREE.DirectionalLight(0xff4040, 0.35); rim.position.set(-4, 3, -1);
+    scene.add(key, rim, new THREE.HemisphereLight(0xffffff, 0x1a1a1a, 0.35));
+
+    // ---------- workshop floor + wall
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.MeshStandardMaterial({ color: 0x1a1918, roughness: .95 }));
+    floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+    const grid = new THREE.GridHelper(14, 56, 0x34322f, 0x242321); grid.position.y = .001; scene.add(grid);
+    const wall = new THREE.Mesh(new THREE.PlaneGeometry(6.2, 3), new THREE.MeshStandardMaterial({ color: 0x232120, roughness: .9 }));
+    wall.position.set(0, 1.5, -.004); wall.receiveShadow = true; scene.add(wall);
+
+    // ---------- materials
+    function woodTexture(horizontal: boolean, base = "#b4875a") {
+      const c = document.createElement("canvas"); c.width = 256; c.height = 1024;
+      const g = c.getContext("2d")!;
+      g.fillStyle = base; g.fillRect(0, 0, 256, 1024);
+      for (let i = 0; i < 150; i++) {
+        const x0 = Math.random() * 256, amp = 2 + Math.random() * 6, f = .004 + Math.random() * .01, ph = Math.random() * 6;
+        g.strokeStyle = Math.random() < .6 ? `rgba(90,55,28,${.05 + Math.random() * .16})` : `rgba(235,200,150,${.05 + Math.random() * .1})`;
+        g.lineWidth = .6 + Math.random() * 2.4; g.beginPath();
+        for (let y = 0; y <= 1024; y += 16) g.lineTo(x0 + Math.sin(y * f + ph) * amp, y);
+        g.stroke();
+      }
+      const t = new THREE.CanvasTexture(c);
+      t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+      if (horizontal) { t.center.set(.5, .5); t.rotation = Math.PI / 2; }
+      return t;
+    }
+    const M = {
+      board: new THREE.MeshStandardMaterial({ color: 0xeeebe5, roughness: .55 }),
+      back: new THREE.MeshStandardMaterial({ color: 0xd8d2c8, roughness: .8 }),
+      grey: new THREE.MeshStandardMaterial({ color: 0x41464c, roughness: .45 }),
+      oak: new THREE.MeshStandardMaterial({ map: woodTexture(false), roughness: .5 }),
+      quartz: new THREE.MeshStandardMaterial({ color: 0xe6e3dd, roughness: .25 }),
+      handle: new THREE.MeshStandardMaterial({ color: 0x141414, roughness: .3, metalness: .8 }),
+      steel: new THREE.MeshStandardMaterial({ color: 0xc9ccd0, roughness: .25, metalness: .9 }),
+      glass: new THREE.MeshStandardMaterial({ color: 0x0b0b0c, roughness: .08, metalness: .3 }),
+      ring: new THREE.MeshStandardMaterial({ color: 0x4a4a4a, roughness: .4 }),
+      plinth: new THREE.MeshStandardMaterial({ color: 0x1c1c1c, roughness: .7 }),
+      led: new THREE.MeshStandardMaterial({ color: 0x222222, emissive: 0xffc98a, emissiveIntensity: 0 }),
+    };
+    const edgeMat = new THREE.LineBasicMaterial({ color: 0x3a3632, transparent: true, opacity: .4 });
+    const outlineMat = new THREE.LineBasicMaterial({ color: 0xe0303f });
+
+    const mm = (v: number) => v / 1000;
+    function mesh(w: number, h: number, d: number, mat: THREE.Material, edges = true) {
+      const geo = new THREE.BoxGeometry(mm(w), mm(h), mm(d));
+      const m = new THREE.Mesh(geo, mat); m.castShadow = m.receiveShadow = true;
+      if (edges) m.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo), edgeMat));
+      return m;
+    }
+    function bar(len: number, vertical: boolean, mat = M.handle, r = 6) {
+      const g = new THREE.Group();
+      const b = new THREE.Mesh(new THREE.CylinderGeometry(mm(r), mm(r), mm(len), 14), mat);
+      if (!vertical) b.rotation.z = Math.PI / 2;
+      b.position.z = .028; b.castShadow = true; g.add(b);
+      for (const s of [-1, 1]) {
+        const p = new THREE.Mesh(new THREE.CylinderGeometry(.005, .005, .028, 10), mat);
+        p.rotation.x = Math.PI / 2; p.position.z = .014;
+        if (vertical) p.position.y = s * mm(len / 2 - 15); else p.position.x = s * mm(len / 2 - 15);
+        g.add(p);
+      }
+      return g;
+    }
+
+    // ---------- the kitchen (mm)
+    const T = 16, PL = 150, BH = 720, WALL_Y = 1530, TOP_T = 30;
+    type Cab = { id: string; kind: "tall" | "base" | "wall"; w: number; front: string; over?: string; x0?: number };
+    const cabs: Cab[] = [
+      { id: "T1", kind: "tall", w: 600, front: "door1" },
+      { id: "B1", kind: "base", w: 600, front: "drawers3" },
+      { id: "B2", kind: "base", w: 900, front: "doors2" },
+      { id: "B3", kind: "base", w: 600, front: "oven" },
+      { id: "B4", kind: "base", w: 450, front: "door1" },
+      { id: "W1", kind: "wall", w: 600, front: "doors2", over: "B1" },
+      { id: "W2", kind: "wall", w: 900, front: "doors2", over: "B2" },
+      { id: "W4", kind: "wall", w: 450, front: "door1", over: "B4" },
+    ];
+    const RUN = cabs.filter(c => c.kind !== "wall").reduce((s, c) => s + c.w, 0);
+    { let x = -RUN / 2; for (const c of cabs) if (c.kind !== "wall") { c.x0 = x; x += c.w; } }
+    for (const c of cabs) if (c.over) c.x0 = cabs.find(o => o.id === c.over)!.x0;
+    const spec = (c: Cab) => c.kind === "tall" ? { y0: PL, H: 2100, SD: 600 } : c.kind === "base" ? { y0: PL, H: BH, SD: 600 } : { y0: WALL_Y, H: 720, SD: 320 };
+
+    type Panel = { name: string; dims: number[]; home: THREE.Vector3; thin: number; mesh: THREE.Mesh; flatPos: THREE.Vector3; flatQ: THREE.Quaternion;
+      fx: number; fz: number; cut: number; build: number; outline?: THREE.LineLoop; outlineOn: number };
+    const panels: Panel[] = [];
+    cabs.forEach((c, ci) => {
+      const { y0, H, SD } = spec(c); const CD = SD - 20, w = c.w, x0 = c.x0!, cx = x0 + w / 2;
+      const kind = c.kind === "tall" ? "Tall" : c.kind === "base" ? "Base" : "Wall";
+      const add = (name: string, dims: number[], pos: number[], thin: number) => {
+        const m = mesh(dims[0], dims[1], dims[2], name === "Back" ? M.back : M.board);
+        panels.push({ name, dims, home: new THREE.Vector3(mm(pos[0]), mm(pos[1]), mm(pos[2])), thin, mesh: m,
+          flatPos: new THREE.Vector3(), flatQ: new THREE.Quaternion(), fx: 0, fz: 0, cut: 0, build: 0, outlineOn: 0 });
+        (panels[panels.length - 1] as any).ci = ci;
+      };
+      add("Bottom", [w - 2 * T, T, CD], [cx, y0 + T / 2, CD / 2], 1);
+      add(`${kind} side`, [T, H, SD], [x0 + T / 2, y0 + H / 2, SD / 2], 0);
+      add(`${kind} side`, [T, H, SD], [x0 + w - T / 2, y0 + H / 2, SD / 2], 0);
+      add("Back", [w - 2 * T, H - 2 * T, 6], [cx, y0 + H / 2, 3], 2);
+      add("Top", [w - 2 * T, T, CD], [cx, y0 + H - T / 2, CD / 2], 1);
+      const shelves = c.kind === "tall" ? 4 : (c.front === "drawers3" || c.front === "oven") ? 0 : 1;
+      for (let k = 1; k <= shelves; k++) add("Shelf", [w - 2 * T, T, CD - 20], [cx, y0 + H * k / (shelves + 1), 6 + (CD - 20) / 2], 1);
+    });
+
+    // flat pose: thin axis up, longest side along x
+    const Y = new THREE.Vector3(0, 1, 0), X = new THREE.Vector3(1, 0, 0), Z = new THREE.Vector3(0, 0, 1);
+    for (const p of panels) {
+      const [a, b, c] = p.dims; let fx: number, fz: number; const tilt = new THREE.Quaternion();
+      if (p.thin === 0) { tilt.setFromAxisAngle(Z, Math.PI / 2); fx = b; fz = c; }
+      else if (p.thin === 2) { tilt.setFromAxisAngle(X, -Math.PI / 2); fx = a; fz = b; }
+      else { fx = a; fz = c; }
+      const yaw = new THREE.Quaternion();
+      if (fz > fx) { yaw.setFromAxisAngle(Y, Math.PI / 2); [fx, fz] = [fz, fx]; }
+      p.flatQ.copy(yaw).multiply(tilt); p.fx = mm(fx); p.fz = mm(fz);
+    }
+    // shelf-pack the flat parts on the floor in front of the run
+    const order = panels.map((p, i) => i).sort((i, j) => panels[j].fz - panels[i].fz || panels[j].fx - panels[i].fx);
+    const MAXW = 4.4, GAP = .07;
+    const rows: { items: number[]; w: number; d: number }[] = [];
+    let row = { items: [] as number[], w: 0, d: 0 };
+    for (const i of order) {
+      const p = panels[i];
+      if (row.items.length && row.w + GAP + p.fx > MAXW) { rows.push(row); row = { items: [], w: 0, d: 0 }; }
+      row.w += (row.items.length ? GAP : 0) + p.fx; row.d = Math.max(row.d, p.fz); row.items.push(i);
+    }
+    rows.push(row);
+    let z = 1.0; const flatOrder: number[] = [];
+    for (const r of rows) {
+      let x = -r.w / 2;
+      for (const i of r.items) {
+        const p = panels[i];
+        p.flatPos.set(x + p.fx / 2, mm(Math.min(...p.dims)) / 2 + .001, z + p.fz / 2);
+        x += p.fx + GAP; flatOrder.push(i);
+      }
+      z += r.d + GAP;
+    }
+    const flatMinZ = 1.0, flatMaxZ = z, flatW = Math.max(...rows.map(r => r.w));
+
+    // outlines + timings
+    const N = panels.length;
+    flatOrder.forEach((i, k) => {
+      const p = panels[i];
+      p.outlineOn = .25 + k / N * 1.0;
+      p.cut = 1.4 + k / N * 2.2;
+      const hw = p.fx / 2, hd = p.fz / 2;
+      const g = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-hw, 0, -hd), new THREE.Vector3(hw, 0, -hd), new THREE.Vector3(hw, 0, hd), new THREE.Vector3(-hw, 0, hd)]);
+      p.outline = new THREE.LineLoop(g, outlineMat); p.outline.position.set(p.flatPos.x, .003, p.flatPos.z);
+      scene.add(p.outline, p.mesh);
+    });
+    const perCab: Record<number, number> = {};
+    for (const p of panels) { const ci = (p as any).ci; const k = perCab[ci] = (perCab[ci] ?? -1) + 1; p.build = 4.6 + ci * .62 + k * .075; }
+    const scaleAxis = ["x", "y", "z"] as const;
+
+    // ---------- cutting list rows
+    const groups: { key: string; name: string; size: string; qty: number; on: number; cut: number; el?: HTMLElement; st?: string }[] = [];
+    for (const i of flatOrder) {
+      const p = panels[i]; const d = [...p.dims].sort((a, b) => b - a);
+      const size = `${Math.round(d[0])} × ${Math.round(d[1])}`, key = p.name + size + d[2];
+      let g = groups.find(x => x.key === key);
+      if (!g) { g = { key, name: p.name, size: d[2] === 6 ? `${size} · 6` : size, qty: 0, on: p.outlineOn, cut: p.cut }; groups.push(g); }
+      g.qty++; g.cut = Math.max(g.cut, p.cut);
+    }
+    for (const g of groups) {
+      const el = document.createElement("div"); el.className = "k3d-row";
+      const n = document.createElement("span"); n.textContent = g.name;
+      const s = document.createElement("i"); s.textContent = g.size;
+      const q = document.createElement("i"); q.textContent = `×${g.qty}`;
+      const t = document.createElement("em"); t.textContent = "✓";
+      el.append(n, s, q, t); rowsEl.append(el); g.el = el;
+    }
+    countEl.textContent = `${N} parts`;
+
+    // ---------- install items (fronts, tops, appliances)
+    type Item = { obj: THREE.Object3D; home: THREE.Vector3; rotY: number; start: number; dur: number; off: THREE.Vector3; spin: number };
+    const items: Item[] = [];
+    function install(obj: THREE.Object3D, pos: number[], start: number, off: number[], spin = 0, dur = .8) {
+      obj.position.set(mm(pos[0]), mm(pos[1]), mm(pos[2])); scene.add(obj);
+      items.push({ obj, home: obj.position.clone(), rotY: obj.rotation.y, start, dur, off: new THREE.Vector3(...off), spin });
+    }
+    const group = (...objs: THREE.Object3D[]) => { const g = new THREE.Group(); g.add(...objs); return g; };
+    const GAPF = 3;
+    // plinth
+    install(mesh(RUN, PL, 16, M.plinth, false), [0, PL / 2, 540], 10.2, [0, 0, .6]);
+    // worktop over base units (not over tall)
+    const b1 = cabs.find(c => c.id === "B1")!, wtLen = RUN / 2 - b1.x0!;
+    install(mesh(wtLen, TOP_T, 620, M.quartz), [b1.x0! + wtLen / 2, PL + BH + TOP_T / 2, 310], 10.45, [0, .9, 0], 0, .7);
+
+    let fi = 0;
+    for (const c of cabs) {
+      const { y0, H, SD } = spec(c); const x0 = c.x0!, w = c.w, fz = SD + 9, t0 = 10.8 + fi++ * .16;
+      const mat = c.kind === "wall" ? M.oak : M.grey;
+      const hY = c.kind === "wall" ? -1 : 1; // handle near bottom on wall units, top on base
+      const door = (dx: number, dw: number, side: number, t: number) => {
+        const dh = H - GAPF;
+        const d = group(mesh(dw, dh, 18, mat));
+        const h = bar(c.kind === "tall" ? 600 : 220, true);
+        h.position.set(-side * mm(dw / 2 - 40), c.kind === "tall" ? 0 : hY * mm(dh / 2 - 150), mm(9)); d.add(h);
+        install(d, [dx, y0 + H / 2, fz], t, [side * .35, 0, .9], side * .7);
+      };
+      if (c.front === "door1") door(x0 + w / 2, w - GAPF, 1, t0);
+      if (c.front === "doors2") { const dw = (w - 3 * GAPF) / 2; door(x0 + GAPF / 2 + dw / 2, dw, -1, t0); door(x0 + w - GAPF / 2 - dw / 2, dw, 1, t0 + .08); }
+      if (c.front === "drawers3") {
+        const dh = (H - 4 * GAPF) / 3;
+        for (let k = 0; k < 3; k++) {
+          const f = group(mesh(w - GAPF, dh, 18, M.grey)); const h = bar(300, false); h.position.set(0, mm(dh / 2 - 45), mm(9)); f.add(h);
+          install(f, [x0 + w / 2, y0 + GAPF + dh / 2 + k * (dh + GAPF), fz], t0 + k * .07, [0, 0, .7 + k * .1]);
+        }
+      }
+      if (c.front === "oven") {
+        const oh = 595, lh = H - oh - 3 * GAPF;
+        const lower = group(mesh(w - GAPF, lh, 18, M.grey)); const lhb = bar(300, false); lhb.position.set(0, 0, mm(9)); lower.add(lhb);
+        install(lower, [x0 + w / 2, y0 + GAPF + lh / 2, fz], t0, [0, 0, .7]);
+        const oven = group(mesh(w - GAPF, oh, 22, M.glass, false), (() => { const s = mesh(w - GAPF, 70, 24, M.steel, false); s.position.y = mm(oh / 2 - 35); return s; })());
+        const ob = bar(480, false, M.steel, 7); ob.position.set(0, mm(oh / 2 - 105), mm(11)); oven.add(ob);
+        install(oven, [x0 + w / 2, y0 + H - GAPF - oh / 2, fz + 2], t0 + .25, [0, 0, 1.1]);
+      }
+    }
+    // sink + tap on B2, hob on B3, hood over B3
+    const b2 = cabs.find(c => c.id === "B2")!, b3 = cabs.find(c => c.id === "B3")!, wtY = PL + BH + TOP_T;
+    const sink = group(mesh(760, 4, 440, M.steel, false));
+    const bowl = mesh(700, 3, 380, new THREE.MeshStandardMaterial({ color: 0x6f7378, roughness: .35, metalness: .9 }), false); bowl.position.y = .002; sink.add(bowl);
+    install(sink, [b2.x0! + b2.w / 2, wtY + 2, 300], 11.7, [0, .6, 0]);
+    const tap = group(
+      (() => { const m = new THREE.Mesh(new THREE.CylinderGeometry(.012, .016, .28, 16), M.steel); m.position.y = .14; return m; })(),
+      (() => { const m = new THREE.Mesh(new THREE.TorusGeometry(.08, .011, 10, 24, Math.PI), M.steel); m.position.set(0, .28, .08); m.rotation.y = Math.PI / 2; return m; })()
+    );
+    install(tap, [b2.x0! + b2.w / 2, wtY, 90], 11.85, [0, .5, 0]);
+    const hob = group(mesh(590, 6, 520, M.glass, false));
+    for (const [rx, rz, r] of [[-140, -120, 80], [140, -120, 65], [-140, 120, 65], [140, 120, 90]]) {
+      const ring = new THREE.Mesh(new THREE.RingGeometry(mm(r - 8), mm(r), 32), M.ring);
+      ring.rotation.x = -Math.PI / 2; ring.position.set(mm(rx), .0035, mm(rz)); hob.add(ring);
+    }
+    install(hob, [b3.x0! + b3.w / 2, wtY + 3, 300], 11.75, [0, .6, 0]);
+    const hood = group(mesh(600, 60, 480, M.steel, false), (() => { const ch = mesh(260, 2250 - 1660, 220, M.steel, false); ch.position.set(0, mm(30 + (2250 - 1660) / 2), mm(-130)); return ch; })());
+    install(hood, [b3.x0! + b3.w / 2, 1630, 240], 12.0, [0, .8, 0]);
+    // under-cabinet LED strips
+    const leds: THREE.PointLight[] = [];
+    for (const c of cabs) if (c.kind === "wall") {
+      const s = mesh(c.w - 40, 6, 18, M.led, false); s.position.set(mm(c.x0! + c.w / 2), mm(WALL_Y - 3), mm(270)); s.castShadow = false; scene.add(s);
+      const l = new THREE.PointLight(0xffc98a, 0, 1.6, 1.6); l.position.set(mm(c.x0! + c.w / 2), mm(WALL_Y - 60), mm(250)); scene.add(l); leds.push(l);
+    }
+
+    // ---------- timeline
+    const CYCLE = 18.8;
+    const clamp = (v: number) => Math.max(0, Math.min(1, v));
+    const smooth = (t: number) => t * t * (3 - 2 * t);
+    const inOut = (t: number) => t < .5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
+    const outC = (t: number) => 1 - (1 - t) ** 3;
+    const STEPS: [number, string, string][] = [
+      [1.4, "Cutting list", `${N} parts off the drawing`], [4.4, "Cut", "every panel to size"],
+      [10.2, "Build", "carcasses assembled"], [13.2, "Install", "worktop, doors and appliances"], [99, "Complete", "3150 mm kitchen, ready to cook"]];
+    STEPS.forEach(s => { const e = document.createElement("span"); e.textContent = s[1]; stepsEl.append(e); });
+    let lastStep = -1;
+    function setStep(t: number) {
+      const k = STEPS.findIndex(s => t < s[0]);
+      if (k === lastStep) return; lastStep = k;
+      const b = document.createElement("b"); b.textContent = STEPS[k][1];
+      statEl.replaceChildren(b, ` · ${STEPS[k][2]}`);
+      [...stepsEl.children].forEach((e, i) => { e.className = i === k ? "now" : i < k ? "done" : ""; });
+    }
+
+    // ---------- camera
+    let yaw = 0, yawVel = 0, dragging = false, lastX = 0;
+    const tgtTop = new THREE.Vector3(0, 0, (flatMinZ + flatMaxZ) / 2 + .1), dirTop = new THREE.Vector3(0, 1, .42).normalize();
+    const tgtK = new THREE.Vector3(0, 1.1, .45);
+    const camPos = new THREE.Vector3(), camTgt = new THREE.Vector3(), pA = new THREE.Vector3(), pB = new THREE.Vector3();
+    let W = 1, H = 1;
+    const fit = (needW: number, needH: number, aspect: number) => { const t = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2); return Math.max(needH / 2 / t, needW / 2 / (t * aspect)); };
+    function resize() { W = stage.clientWidth; H = stage.clientHeight; renderer.setSize(W, H, false); camera.aspect = W / H; camera.updateProjectionMatrix(); }
+    const ro = new ResizeObserver(resize); ro.observe(stage); resize();
+
+    stage.addEventListener("pointerdown", e => { if ((e.target as HTMLElement).closest("button")) return; dragging = true; lastX = e.clientX; stage.setPointerCapture(e.pointerId); hintEl.style.opacity = "0"; });
+    stage.addEventListener("pointermove", e => { if (!dragging) return; const dx = e.clientX - lastX; lastX = e.clientX; yawVel = dx * .006; yaw += yawVel; });
+    const endDrag = () => { dragging = false; };
+    stage.addEventListener("pointerup", endDrag); stage.addEventListener("pointercancel", endDrag);
+
+    let playing = !reduce, visible = true, clock = reduce ? 15.5 : 0, prev = performance.now();
+    if (reduce) { playBtn.textContent = "Play"; playBtn.setAttribute("aria-pressed", "true"); }
+    playBtn.addEventListener("click", () => { playing = !playing; playBtn.textContent = playing ? "Pause" : "Play"; playBtn.setAttribute("aria-pressed", String(!playing)); });
+    const io = new IntersectionObserver(es => { visible = es[0].isIntersecting; }, { threshold: .05 });
+    io.observe(stage);
+
+    const q = new THREE.Quaternion(), qI = new THREE.Quaternion();
+    function update(t: number, now: number) {
+      // panels
+      for (const p of panels) {
+        if (p.outline) p.outline.visible = t >= p.outlineOn && t < p.cut + .25;
+        const m = p.mesh;
+        if (t < p.cut) { m.visible = false; continue; }
+        m.visible = true;
+        const s = Math.max(.02, outC(clamp((t - p.cut) / .35)));
+        m.scale.set(1, 1, 1); (m.scale as any)[scaleAxis[p.thin]] = s;
+        const e = inOut(clamp((t - p.build) / .95));
+        m.position.lerpVectors(p.flatPos, p.home, e); m.position.y += Math.sin(Math.PI * e) * .55;
+        q.copy(p.flatQ).slerp(qI, e); m.quaternion.copy(q);
+      }
+      for (const it of items) {
+        if (t < it.start) { it.obj.visible = false; continue; }
+        it.obj.visible = true;
+        const e = outC(clamp((t - it.start) / it.dur)), r = 1 - e;
+        it.obj.position.copy(it.home).addScaledVector(it.off, r);
+        it.obj.rotation.y = it.rotY + it.spin * r;
+      }
+      const led = clamp((t - 12.6) / .8);
+      M.led.emissiveIntensity = led * 2.2; for (const l of leds) l.intensity = led * 1.4;
+      // cutting list
+      for (const g of groups) {
+        const st = t >= g.cut ? "k3d-row on cut" : t >= g.on ? "k3d-row on" : "k3d-row";
+        if (st !== g.st) { g.st = st; g.el!.className = st; }
+      }
+      let lastOn = -1; groups.forEach((g, i) => { if (t >= g.on) lastOn = i; });
+      const rowH = (groups[0].el!.offsetHeight || 18), want = Math.max(0, (lastOn + 2) * rowH - rowsEl.clientHeight);
+      rowsEl.scrollTop += (want - rowsEl.scrollTop) * .15;
+      if (t < .3) rowsEl.scrollTop = 0;
+      const listVis = 1 - clamp((t - 5.2) / .8);
+      listEl.style.opacity = String(listVis);
+      setStep(t);
+      fadeEl.style.opacity = String(t > CYCLE - .7 ? clamp((t - (CYCLE - .7)) / .6) : 1 - clamp(t / .45));
+
+      // camera: top-down over the cut parts → three-quarter view of the kitchen → slow turn
+      const listPx = (getComputedStyle(listEl).display !== "none" ? 228 : 0) * listVis;
+      const effAspect = Math.max(.3, (W - listPx) / H);
+      const dTop = fit(flatW + .6, (flatMaxZ - flatMinZ) * 1.12 + 1.0, effAspect);
+      pA.copy(tgtTop).addScaledVector(dirTop, dTop);
+      const turn = smooth(clamp((t - 12.4) / 2)) * Math.sin(now / 1000 * .4) * .32;
+      const a = .5 + yaw + turn, el = .2 + .04 * smooth(clamp((t - 12) / 2));
+      const dirK = new THREE.Vector3(Math.sin(a) * Math.cos(el), Math.sin(el), Math.cos(a) * Math.cos(el));
+      const dK = fit(3.7, 2.65, camera.aspect) + .25;
+      pB.copy(tgtK).addScaledVector(dirK, dK);
+      const b = inOut(clamp((t - 4.3) / 2.8));
+      camPos.lerpVectors(pA, pB, b); camTgt.lerpVectors(tgtTop, tgtK, b);
+      camPos.y += Math.sin(Math.PI * b) * .6;
+      camera.position.copy(camPos); camera.lookAt(camTgt);
+      if (listPx > 0) camera.setViewOffset(W, H, -listPx / 2, 0, W, H); else camera.clearViewOffset();
+      camera.updateProjectionMatrix();
+    }
+
+    function frame(now: number) {
+      requestAnimationFrame(frame);
+      const dt = Math.min(.05, (now - prev) / 1000); prev = now;
+      if (!visible || document.hidden) return;
+      if (playing) clock = (clock + dt) % CYCLE;
+      if (!dragging) { yawVel *= .92; yaw += yawVel; }
+      update(clock, reduce ? 0 : now);
+      renderer.render(scene, camera);
+    }
+    requestAnimationFrame(frame);
+  }
+</script>
