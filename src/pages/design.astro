@@ -59,7 +59,7 @@ export const prerender = true;
     .dz-add::before { content: "+ "; font-weight: 700; color: var(--red); }
     .dz-list { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; counter-reset: u; }
     .dz-list:empty::after { content: "Nothing added yet — tap a unit above."; color: var(--muted); font-size: .9rem; }
-    .dz-item { display: grid; grid-template-columns: 1.6em minmax(0, 1fr) 6.6em 40px 40px 40px; gap: 6px; align-items: center; padding: 4px 4px 4px 8px; background: var(--paper-2); border-radius: var(--radius); }
+    .dz-item { display: grid; grid-template-columns: 1.6em minmax(0, 1fr) 5.6em 40px 40px 40px 40px; gap: 6px; align-items: center; padding: 4px 4px 4px 8px; background: var(--paper-2); border-radius: var(--radius); }
     .dz-item::before { counter-increment: u; content: counter(u); font: 700 .8rem var(--sans); color: var(--red); }
     .dz-item > span { font-weight: 500; font-size: .92rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .dz-item .select { min-height: 40px; padding: 6px 8px; font-size: .9rem; }
@@ -78,6 +78,29 @@ export const prerender = true;
     .dz-small button { min-height: 44px; }
     .dz-note { font-size: .85rem; color: var(--muted); }
     .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .dz-runs { display: grid; gap: 8px; }
+    .dz-run { display: grid; grid-template-columns: auto minmax(0, 1fr) 8.5em auto; gap: 10px; align-items: center; padding: 8px 10px; background: var(--paper-2); border-radius: var(--radius); }
+    .dz-run input[type=checkbox] { width: 22px; height: 22px; accent-color: var(--red); }
+    .dz-run label { font-weight: 600; }
+    .dz-run .input { min-height: 42px; padding: 6px 10px; text-align: right; font-variant-numeric: tabular-nums; }
+    .dz-run .input:disabled { opacity: .45; }
+    .dz-ch { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .dz-ch label { font-weight: 600; }
+    .dz-ch .input { max-width: 120px; min-height: 42px; text-align: right; }
+    .dz-rtabs { display: flex; flex-wrap: wrap; gap: 6px; }
+    .dz-rtabs button { min-height: 44px; padding: 0 14px; border: 1px solid #cfccc6; background: #fff; border-radius: 99px; font: 600 .9rem var(--sans); cursor: pointer; color: var(--ink); }
+    .dz-rtabs button[aria-pressed="true"] { background: var(--red); border-color: var(--red); color: #fff; }
+    h3.dz-sub { font: 600 1rem var(--sans); margin-top: 6px; }
+    .dz-item .dz-w { min-height: 40px; padding: 6px 8px; font-size: .9rem; text-align: right; font-variant-numeric: tabular-nums; }
+    .dz-ib[aria-expanded="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .dz-det { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 10px; padding: 8px 4px 6px; border-top: 1px dashed #cfccc6; margin-top: 4px; }
+    .dz-det label { display: grid; gap: 4px; font-size: .8rem; font-weight: 600; color: var(--muted); }
+    .dz-det .input, .dz-det .select { min-height: 40px; padding: 6px 8px; font-size: .9rem; }
+    .dz-det .dz-span2 { grid-column: span 2; }
+    .dz-det .dz-colrow { display: flex; gap: 6px; }
+    .dz-det input[type=color] { width: 44px; height: 40px; padding: 2px; border: 1px solid #cfccc6; border-radius: var(--radius); background: #fff; }
+    .dz-det .dz-reset { grid-column: 1 / -1; justify-self: start; background: none; border: 0; color: var(--red); font: 600 .82rem var(--sans); cursor: pointer; padding: 4px 0; }
+    .dz-swb input[type=color] { width: 30px; height: 30px; border: 0; padding: 0; background: none; border-radius: 50%; cursor: pointer; }
     @media (max-width: 960px) {
       .dz-grid { grid-template-columns: minmax(0, 1fr); }
       .dz-view { position: static; }
@@ -85,7 +108,9 @@ export const prerender = true;
     }
     @media (max-width: 560px) {
       .dz-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .dz-item { grid-template-columns: 1.4em minmax(0, 1fr) 5.8em 40px 40px; }
+      .dz-item { grid-template-columns: 1.4em minmax(0, 1fr) 5em 40px 40px 40px; }
+      .dz-det { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .dz-run { grid-template-columns: auto minmax(0, 1fr) 7em; } .dz-run .muted { display: none; }
       .dz-item .dz-left { display: none; }
       .row-2 { grid-template-columns: 1fr; }
       .dz-meter { grid-template-columns: 7.5em minmax(0, 1fr) auto; font-size: .82rem; }
@@ -131,32 +156,30 @@ export const prerender = true;
           </div>
 
           <div class="dz-step">
-            <h2><small>2</small>Wall length</h2>
-            <p class="muted">Measure the wall the units go against, corner to corner, in millimetres.</p>
-            <div class="dz-len">
-              <button class="dz-tool" type="button" id="dzLenMinus" aria-label="100 mm shorter">−</button>
-              <input class="input" id="dzLen" type="number" inputmode="numeric" min="600" max="8000" step="10" aria-label="Wall length in millimetres" />
-              <button class="dz-tool" type="button" id="dzLenPlus" aria-label="100 mm longer">+</button>
-              <span class="muted">mm</span>
-            </div>
+            <h2><small>2</small>Your room</h2>
+            <p class="muted">Measure each wall corner to corner in millimetres. Tick the walls you want units on — straight, L-shape or U-shape, with or without an island.</p>
+            <div class="dz-runs" id="dzRuns"></div>
+            <div class="dz-ch"><label for="dzCh">Ceiling height</label><input class="input" id="dzCh" type="number" inputmode="numeric" min="2000" max="4000" step="10" /><span class="muted">mm</span></div>
           </div>
 
           <div class="dz-step">
-            <h2><small>3</small><span id="dzFloorTitle">Floor units</span></h2>
+            <h2><small>3</small>Units</h2>
+            <div class="dz-rtabs" id="dzRunTabs" aria-label="Which wall are you working on"></div>
+            <h3 class="dz-sub" id="dzFloorTitle">Floor units</h3>
             <p class="muted" id="dzFloorHelp"></p>
             <div class="dz-pal" id="dzPalFloor"></div>
             <ol class="dz-list" id="dzListFloor"></ol>
+            <div id="dzUpBlock" style="display:grid;gap:12px">
+              <h3 class="dz-sub" id="dzUpTitle">Wall units</h3>
+              <p class="muted" id="dzUpHelp"></p>
+              <div class="dz-pal" id="dzPalUp"></div>
+              <ol class="dz-list" id="dzListUp"></ol>
+            </div>
+            <p class="dz-note">Type any width. Tap ⚙ on a unit to set its exact height, depth, height off the floor, doors, drawers, glass or open shelves, or give it a different colour. "Custom unit" can be any box you need.</p>
           </div>
 
           <div class="dz-step">
-            <h2><small>4</small><span id="dzUpTitle">Wall units</span></h2>
-            <p class="muted" id="dzUpHelp"></p>
-            <div class="dz-pal" id="dzPalUp"></div>
-            <ol class="dz-list" id="dzListUp"></ol>
-          </div>
-
-          <div class="dz-step">
-            <h2><small>5</small>Finishes</h2>
+            <h2><small>4</small>Finishes</h2>
             <span class="dz-sub">Doors &amp; drawer fronts</span>
             <div class="dz-sw" id="dzDoors"></div>
             <p class="dz-note">Colours are taken from PG Bison's own board swatches. Screens show colour differently, so we bring real samples before anything is cut. Want a colour not listed, or a sprayed finish? Pick the closest and name it in your notes.</p>
@@ -167,13 +190,13 @@ export const prerender = true;
           </div>
 
           <div class="dz-step">
-            <h2><small>6</small>Send it to us</h2>
+            <h2><small>5</small>Send it to us</h2>
             <div class="row-2">
               <div class="field"><label for="dzName">Your name</label><input class="input" id="dzName" type="text" autocomplete="name" placeholder="e.g. Johan" /></div>
               <div class="field"><label for="dzArea">Suburb / town</label><input class="input" id="dzArea" type="text" autocomplete="address-level2" placeholder="e.g. Montana, Pretoria" /></div>
             </div>
             <div class="field"><label for="dzNotes">Anything else? <span class="muted">(optional)</span></label>
-              <textarea class="textarea" id="dzNotes" placeholder="e.g. ceiling height 2600, fridge is 900 wide, window above the sink, want it done by March"></textarea></div>
+              <textarea class="textarea" id="dzNotes" placeholder="e.g. window above the sink, fridge is 900 wide, want it done by March"></textarea></div>
             <div class="dz-actions">
               <button class="btn btn-red" type="button" id="dzSend">
                 <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91A9.86 9.86 0 0 0 12.04 2Zm5.8 14.06c-.24.68-1.42 1.3-1.95 1.35-.5.05-.97.23-3.27-.68-2.77-1.09-4.52-3.92-4.66-4.1-.13-.18-1.1-1.47-1.1-2.81s.7-1.99.95-2.27c.25-.27.54-.34.72-.34h.52c.17 0 .4-.06.62.47.24.56.8 1.94.86 2.08.07.14.12.3.02.48-.09.18-.14.3-.27.46l-.41.48c-.14.14-.28.29-.12.56.16.27.71 1.17 1.52 1.9 1.05.93 1.93 1.22 2.2 1.36.27.14.43.11.59-.07.16-.18.68-.79.86-1.07.18-.27.36-.23.61-.14.25.09 1.59.75 1.86.89.27.14.45.2.52.32.07.11.07.66-.17 1.33Z"/></svg>
@@ -246,27 +269,28 @@ export const prerender = true;
       tvwall: { label: "Wall cabinet", widths: [600, 900, 1200], def: 900, front: "lift" },
       tvshelf: { label: "Floating shelf", widths: [600, 900, 1200, 1500], def: 900, front: "none", extra: "shelf", carcass: false },
       space: { label: "Gap / space", widths: S, def: 300, front: "none", carcass: false },
+      custom: { label: "Custom unit", widths: [300, 450, 600, 900], def: 600, front: "doors", plinth: true },
     };
     type Proj = { label: string; floor: Row; up: Row; fTypes: string[]; uTypes: string[]; fTitle: string; uTitle: string; fHelp: string; uHelp: string;
       topT: number; topD: number; plinthH: number; worktop: boolean; preset: { L: number; f: [string, number][]; u: [string, number][] } };
     const P: Record<string, Proj> = {
       kitchen: { label: "Kitchen", floor: { y0: 150, h: 720, d: 600 }, up: { y0: 1530, h: 720, d: 320 },
-        fTypes: ["door2", "door1", "drawers", "sink", "oven", "dw", "fridge", "tall", "space"], uTypes: ["wdoor1", "wdoor2", "wlift", "hood", "wshelf", "space"],
+        fTypes: ["door2", "door1", "drawers", "sink", "oven", "dw", "fridge", "tall", "custom", "space"], uTypes: ["wdoor1", "wdoor2", "wlift", "hood", "wshelf", "custom", "space"],
         fTitle: "Floor units", uTitle: "Wall units", fHelp: "Left to right along the wall. Leave a gap for a fridge or stove that's staying.",
         uHelp: "Left to right. Use a gap to skip over a window or the tall pantry.", topT: 30, topD: 620, plinthH: 150, worktop: true,
         preset: { L: 3000, f: [["tall", 600], ["drawers", 600], ["sink", 900], ["oven", 600], ["door1", 300]], u: [["space", 600], ["wdoor2", 600], ["wdoor2", 900], ["hood", 600], ["wdoor1", 300]] } },
       cupboard: { label: "Built-in cupboard", floor: { y0: 100, h: 2100, d: 600 }, up: { y0: 2200, h: 500, d: 600 },
-        fTypes: ["hang", "shelves", "hangdraw", "drawshelf", "space"], uTypes: ["topbox", "space"],
+        fTypes: ["hang", "shelves", "hangdraw", "drawshelf", "custom", "space"], uTypes: ["topbox", "custom", "space"],
         fTitle: "Cupboard sections", uTitle: "Top boxes", fHelp: "Floor-to-2200 sections, left to right. Mix hanging, shelves and drawers.",
         uHelp: "Optional boxes above, up to ceiling height (about 2700).", topT: 0, topD: 0, plinthH: 100, worktop: false,
         preset: { L: 2400, f: [["hang", 900], ["drawshelf", 600], ["hangdraw", 900]], u: [["topbox", 900], ["topbox", 600], ["topbox", 900]] } },
       vanity: { label: "Vanity", floor: { y0: 380, h: 480, d: 460 }, up: { y0: 1150, h: 700, d: 150 },
-        fTypes: ["vbasin", "vdraw", "vdouble", "vopen", "space"], uTypes: ["mirror", "mcab", "space"],
+        fTypes: ["vbasin", "vdraw", "vdouble", "vopen", "custom", "space"], uTypes: ["mirror", "mcab", "custom", "space"],
         fTitle: "Vanity units", uTitle: "Mirror", fHelp: "Wall-hung units with the basin on top.", uHelp: "A plain mirror or a mirror cabinet above.",
         topT: 20, topD: 470, plinthH: 0, worktop: true,
         preset: { L: 1400, f: [["vbasin", 900], ["vopen", 400]], u: [["mirror", 900]] } },
       tv: { label: "TV unit", floor: { y0: 250, h: 400, d: 450 }, up: { y0: 1650, h: 320, d: 300 },
-        fTypes: ["tvdraw", "tvdoor", "tvopen", "space"], uTypes: ["tvwall", "tvshelf", "space"],
+        fTypes: ["tvdraw", "tvdoor", "tvopen", "custom", "space"], uTypes: ["tvwall", "tvshelf", "custom", "space"],
         fTitle: "Low units", uTitle: "Wall cabinets & shelves", fHelp: "Floating units under the TV.", uHelp: "Cabinets or shelves above. Leave a gap where the TV goes.",
         topT: 0, topD: 0, plinthH: 0, worktop: false,
         preset: { L: 2400, f: [["tvdoor", 600], ["tvdraw", 1200], ["tvdoor", 600]], u: [["tvwall", 600], ["space", 1200], ["tvwall", 600]] } },
@@ -304,11 +328,13 @@ export const prerender = true;
       monument: { label: "Monument Oak", c: 0xffffff, wood: ["#5c4c41", "#423329", "#7a6a5e"], g: "wood" },
       walnut: { label: "American Walnut", c: 0xffffff, wood: ["#372923", "#2a1e18", "#44352d"], g: "wood" },
       wenge: { label: "African Wenge", c: 0xffffff, wood: ["#2e1a10", "#1d0d05", "#3e271b"], g: "wood" },
-      sprayed: { label: "Sprayed / painted (any colour)", c: 0xe9e4da, g: "spray" },
+      sprayed: { label: "Sprayed / painted", c: 0xe9e4da, g: "spray" },
+      custom: { label: "Custom colour", c: 0x7a8a7f, g: "spray" },
     };
     const TOPS: Record<string, { label: string; c: number; wood?: string; r: number }> = {
       quartz: { label: "White quartz", c: 0xebe8e2, r: .25 }, black: { label: "Black granite", c: 0x1d1d1f, r: .3 },
       oak: { label: "Oak", c: 0xffffff, wood: "#c09366", r: .5 }, concrete: { label: "Concrete grey", c: 0x9b9893, r: .7 },
+      custom: { label: "Custom colour", c: 0xd9d4cc, r: .2 },
     };
     const HANDLES: Record<string, { label: string; c: number; m: number }> = {
       black: { label: "Black bar", c: 0x151515, m: .7 }, steel: { label: "Brushed steel", c: 0xc7cacf, m: .9 },
@@ -316,16 +342,51 @@ export const prerender = true;
     };
 
     // ================= state =================
-    type U = [string, number];
-    type D = { p: string; L: number; f: U[]; u: U[]; d: string; k: string; h: string };
-    const presetOf = (p: string): D => { const x = P[p].preset; return { p, L: x.L, f: x.f.map(a => [...a] as U), u: x.u.map(a => [...a] as U), d: p === "kitchen" ? "stormgrey" : p === "cupboard" ? "iceberg" : "esperanza", k: "quartz", h: "black" }; };
+    type U = { t: string; w: number; h?: number; dp?: number; y?: number; fr?: string; n?: number; dr?: number; c?: string };
+    type Run = { on: boolean; L: number; f: U[]; u: U[] };
+    type RK = "a" | "b" | "c" | "i";
+    type D = { v: 2; p: string; ch: number; r: Record<RK, Run>; d: string; dc: string; k: string; kc: string; h: string };
+    const RUNS: { k: RK; label: string; order: string }[] = [
+      { k: "a", label: "Back wall", order: "left to right" }, { k: "b", label: "Left wall", order: "from the corner outwards" },
+      { k: "c", label: "Right wall", order: "from the corner outwards" }, { k: "i", label: "Island", order: "left to right" }];
+    const FRONTS: Record<string, string> = { auto: "Standard", doors: "Doors", drawers: "Drawers", mixed: "Drawers under doors", glass: "Glass doors", open: "Open shelves", lift: "Lift-up flap" };
+    const HEX = /^#[0-9a-f]{6}$/i;
+    const emptyRun = (L = 2400): Run => ({ on: false, L, f: [], u: [] });
+    const presetOf = (p: string): D => {
+      const x = P[p].preset;
+      return { v: 2, p, ch: p === "cupboard" ? 2700 : 2600,
+        r: { a: { on: true, L: x.L, f: x.f.map(([t, w]) => ({ t, w })), u: x.u.map(([t, w]) => ({ t, w })) }, b: emptyRun(), c: emptyRun(), i: emptyRun(0) },
+        d: p === "kitchen" ? "stormgrey" : p === "cupboard" ? "iceberg" : "esperanza", dc: "#7a8a7f", k: "quartz", kc: "#d9d4cc", h: "black" };
+    };
+    const num = (v: any, lo: number, hi: number) => { if (v === undefined || v === null || v === "") return undefined; const n = Math.round(Number(v)); return Number.isFinite(n) && n >= lo && n <= hi ? n : undefined; };
+    function cleanUnit(u: any, allowed: string[]): U | null {
+      const t = Array.isArray(u) ? u[0] : u?.t; if (typeof t !== "string" || !allowed.includes(t)) return null;
+      const w = num(Array.isArray(u) ? u[1] : u.w, 50, 3000); if (!w) return null;
+      const o: U = { t, w }; if (Array.isArray(u)) return o;
+      const h = num(u.h, 50, 3200), dp = num(u.dp, 50, 1500), y = num(u.y, 0, 3200), n = num(u.n, 1, 6), dr = num(u.dr, 1, 8);
+      if (h) o.h = h; if (dp) o.dp = dp; if (y !== undefined) o.y = y; if (n) o.n = n; if (dr) o.dr = dr;
+      if (typeof u.fr === "string" && FRONTS[u.fr] && u.fr !== "auto") o.fr = u.fr;
+      if (typeof u.c === "string" && ((DOORS[u.c] && u.c !== "custom") || HEX.test(u.c))) o.c = u.c;
+      return o;
+    }
     function valid(x: any): D | null {
       try {
         if (!x || !P[x.p]) return null;
-        const pr = P[x.p];
-        const L = Math.round(Number(x.L)); if (!(L >= 600 && L <= 8000)) return null;
-        const row = (a: any, allowed: string[]) => Array.isArray(a) ? a.slice(0, 40).filter((u: any) => Array.isArray(u) && allowed.includes(u[0]) && T[u[0]].widths.includes(Number(u[1]))).map((u: any) => [u[0], Number(u[1])] as U) : [];
-        return { p: x.p, L, f: row(x.f, pr.fTypes), u: row(x.u, pr.uTypes), d: DOORS[x.d] ? x.d : "iceberg", k: TOPS[x.k] ? x.k : "quartz", h: HANDLES[x.h] ? x.h : "black" };
+        const pr = P[x.p], base = presetOf(x.p);
+        const fA = [...pr.fTypes], uA = [...pr.uTypes];
+        const runIn = (r: any, def: Run, wall: boolean): Run => {
+          if (!r) return def;
+          const L = num(r.L, wall ? 300 : 0, 12000) ?? def.L;
+          return { on: !!r.on, L, f: (Array.isArray(r.f) ? r.f : []).slice(0, 40).map((u: any) => cleanUnit(u, fA)).filter(Boolean) as U[],
+            u: (Array.isArray(r.u) ? r.u : []).slice(0, 40).map((u: any) => cleanUnit(u, uA)).filter(Boolean) as U[] };
+        };
+        const r = x.v === 2 && x.r ? x.r : { a: { on: true, L: x.L, f: x.f, u: x.u } };
+        const out: D = { v: 2, p: x.p, ch: num(x.ch, 2000, 4000) ?? base.ch,
+          r: { a: { ...runIn(r.a, base.r.a, true), on: true }, b: runIn(r.b, base.r.b, true), c: runIn(r.c, base.r.c, true), i: runIn(r.i, base.r.i, false) },
+          d: DOORS[x.d] ? x.d : base.d, dc: HEX.test(x.dc) ? x.dc : base.dc, k: TOPS[x.k] ? x.k : "quartz", kc: HEX.test(x.kc) ? x.kc : base.kc, h: HANDLES[x.h] ? x.h : "black" };
+        if (!(out.r.a.L >= 300)) return null;
+        out.r.i.u = [];
+        return out;
       } catch { return null; }
     }
     const enc = (d: D) => btoa(unescape(encodeURIComponent(JSON.stringify(d)))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -339,9 +400,12 @@ export const prerender = true;
       return presetOf("kitchen");
     })();
     if (shared) document.getElementById("dzShared")!.hidden = false;
+    let ar: RK = "a";
+    const openSet = new Set<string>();
     const undo: string[] = [];
     function change(fn: () => void) { undo.push(JSON.stringify(st)); if (undo.length > 60) undo.shift(); fn(); commit(); }
     function commit() {
+      if (!st.r[ar].on) ar = "a";
       try { localStorage.setItem("ww-design", JSON.stringify(st)); } catch {}
       try { history.replaceState(null, "", "#d=" + enc(st)); } catch {}
       renderUI(); rebuild();
@@ -352,107 +416,206 @@ export const prerender = true;
     const $ = (id: string) => document.getElementById(id)!;
     const el = (tag: string, cls?: string, text?: string) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
     let toastT = 0;
-    function toast(msg: string) { const t = $("dzToast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = window.setTimeout(() => t.classList.remove("show"), 2600); }
-    const used = (r: U[]) => r.reduce((s, u) => s + u[1], 0);
+    function toast(msg: string) { const t = $("dzToast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = window.setTimeout(() => t.classList.remove("show"), 2800); }
+    const used = (r: U[]) => r.reduce((s, u) => s + u.w, 0);
+    const runLen = (k: RK) => k === "i" ? used(st.r.i.f) : st.r[k].L;
+    // default size of a unit when the client hasn't overridden it
+    function dims(u: U, isFloor: boolean, rk: RK) {
+      const pr = P[st.p], r = isFloor ? pr.floor : pr.up, ut = T[u.t];
+      return { h: u.h ?? ut.h ?? r.h, d: u.dp ?? r.d, y: u.y ?? r.y0 };
+    }
+    const colourName = (c?: string) => !c ? "" : HEX.test(c) ? `custom colour ${c}` : `PG Bison ${DOORS[c]?.label ?? c}`;
 
-    // tabs
     for (const k of Object.keys(P)) {
       const b = el("button", "dz-tab", P[k].label) as HTMLButtonElement; b.type = "button"; b.dataset.p = k;
-      b.addEventListener("click", () => { if (st.p === k) return; change(() => { st = presetOf(k); }); fitView(true); toast(`${P[k].label} loaded — change it to suit your space`); });
+      b.addEventListener("click", () => { if (st.p === k) return; change(() => { st = presetOf(k); ar = "a"; openSet.clear(); }); fitView(true); toast(`${P[k].label} loaded — change anything to suit your space`); });
       $("dzTabs").append(b);
     }
     function swatches(host: string, map: Record<string, any>, key: "d" | "k" | "h") {
       const h = $(host); h.replaceChildren();
       let grp = "";
       for (const [k, v] of Object.entries(map)) {
-        if (key === "d" && v.g !== grp) { grp = v.g; const t = el("span", "dz-grp", grp === "solid" ? "PG Bison MelaWood · solid colours" : grp === "wood" ? "PG Bison MelaWood · woodgrains" : "Other"); h.append(t); }
+        if (key === "d" && v.g !== grp) { grp = v.g; h.append(el("span", "dz-grp", grp === "solid" ? "PG Bison MelaWood · solid colours" : grp === "wood" ? "PG Bison MelaWood · woodgrains" : "Other finishes")); }
         const b = el("button", "dz-swb") as HTMLButtonElement; b.type = "button"; b.setAttribute("aria-pressed", String(st[key] === k));
-        const i = el("i");
-        if (key === "h") i.style.background = k === "none" ? "repeating-linear-gradient(45deg,#fff 0 4px,#ddd 4px 8px)" : `#${v.c.toString(16).padStart(6, "0")}`;
-        else i.style.background = v.wood ? (Array.isArray(v.wood) ? `repeating-linear-gradient(90deg, ${v.wood[0]} 0 3px, ${v.wood[1]} 3px 4px, ${v.wood[2]} 4px 6px, ${v.wood[0]} 6px 9px)` : `repeating-linear-gradient(90deg, ${v.wood} 0 3px, ${v.wood}cc 3px 5px)`) : `#${v.c.toString(16).padStart(6, "0")}`;
-        b.append(i, document.createTextNode(v.label));
+        if (k === "custom" && key !== "h") {
+          const pick = el("input") as HTMLInputElement; pick.type = "color"; pick.value = key === "d" ? st.dc : st.kc; pick.setAttribute("aria-label", "Pick any colour");
+          pick.addEventListener("click", e => e.stopPropagation());
+          pick.addEventListener("change", () => change(() => { if (key === "d") { st.dc = pick.value; st.d = "custom"; } else { st.kc = pick.value; st.k = "custom"; } }));
+          b.append(pick, document.createTextNode(v.label));
+        } else {
+          const i = el("i");
+          if (key === "h") i.style.background = k === "none" ? "repeating-linear-gradient(45deg,#fff 0 4px,#ddd 4px 8px)" : `#${v.c.toString(16).padStart(6, "0")}`;
+          else i.style.background = v.wood ? (Array.isArray(v.wood) ? `repeating-linear-gradient(90deg, ${v.wood[0]} 0 3px, ${v.wood[1]} 3px 4px, ${v.wood[2]} 4px 6px, ${v.wood[0]} 6px 9px)` : `repeating-linear-gradient(90deg, ${v.wood} 0 3px, ${v.wood}cc 3px 5px)`) : `#${v.c.toString(16).padStart(6, "0")}`;
+          b.append(i, document.createTextNode(v.label));
+        }
         b.addEventListener("click", () => change(() => { (st as any)[key] = k; }));
         h.append(b);
       }
     }
     function addUnit(row: "f" | "u", t: string) {
-      const free = st.L - used(st[row]); const ut = T[t];
-      let w = ut.def <= free ? ut.def : [...ut.widths].reverse().find(x => x <= free);
-      if (!w) { toast(`No room left on this row (${Math.max(0, free)} mm free). Make the wall longer or a unit narrower.`); return; }
-      change(() => { st[row].push([t, w!]); });
+      const run = st.r[ar], ut = T[t];
+      if (ar === "i") { change(() => { run[row].push({ t, w: ut.def }); }); return; }
+      const free = run.L - used(run[row]);
+      const w = ut.def <= free ? ut.def : free >= 100 ? free : 0;
+      if (!w) { toast(`No room left on this wall (${Math.max(0, free)} mm free). Make the wall longer or a unit narrower.`); return; }
+      change(() => { run[row].push({ t, w }); });
+    }
+    function numField(lab: string, val: number | undefined, ph: number, lo: number, hi: number, set: (v: number | undefined) => void) {
+      const l = el("label"); l.append(document.createTextNode(lab));
+      const i = el("input", "input") as HTMLInputElement; i.type = "number"; i.inputMode = "numeric"; i.min = String(lo); i.max = String(hi); i.placeholder = `${ph}`; if (val !== undefined) i.value = String(val);
+      i.addEventListener("change", () => { const v = i.value === "" ? undefined : num(i.value, lo, hi); if (i.value !== "" && v === undefined) { toast(`${lab} must be ${lo}–${hi} mm`); i.value = val === undefined ? "" : String(val); return; } change(() => set(v)); });
+      l.append(i); return l;
+    }
+    function selField(lab: string, opts: [string, string][], val: string, set: (v: string) => void, cls = "") {
+      const l = el("label", cls); l.append(document.createTextNode(lab));
+      const s = el("select", "select") as HTMLSelectElement;
+      for (const [v, t] of opts) { const o = el("option", "", t) as HTMLOptionElement; o.value = v; o.selected = v === val; s.append(o); }
+      s.addEventListener("change", () => change(() => set(s.value))); l.append(s); return l;
     }
     function list(row: "f" | "u", host: string) {
-      const ol = $(host); ol.replaceChildren();
-      st[row].forEach((u, i) => {
-        const li = el("li", "dz-item"); const ut = T[u[0]];
-        const name = el("span", "", ut.label);
-        const sel = el("select", "select") as HTMLSelectElement; sel.setAttribute("aria-label", `${ut.label} width`);
-        for (const w of ut.widths) { const o = el("option", "", `${w} mm`) as HTMLOptionElement; o.value = String(w); o.selected = w === u[1]; sel.append(o); }
-        sel.addEventListener("change", () => change(() => { st[row][i][1] = Number(sel.value); }));
+      const ol = $(host); ol.replaceChildren(); const run = st.r[ar], isFloor = row === "f";
+      run[row].forEach((u, i) => {
+        const li = el("li", "dz-item"); const ut = T[u.t]; const key = `${ar}${row}${i}`;
+        const name = el("span", "", ut.label + (u.fr ? ` · ${FRONTS[u.fr]}` : "") + (u.c ? " · own colour" : ""));
+        const wi = el("input", "input dz-w") as HTMLInputElement; wi.type = "number"; wi.inputMode = "numeric"; wi.min = "50"; wi.max = "3000"; wi.value = String(u.w); wi.setAttribute("aria-label", `${ut.label} width in mm`);
+        wi.addEventListener("change", () => { const v = num(wi.value, 50, 3000); if (!v) { toast("Width must be 50–3000 mm"); wi.value = String(u.w); return; } change(() => { u.w = v; }); });
         const mk = (txt: string, lab: string, fn: () => void, dis = false, cls = "dz-ib") => { const b = el("button", cls, txt) as HTMLButtonElement; b.type = "button"; b.setAttribute("aria-label", lab); b.disabled = dis; b.addEventListener("click", fn); return b; };
-        const left = mk("←", "Move left", () => change(() => { const a = st[row]; [a[i - 1], a[i]] = [a[i], a[i - 1]]; }), i === 0, "dz-ib dz-left");
-        const right = mk("→", "Move right", () => change(() => { const a = st[row]; [a[i + 1], a[i]] = [a[i], a[i + 1]]; }), i === st[row].length - 1);
-        const del = mk("✕", `Remove ${ut.label}`, () => change(() => { st[row].splice(i, 1); }));
-        li.append(name, sel, left, right, del); ol.append(li);
+        const gear = mk("⚙", `More options for ${ut.label}`, () => { openSet.has(key) ? openSet.delete(key) : openSet.add(key); renderUI(); }, u.t === "space");
+        gear.setAttribute("aria-expanded", String(openSet.has(key)));
+        const left = mk("←", "Move earlier", () => change(() => { const a = run[row]; [a[i - 1], a[i]] = [a[i], a[i - 1]]; }), i === 0, "dz-ib dz-left");
+        const right = mk("→", "Move later", () => change(() => { const a = run[row]; [a[i + 1], a[i]] = [a[i], a[i + 1]]; }), i === run[row].length - 1);
+        const del = mk("✕", `Remove ${ut.label}`, () => change(() => { run[row].splice(i, 1); openSet.clear(); }));
+        li.append(name, wi, gear, left, right, del);
+        if (openSet.has(key) && u.t !== "space") {
+          const dv = dims({ t: u.t, w: u.w }, isFloor, ar), det = el("div", "dz-det");
+          det.append(
+            numField("Height (mm)", u.h, dv.h, 50, 3200, v => { u.h = v; }),
+            numField("Depth (mm)", u.dp, dv.d, 50, 1500, v => { u.dp = v; }),
+            numField("Off the floor (mm)", u.y, dv.y, 0, 3200, v => { u.y = v; }));
+          if (ut.carcass !== false && !["oven"].includes(u.t)) {
+            det.append(selField("Front", Object.entries(FRONTS), u.fr ?? "auto", v => { if (v === "auto") delete u.fr; else u.fr = v; }));
+            det.append(selField("Doors", [["", "Auto"], ...[1, 2, 3, 4].map(n => [String(n), String(n)] as [string, string])], u.n ? String(u.n) : "", v => { if (v) u.n = Number(v); else delete u.n; }));
+            det.append(selField("Drawers", [["", "Auto"], ...[1, 2, 3, 4, 5, 6].map(n => [String(n), String(n)] as [string, string])], u.dr ? String(u.dr) : "", v => { if (v) u.dr = Number(v); else delete u.dr; }));
+          }
+          if (ut.carcass !== false || ["dw", "wshelf", "tvshelf"].includes(u.t)) {
+            const cOpts: [string, string][] = [["", "Same as the rest"], ...Object.entries(DOORS).filter(([k]) => k !== "custom").map(([k, v]) => [k, v.label] as [string, string]), ["#", "Custom colour…"]];
+            const cur = u.c ? (HEX.test(u.c) ? "#" : u.c) : "";
+            const lab = selField("This unit's colour", cOpts, cur, v => { if (!v) delete u.c; else if (v === "#") u.c = HEX.test(u.c ?? "") ? u.c : "#6b7a70"; else u.c = v; }, "dz-span2");
+            if (u.c && HEX.test(u.c)) {
+              const pick = el("input") as HTMLInputElement; pick.type = "color"; pick.value = u.c; pick.setAttribute("aria-label", "Pick this unit's colour");
+              pick.addEventListener("change", () => change(() => { u.c = pick.value; }));
+              const rowEl = el("div", "dz-colrow"); rowEl.append(lab.querySelector("select")!, pick); lab.append(rowEl);
+            }
+            det.append(lab);
+          }
+          const rs = el("button", "dz-reset", "Reset this unit to standard") as HTMLButtonElement; rs.type = "button";
+          rs.addEventListener("click", () => change(() => { for (const k of ["h", "dp", "y", "fr", "n", "dr", "c"] as const) delete (u as any)[k]; }));
+          det.append(rs); li.append(det);
+        }
+        ol.append(li);
       });
     }
     function meter(row: U[], fill: string, txt: string) {
-      const u = used(row), f = $(fill), t = $(txt), over = u > st.L;
-      f.style.width = `${Math.min(100, u / st.L * 100)}%`; f.classList.toggle("over", over);
-      t.textContent = over ? `${u - st.L} mm too long` : `${u} of ${st.L} mm · ${st.L - u} free`;
+      const f = $(fill), t = $(txt), u = used(row);
+      if (ar === "i") { f.style.width = "100%"; f.classList.remove("over"); t.textContent = `${u} mm long`; t.classList.remove("over"); return; }
+      const L = st.r[ar].L, over = u > L;
+      f.style.width = `${Math.min(100, u / L * 100)}%`; f.classList.toggle("over", over);
+      t.textContent = over ? `${u - L} mm too long` : `${u} of ${L} mm · ${L - u} free`;
       t.classList.toggle("over", over);
     }
+    function renderRuns() {
+      const host = $("dzRuns"); host.replaceChildren();
+      for (const R of RUNS) {
+        const run = st.r[R.k], row = el("div", "dz-run");
+        const cb = el("input") as HTMLInputElement; cb.type = "checkbox"; cb.id = `dzRun${R.k}`; cb.checked = run.on; cb.disabled = R.k === "a";
+        cb.addEventListener("change", () => change(() => {
+          run.on = cb.checked; if (!cb.checked) return; ar = R.k;
+          // side walls start with a corner gap so they don't clash with the back-wall units
+          if ((R.k === "b" || R.k === "c") && !run.f.length && !run.u.length) {
+            run.f.push({ t: "space", w: P[st.p].floor.d }); run.u.push({ t: "space", w: Math.max(P[st.p].up.d, 300) });
+            toast("Started with a corner gap so units don't clash — change it if you're using a corner unit");
+          }
+        }));
+        const lb = el("label", "", R.label) as HTMLLabelElement; lb.htmlFor = cb.id;
+        row.append(cb, lb);
+        if (R.k === "i") { row.append(el("span", "muted", "length follows the units")); }
+        else {
+          const li = el("input", "input") as HTMLInputElement; li.type = "number"; li.inputMode = "numeric"; li.min = "300"; li.max = "12000"; li.value = String(run.L); li.disabled = !run.on; li.setAttribute("aria-label", `${R.label} length in mm`);
+          li.addEventListener("change", () => { const v = num(li.value, 300, 12000); if (!v) { toast("Wall length must be 300–12000 mm"); li.value = String(run.L); return; } change(() => { run.L = v; }); });
+          row.append(li, el("span", "muted", "mm"));
+        }
+        host.append(row);
+      }
+      ($("dzCh") as HTMLInputElement).value = String(st.ch);
+      const tabs = $("dzRunTabs"); tabs.replaceChildren();
+      for (const R of RUNS) if (st.r[R.k].on) {
+        const b = el("button", "", R.label) as HTMLButtonElement; b.type = "button"; b.setAttribute("aria-pressed", String(ar === R.k));
+        b.addEventListener("click", () => { ar = R.k; openSet.clear(); renderUI(); }); tabs.append(b);
+      }
+      tabs.hidden = tabs.children.length < 2;
+    }
     function renderUI() {
-      const pr = P[st.p];
+      const pr = P[st.p], R = RUNS.find(r => r.k === ar)!;
       document.querySelectorAll<HTMLButtonElement>(".dz-tab").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.p === st.p)));
-      ($("dzLen") as HTMLInputElement).value = String(st.L);
-      $("dzFloorTitle").textContent = pr.fTitle; $("dzUpTitle").textContent = pr.uTitle;
-      $("dzFloorHelp").textContent = pr.fHelp; $("dzUpHelp").textContent = pr.uHelp;
-      $("dzMeterFloorL").textContent = pr.fTitle; $("dzMeterUpL").textContent = pr.uTitle;
+      renderRuns();
+      const where = RUNS.filter(r => st.r[r.k].on).length > 1 ? `${R.label}: ` : "";
+      $("dzFloorTitle").textContent = where + (ar === "i" ? "Island units" : pr.fTitle);
+      $("dzUpTitle").textContent = where + pr.uTitle;
+      $("dzFloorHelp").textContent = ar === "i" ? "Floor units for the island, left to right as you face it. Seating overhang is added at the back." : `${pr.fHelp} Order: ${R.order}.`;
+      $("dzUpHelp").textContent = `${pr.uHelp} Order: ${R.order}.`;
+      $("dzUpBlock").hidden = ar === "i";
+      $("dzMeterFloorL").textContent = ar === "i" ? "Island" : pr.fTitle; $("dzMeterUpL").textContent = pr.uTitle;
+      ($("dzMeterUpL").parentElement as HTMLElement).hidden = ar === "i";
       for (const [row, host] of [["f", "dzPalFloor"], ["u", "dzPalUp"]] as const) {
         const h = $(host); h.replaceChildren();
-        for (const t of row === "f" ? pr.fTypes : pr.uTypes) { const b = el("button", "dz-add", T[t].label) as HTMLButtonElement; b.type = "button"; b.addEventListener("click", () => addUnit(row, t)); h.append(b); }
+        for (const t of row === "f" ? pr.fTypes : pr.uTypes) { if (ar === "i" && ["tall", "fridge", "space"].includes(t)) continue; const b = el("button", "dz-add", T[t].label) as HTMLButtonElement; b.type = "button"; b.addEventListener("click", () => addUnit(row, t)); h.append(b); }
       }
       list("f", "dzListFloor"); list("u", "dzListUp");
       swatches("dzDoors", DOORS, "d"); swatches("dzHandles", HANDLES, "h");
       $("dzTopTitle").hidden = !pr.worktop; $("dzTops").hidden = !pr.worktop;
       $("dzTopTitle").textContent = st.p === "vanity" ? "Vanity top" : "Worktop";
       if (pr.worktop) swatches("dzTops", TOPS, "k");
-      meter(st.f, "dzFillFloor", "dzTxtFloor"); meter(st.u, "dzFillUp", "dzTxtUp");
+      meter(st.r[ar].f, "dzFillFloor", "dzTxtFloor"); meter(st.r[ar].u, "dzFillUp", "dzTxtUp");
       ($("dzUndo") as HTMLButtonElement).disabled = !undo.length;
-      ($("dzEmail") as HTMLAnchorElement).href = `mailto:${SITE.email}?subject=${encodeURIComponent(`My ${P[st.p].label.toLowerCase()} design`)}&body=${encodeURIComponent(message())}`;
+      updateEmail();
     }
-    const lenIn = $("dzLen") as HTMLInputElement;
-    const setLen = (v: number) => { v = Math.round(Math.max(600, Math.min(8000, v)) / 10) * 10; if (v !== st.L) { change(() => { st.L = v; }); fitView(); } else lenIn.value = String(st.L); };
-    lenIn.addEventListener("change", () => setLen(Number(lenIn.value) || st.L));
-    $("dzLenMinus").addEventListener("click", () => setLen(st.L - 100));
-    $("dzLenPlus").addEventListener("click", () => setLen(st.L + 100));
+    const chIn = $("dzCh") as HTMLInputElement;
+    chIn.addEventListener("change", () => { const v = num(chIn.value, 2000, 4000); if (!v) { toast("Ceiling height must be 2000–4000 mm"); chIn.value = String(st.ch); return; } change(() => { st.ch = v; }); });
     $("dzUndo").addEventListener("click", () => { const s = undo.pop(); if (s) { st = JSON.parse(s); commit(); } });
-    $("dzReset").addEventListener("click", () => { change(() => { st = presetOf(st.p); }); fitView(true); toast("Back to the starting layout"); });
+    $("dzReset").addEventListener("click", () => { change(() => { st = presetOf(st.p); ar = "a"; openSet.clear(); }); fitView(true); toast("Back to the starting layout"); });
 
+    function describe(u: U, isFloor: boolean) {
+      const bits: string[] = [];
+      if (u.h) bits.push(`height ${u.h}`); if (u.dp) bits.push(`depth ${u.dp}`); if (u.y !== undefined) bits.push(`${u.y} off floor`);
+      if (u.fr) bits.push(FRONTS[u.fr].toLowerCase()); if (u.n) bits.push(`${u.n} door${u.n > 1 ? "s" : ""}`); if (u.dr) bits.push(`${u.dr} drawer${u.dr > 1 ? "s" : ""}`);
+      if (u.c) bits.push(colourName(u.c));
+      return `${T[u.t].label} ${u.w}${bits.length ? ` (${bits.join(", ")})` : ""}`;
+    }
     function message() {
       const pr = P[st.p], name = ($("dzName") as HTMLInputElement).value.trim(), area = ($("dzArea") as HTMLInputElement).value.trim(), notes = ($("dzNotes") as HTMLTextAreaElement).value.trim();
-      const rows = (r: U[]) => r.length ? r.map((u, i) => `${i + 1}. ${T[u[0]].label} ${u[1]}`).join("\n") : "(none)";
-      const L = [
-        `Hi WhichwoodFitters, I designed a ${pr.label.toLowerCase()} on your website.`, "",
-        `Name: ${name || "-"}`, `Area: ${area || "-"}`, `Wall length: ${st.L} mm`, "",
-        `${pr.fTitle} (left to right, ${used(st.f)} mm):`, rows(st.f), "",
-        `${pr.uTitle} (left to right, ${used(st.u)} mm):`, rows(st.u), "",
-        `Doors: ${st.d === "sprayed" ? "Sprayed / painted" : `PG Bison ${DOORS[st.d].label}`}`,
-        ...(pr.worktop ? [`${st.p === "vanity" ? "Top" : "Worktop"}: ${TOPS[st.k].label}`] : []),
-        `Handles: ${HANDLES[st.h].label}`,
-        ...(notes ? ["", `Notes: ${notes}`] : []),
-        "", `Open my design in 3D: ${link()}`,
-      ];
+      const rows = (r: U[], f: boolean) => r.length ? r.map((u, i) => `${i + 1}. ${describe(u, f)}`).join("\n") : "(none)";
+      const L: string[] = [`Hi WhichwoodFitters, I designed a ${pr.label.toLowerCase()} on your website.`, "", `Name: ${name || "-"}`, `Area: ${area || "-"}`, `Ceiling height: ${st.ch} mm`];
+      for (const R of RUNS) {
+        const run = st.r[R.k]; if (!run.on) continue;
+        L.push("", R.k === "i" ? `ISLAND (${used(run.f)} mm long)` : `${R.label.toUpperCase()} — ${run.L} mm`);
+        L.push(`${R.k === "i" ? "Island units" : pr.fTitle} (${R.order}):`, rows(run.f, true));
+        if (R.k !== "i") L.push(`${pr.uTitle} (${R.order}):`, rows(run.u, false));
+      }
+      L.push("", `Doors: ${st.d === "custom" ? `custom colour ${st.dc}` : st.d === "sprayed" ? "Sprayed / painted" : `PG Bison ${DOORS[st.d].label}`}`);
+      if (pr.worktop) L.push(`${st.p === "vanity" ? "Top" : "Worktop"}: ${st.k === "custom" ? `custom colour ${st.kc}` : TOPS[st.k].label}`);
+      L.push(`Handles: ${HANDLES[st.h].label}`);
+      if (notes) L.push("", `Notes: ${notes}`);
+      L.push("", `Open my design in 3D: ${link()}`);
       return L.join("\n");
     }
+    const updateEmail = () => { ($("dzEmail") as HTMLAnchorElement).href = `mailto:${SITE.email}?subject=${encodeURIComponent(`My ${P[st.p].label.toLowerCase()} design`)}&body=${encodeURIComponent(message())}`; };
     $("dzSend").addEventListener("click", () => {
       const n = $("dzName") as HTMLInputElement;
       if (!n.value.trim()) { toast("Add your name so we know who the design is from"); n.focus(); return; }
-      if (!st.f.length && !st.u.length) { toast("Add at least one unit first"); return; }
+      if (!RUNS.some(R => st.r[R.k].on && (st.r[R.k].f.length || st.r[R.k].u.length))) { toast("Add at least one unit first"); return; }
       window.open(`https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(message())}`, "_blank", "noopener");
     });
-    for (const id of ["dzName", "dzArea", "dzNotes"]) $(id).addEventListener("input", () => { ($("dzEmail") as HTMLAnchorElement).href = `mailto:${SITE.email}?subject=${encodeURIComponent(`My ${P[st.p].label.toLowerCase()} design`)}&body=${encodeURIComponent(message())}`; });
+    for (const id of ["dzName", "dzArea", "dzNotes"]) $(id).addEventListener("input", updateEmail);
     $("dzCopy").addEventListener("click", async () => {
       try { await navigator.clipboard.writeText(link()); toast("Design link copied"); }
       catch { prompt("Copy this link:", link()); }
@@ -491,7 +654,15 @@ export const prerender = true;
     const mat = (key: string, make: () => THREE.Material) => matCache[key] || (matCache[key] = (() => { const m = make() as any; if ("envMapIntensity" in m) m.envMapIntensity = ENV_I; return m; })());
     const std = (c: number, r = .5, m = 0) => mat(`s${c}-${r}-${m}`, () => new THREE.MeshStandardMaterial({ color: c, roughness: r, metalness: m }));
     const carcassM = () => std(0xf2f0ec, .6);
-    const doorM = (horizontal = false) => { const d = DOORS[st.d]; return d.wood ? mat(`dw${st.d}${horizontal}`, () => new THREE.MeshStandardMaterial({ map: wood(d.wood!, horizontal), roughness: .58 })) : std(d.c, st.d === "sprayed" ? .35 : .62); };
+    const hexNum = (h: string) => parseInt(h.slice(1), 16);
+    const doorM = (horizontal = false, over?: string) => {
+      const key = over ?? st.d;
+      if (HEX.test(key)) return std(hexNum(key), .5);
+      if (key === "custom") return std(hexNum(st.dc), .5);
+      const d = DOORS[key] ?? DOORS.iceberg;
+      return d.wood ? mat(`dw${key}${horizontal}`, () => new THREE.MeshStandardMaterial({ map: wood(d.wood!, horizontal), roughness: .58 })) : std(d.c, key === "sprayed" ? .35 : .62);
+    };
+    const glassPane = () => mat("gpane", () => new THREE.MeshPhysicalMaterial({ color: 0xbfd2d6, roughness: .05, metalness: 0, transparent: true, opacity: .28 }));
     const phys = (key: string, o: THREE.MeshPhysicalMaterialParameters) => mat(key, () => new THREE.MeshPhysicalMaterial(o));
     const steel = () => std(0xc4c7cb, .32, 1), glass = () => phys("glass", { color: 0x070708, roughness: .04, clearcoat: 1, clearcoatRoughness: .02 });
     const ceramic = () => phys("ceramic", { color: 0xf7f7f5, roughness: .12, clearcoat: .6 });
@@ -514,7 +685,7 @@ export const prerender = true;
       black: () => canvasTex("b", 512, speckle("#1e1e20", ["#5d5a57", "#8b8782", "#3a3836", "#c9c4bd"], 12000), 2),
       concrete: () => canvasTex("c", 512, speckle("#9c9994", ["#8a8782", "#b0ada7", "#77746f", "#a7a49e"], 20000), 1.5),
     };
-    const topM = () => { const t = TOPS[st.k]; return t.wood ? mat(`tw${st.k}`, () => new THREE.MeshStandardMaterial({ map: wood(t.wood!, true), roughness: .45 }))
+    const topM = () => { if (st.k === "custom") return phys(`tpc${st.kc}`, { color: hexNum(st.kc), roughness: .2, clearcoat: .4 }); const t = TOPS[st.k]; return t.wood ? mat(`tw${st.k}`, () => new THREE.MeshStandardMaterial({ map: wood(t.wood!, true), roughness: .45 }))
       : phys(`tp${st.k}`, { map: TOPTEX[st.k](), roughness: st.k === "concrete" ? .7 : .18, clearcoat: st.k === "concrete" ? 0 : .5, clearcoatRoughness: .1 }); };
     const floorM = (L: number) => mat(`floor${L}`, () => new THREE.MeshStandardMaterial({ roughness: .42, map: (() => {
       // engineered oak planks, 190 mm wide; texture covers 1.52 m x 1.52 m
@@ -548,41 +719,55 @@ export const prerender = true;
         }
       }); const c = t.clone(); c.needsUpdate = true; c.repeat.set(w / 600, h / 600); return c; })() });
     const mm = (v: number) => v / 1000;
-    function box(w: number, h: number, d: number, x: number, y: number, z: number, m: THREE.Material, edges = true, parent: THREE.Object3D = root) {
+    let cur: THREE.Object3D = root;
+    function box(w: number, h: number, d: number, x: number, y: number, z: number, m: THREE.Material, edges = true, parent: THREE.Object3D = cur) {
       const geo = new THREE.BoxGeometry(mm(w), mm(h), mm(d)); const o = new THREE.Mesh(geo, m);
       o.position.set(mm(x), mm(y), mm(z)); o.castShadow = o.receiveShadow = true;
       parent.add(o); return o;
     }
     function rbox(w: number, h: number, d: number, x: number, y: number, z: number, m: THREE.Material, r = 2.5) {
       const geo = new RoundedBoxGeometry(mm(w), mm(h), mm(d), 2, mm(Math.min(r, w / 4, h / 4, d / 4)));
-      const o = new THREE.Mesh(geo, m); o.position.set(mm(x), mm(y), mm(z)); o.castShadow = o.receiveShadow = true; root.add(o); return o;
+      const o = new THREE.Mesh(geo, m); o.position.set(mm(x), mm(y), mm(z)); o.castShadow = o.receiveShadow = true; cur.add(o); return o;
     }
     function handle(cx: number, cy: number, z: number, len: number, vertical: boolean) {
       const hd = HANDLES[st.h]; if (st.h === "none") return;
       const m = std(hd.c, .3, hd.m);
       const b = new THREE.Mesh(new THREE.CylinderGeometry(.006, .006, mm(len), 12), m);
-      if (!vertical) b.rotation.z = Math.PI / 2; b.position.set(mm(cx), mm(cy), mm(z + 28)); b.castShadow = true; root.add(b);
+      if (!vertical) b.rotation.z = Math.PI / 2; b.position.set(mm(cx), mm(cy), mm(z + 28)); b.castShadow = true; cur.add(b);
       for (const s of [-1, 1]) { const p = new THREE.Mesh(new THREE.CylinderGeometry(.005, .005, .028, 8), m); p.rotation.x = Math.PI / 2;
-        p.position.set(mm(cx + (vertical ? 0 : s * (len / 2 - 15))), mm(cy + (vertical ? s * (len / 2 - 15) : 0)), mm(z + 14)); root.add(p); }
+        p.position.set(mm(cx + (vertical ? 0 : s * (len / 2 - 15))), mm(cy + (vertical ? s * (len / 2 - 15) : 0)), mm(z + 14)); cur.add(p); }
     }
     function label(text: string, x: number, y: number, z: number, up = false) {
-      const e = el("div", "dz-lab" + (up ? " up" : ""), text); labelsEl.append(e); labs.push({ el: e, p: new THREE.Vector3(mm(x), mm(y), mm(z)) });
+      cur.updateMatrixWorld(true);
+      const e = el("div", "dz-lab" + (up ? " up" : ""), text); labelsEl.append(e); labs.push({ el: e, p: cur.localToWorld(new THREE.Vector3(mm(x), mm(y), mm(z))) });
     }
 
     // fronts: returns pieces in unit-local mm (x from left, y from carcass bottom)
-    type Piece = { x: number; y: number; w: number; h: number; kind: "door" | "drawer" | "glass" | "mirror"; side?: number };
-    function fronts(front: string, w: number, h: number): Piece[] {
+    type Piece = { x: number; y: number; w: number; h: number; kind: "door" | "drawer" | "glass" | "mirror" | "gdoor"; side?: number };
+    function fronts(front: string, w: number, h: number, u?: U): Piece[] {
       const g = 3, out: Piece[] = [];
       const doors = (n: number, y0: number, y1: number, kind: Piece["kind"] = "door") => {
         const dw = (w - (n + 1) * g) / n;
         for (let i = 0; i < n; i++) out.push({ x: g + i * (dw + g), y: y0 + g / 2, w: dw, h: y1 - y0 - g, kind, side: n === 1 ? 1 : (i % 2 === 0 ? 1 : -1) });
       };
       const drawers = (n: number, y0: number, y1: number) => { const dh = (y1 - y0 - (n + 1) * g) / n; for (let i = 0; i < n; i++) out.push({ x: g / 2, y: y0 + g + i * (dh + g), w: w - g, h: dh, kind: "drawer" }); };
-      const auto = w >= 700 ? 2 : 1;
+      const auto = u?.n ?? (w >= 700 ? 2 : 1);
+      if (u?.fr) {
+        const dr = u.dr ?? 3;
+        switch (u.fr) {
+          case "doors": doors(auto, 0, h); break;
+          case "glass": doors(auto, 0, h, "gdoor"); break;
+          case "drawers": drawers(dr, 0, h); break;
+          case "mixed": { const n = u.dr ?? 2, top = Math.min(h * .55, n * 190); drawers(n, 0, top); doors(auto, top, h); break; }
+          case "lift": out.push({ x: g / 2, y: g / 2, w: w - g, h: h - g, kind: "drawer", side: -1 }); break;
+        }
+        return out;
+      }
+      if (u?.dr && /^drawers/.test(front)) { drawers(u.dr, 0, h); return out; }
       switch (front) {
         case "doors": doors(auto, 0, h); break;
-        case "doors1": doors(1, 0, h); break;
-        case "doors2": doors(2, 0, h); break;
+        case "doors1": doors(u?.n ?? 1, 0, h); break;
+        case "doors2": doors(u?.n ?? 2, 0, h); break;
         case "doors4": doors(4, 0, h); break;
         case "drawers3": drawers(3, 0, h); break;
         case "drawers2": drawers(2, 0, h); break;
@@ -598,121 +783,144 @@ export const prerender = true;
       return out;
     }
 
+    const ISLAND_Z = 2000;
     function rebuild() {
       if (!renderer) return;
       root.traverse(o => { const m = o as THREE.Mesh; if (m.geometry) m.geometry.dispose(); });
-      root.clear(); labelsEl.replaceChildren(); labs = [];
-      const pr = P[st.p], L = st.L, X0 = -L / 2;
-      let maxTop = pr.up.y0 + pr.up.h;
-      // room
-      const wallH = Math.max(2400, maxTop + 200);
-      const RD = 9;
-      const back = new THREE.Mesh(new THREE.PlaneGeometry(mm(L), mm(wallH)), wallM()); back.position.set(0, mm(wallH) / 2, 0); back.receiveShadow = true; root.add(back);
-      for (const s of [-1, 1]) { const sw = new THREE.Mesh(new THREE.PlaneGeometry(RD, mm(wallH)), wallM()); sw.rotation.y = -s * Math.PI / 2; sw.position.set(s * mm(L) / 2, mm(wallH) / 2, RD / 2); sw.receiveShadow = true; root.add(sw);
-        box(16, 80, RD * 1000, s * (L / 2 - 8), 40, RD * 500, std(0xf4f2ee, .5)); }
-      const fl = new THREE.Mesh(new THREE.PlaneGeometry(mm(L), RD), floorM(L)); fl.rotation.x = -Math.PI / 2; fl.position.set(0, 0, RD / 2); fl.receiveShadow = true; root.add(fl);
-      if (st.p === "kitchen" && st.f.length) {
-        const y0 = pr.floor.y0 + pr.floor.h + pr.topT, y1 = pr.up.y0, w = Math.min(L, used(st.f));
-        const sb = new THREE.Mesh(new THREE.PlaneGeometry(mm(w), mm(y1 - y0)), tileM(w, y1 - y0)); sb.position.set(mm(X0 + w / 2), mm((y0 + y1) / 2), .004); sb.receiveShadow = true; root.add(sb);
-      }
-      // wall length dimension
-      label(`Wall ${L} mm`, 0, 0, (pr.floor.d || 600) + 420);
+      root.clear(); labelsEl.replaceChildren(); labs = []; cur = root;
+      const pr = P[st.p], A = st.r.a.L, RD = 12, wallH = st.ch;
+      // room: back wall, two side walls, floor, skirting
+      const back = new THREE.Mesh(new THREE.PlaneGeometry(mm(A), mm(wallH)), wallM()); back.position.set(0, mm(wallH) / 2, 0); back.receiveShadow = true; root.add(back);
+      for (const s of [-1, 1]) { const sw = new THREE.Mesh(new THREE.PlaneGeometry(RD, mm(wallH)), wallM()); sw.rotation.y = -s * Math.PI / 2; sw.position.set(s * mm(A) / 2, mm(wallH) / 2, RD / 2); sw.receiveShadow = true; root.add(sw);
+        box(16, 80, RD * 1000, s * (A / 2 - 8), 40, RD * 500, std(0xf4f2ee, .5)); }
+      box(A, 80, 16, 0, 40, 8, std(0xf4f2ee, .5));
+      const fl = new THREE.Mesh(new THREE.PlaneGeometry(mm(A), RD), floorM(A)); fl.rotation.x = -Math.PI / 2; fl.position.set(0, 0, RD / 2); fl.receiveShadow = true; root.add(fl);
 
-      const placeRow = (row: U[], r: Row, isFloor: boolean) => {
-        let x = X0; const tops: [number, number][] = [];
-        row.forEach(([t, w]) => {
-          const ut = T[t]; const h = ut.h || r.h; const y0 = r.y0, d = r.d, fz = d + 9;
-          const over = x + w > L / 2 + 1;
-          if (t === "space") {
-            /* gap: nothing built */
-          } else {
-            if (ut.carcass !== false) {
-              if (ut.front === "open") {
-                box(16, h, d, x + 8, y0 + h / 2, d / 2, carcassM()); box(16, h, d, x + w - 8, y0 + h / 2, d / 2, carcassM());
-                box(w - 32, 16, d, x + w / 2, y0 + 8, d / 2, carcassM()); box(w - 32, 16, d, x + w / 2, y0 + h - 8, d / 2, carcassM());
-                box(w - 32, 16, d - 20, x + w / 2, y0 + h / 2, d / 2 - 10, carcassM());
-                box(w - 32, h - 32, 6, x + w / 2, y0 + h / 2, 3, carcassM(), false);
-              } else box(w, h, d, x + w / 2, y0 + h / 2, d / 2, carcassM());
-            }
-            for (const pc of fronts(ut.front, w, h)) {
-              const cx = x + pc.x + pc.w / 2, cy = y0 + pc.y + pc.h / 2;
-              const m = pc.kind === "glass" ? glass() : pc.kind === "mirror" ? mirrorM() : doorM(pc.kind === "drawer");
-              rbox(pc.w, pc.h, 18, cx, cy, fz, m, pc.kind === "glass" ? 1.5 : 2.5);
-              if (pc.kind === "glass") { box(pc.w, 60, 20, cx, y0 + pc.y + pc.h - 30, fz + 1, steel(), false); handle(cx, y0 + pc.y + pc.h - 110, fz + 9, Math.min(460, pc.w - 80), false); continue; }
-              const hl = st.h === "none" ? 0 : 1;
-              if (!hl) continue;
-              if (pc.kind === "drawer") {
-                const len = Math.min(pc.w * .5, 320);
-                handle(cx, pc.side === -1 ? y0 + pc.y + 50 : y0 + pc.y + pc.h - Math.min(45, pc.h / 3), fz + 9, len, false);
-              } else {
-                const hx = x + pc.x + (pc.side! > 0 ? pc.w - 40 : 40);
-                const isTall = pc.h > 1100;
-                const hy = isTall ? Math.min(y0 + pc.y + pc.h - 200, 1100) : isFloor && st.p !== "vanity" ? y0 + pc.y + pc.h - 130 : y0 + pc.y + 130;
-                handle(hx, isFloor && st.p === "vanity" ? y0 + pc.y + pc.h - 110 : hy, fz + 9, isTall ? 500 : 200, true);
-              }
-            }
-            // extras
-            const cx = x + w / 2, topY = y0 + h + pr.topT;
-            if (ut.extra === "fridge") {
-              const fh = 1850; rbox(w - 20, fh, 640, cx, fh / 2, 330, std(0xbfc3c8, .3, .85), 12);
-              box(w - 22, 4, 4, cx, 1150, 652, std(0x6f7378, .4, .6), false);
-              handle(x + w - 70, 1300, 650, 400, true); handle(x + w - 70, 700, 650, 300, true);
-            }
-            if (ut.extra === "sink") {
-              const sw = Math.min(w - 150, 760);
-              box(sw, 4, 440, cx, topY + 2, 300, steel(), false); box(sw - 60, 3, 380, cx, topY + 3, 300, std(0x6f7378, .35, .9), false);
-              const tp = new THREE.Mesh(new THREE.CylinderGeometry(.012, .016, .28, 14), steel()); tp.position.set(mm(cx), mm(topY) + .14, .09); root.add(tp);
-              const sp = new THREE.Mesh(new THREE.TorusGeometry(.08, .011, 10, 24, Math.PI), steel()); sp.position.set(mm(cx), mm(topY) + .28, .17); sp.rotation.y = Math.PI / 2; root.add(sp);
-            }
-            if (ut.extra === "hob") {
-              box(590, 6, 520, cx, topY + 3, 300, glass(), false);
-              for (const [rx, rz, rr] of [[-140, -120, 80], [140, -120, 65], [-140, 120, 65], [140, 120, 90]]) {
-                const ring = new THREE.Mesh(new THREE.RingGeometry(mm(rr - 8), mm(rr), 32), std(0x555555, .4)); ring.rotation.x = -Math.PI / 2;
-                ring.position.set(mm(cx + rx), mm(topY + 6.5), mm(300 + rz)); root.add(ring);
-              }
-            }
-            if (ut.extra === "hood") {
-              box(w, 60, 480, cx, y0 + 100, 250, steel(), false);
-              const chTop = Math.max(y0 + h + 200, 2350); box(260, chTop - y0 - 130, 220, cx, (chTop + y0 + 130) / 2, 120, steel(), false);
-            }
-            if (ut.extra === "shelf") box(w, 32, d - 50, cx, y0 + (isFloor ? 0 : h / 2), (d - 50) / 2, doorM(true));
-            if (ut.extra === "mirror") rbox(w, h, 6, cx, y0 + h / 2, 6, mirrorM(), 2);
-            if (ut.extra === "basin" || ut.extra === "basin2") {
-              const n = ut.extra === "basin2" ? 2 : 1;
-              for (let i = 0; i < n; i++) {
-                const bx = x + (w / (n * 2)) * (2 * i + 1);
-                rbox(460, 130, 360, bx, topY + 65, 240, ceramic(), 20);
-                const tp = new THREE.Mesh(new THREE.CylinderGeometry(.01, .014, .22, 12), steel()); tp.position.set(mm(bx), mm(topY) + .11, .05); root.add(tp);
-              }
-            }
-            if (ut.top) tops.push([x, x + w]);
-            if (!isFloor && st.p === "kitchen" && ut.carcass !== false) {
-              const led = new THREE.Mesh(new THREE.BoxGeometry(mm(w - 60), .004, .012), mat("led", () => new THREE.MeshStandardMaterial({ color: 0x222222, emissive: 0xffd9a8, emissiveIntensity: 4 })));
-              led.position.set(mm(x + w / 2), mm(y0) - .003, mm(d - 50)); root.add(led);
-              const pool = new THREE.RectAreaLight(0xffc98f, 7, mm(w - 60), .03); pool.position.set(mm(x + w / 2), mm(y0) - .01, mm(d - 50)); pool.lookAt(mm(x + w / 2), 0, mm(d - 50)); root.add(pool);
-            }
-          }
-          label(String(w), x + w / 2, isFloor ? y0 - (pr.plinthH ? pr.plinthH / 2 : 60) : y0 + h + 60, isFloor ? d + 30 : d + 20, !isFloor);
-          if (over) label("too long", x + w / 2, y0 + (ut.h || r.h) / 2, d + 40);
-          x += w;
-        });
-        // worktop segments + plinth
-        if (isFloor) {
-          if (pr.worktop) {
-            const segs: [number, number][] = [];
-            for (const s of tops) { const l = segs[segs.length - 1]; if (l && Math.abs(l[1] - s[0]) < 1) l[1] = s[1]; else segs.push([...s]); }
-            for (const [a, b] of segs) rbox(b - a, pr.topT, pr.topD, (a + b) / 2, r.y0 + r.h + pr.topT / 2, pr.topD / 2, topM(), 3);
-          }
-          if (pr.plinthH) {
-            let px = X0;
-            row.forEach(([t, w]) => { if (T[t].plinth) box(w, pr.plinthH, 16, px + w / 2, pr.plinthH / 2, r.d - 60, std(0x1c1c1c, .7), false); px += w; });
-          }
+      for (const RN of RUNS) {
+        const run = st.r[RN.k]; if (!run.on) continue;
+        const g = new THREE.Group(); root.add(g); cur = g;
+        const rev = RN.k === "b";
+        const L = RN.k === "i" ? used(run.f) : run.L;
+        if (RN.k === "a") g.position.set(-mm(A) / 2, 0, 0);
+        if (RN.k === "b") { g.position.set(-mm(A) / 2, 0, mm(L)); g.rotation.y = Math.PI / 2; }
+        if (RN.k === "c") { g.position.set(mm(A) / 2, 0, 0); g.rotation.y = -Math.PI / 2; }
+        if (RN.k === "i") g.position.set(-mm(L) / 2, 0, mm(ISLAND_Z));
+        g.updateMatrixWorld(true);
+        if (RN.k !== "a" && RN.k !== "i") box(L, 80, 16, L / 2, 40, 8, std(0xf4f2ee, .5));
+        // splashback between worktop and wall units
+        if (st.p === "kitchen" && RN.k !== "i" && run.f.length) {
+          const y0 = pr.floor.y0 + pr.floor.h + pr.topT, y1 = pr.up.y0, w = Math.min(L, used(run.f)), x0 = rev ? L - w : 0;
+          const sb = new THREE.Mesh(new THREE.PlaneGeometry(mm(w), mm(y1 - y0)), tileM(w, y1 - y0)); sb.position.set(mm(x0 + w / 2), mm((y0 + y1) / 2), .004); sb.receiveShadow = true; g.add(sb);
         }
-      };
-      placeRow(st.f, pr.floor, true);
-      placeRow(st.u, pr.up, false);
+        label(RN.k === "i" ? `Island ${L} mm` : `${RN.label} ${L} mm`, L / 2, 0, (RN.k === "i" ? 600 : pr.floor.d) + 450);
+        placeRow(run.f, true, RN.k, L, rev);
+        if (RN.k !== "i") placeRow(run.u, false, RN.k, L, rev);
+        cur = root;
+      }
       if (st.p === "tv") { box(1230, 710, 30, 0, 1150, 40, glass(), false); box(1210, 690, 2, 0, 1150, 56, std(0x1b2430, .2, .2), false); }
       setLabelsPos(); needsRender = true;
+    }
+
+    function placeRow(row: U[], isFloor: boolean, rk: RK, L: number, rev: boolean) {
+      const pr = P[st.p];
+      let pos = rev ? L : 0;
+      type Seg = { a: number; b: number; top: number; d: number };
+      const tops: Seg[] = [];
+      row.forEach(u => {
+        const t = u.t, w = u.w, ut = T[t];
+        const { h, d, y: y0 } = dims(u, isFloor, rk);
+        const x = rev ? pos - w : pos;
+        const over = rev ? x < -1 : x + w > L + 1;
+        const fz = d + 9, cx = x + w / 2;
+        const front = ut.front;
+        const shell = front === "open" || u.fr === "open" || u.fr === "glass";
+        if (t !== "space") {
+          if (ut.carcass !== false) {
+            if (shell) {
+              box(16, h, d, x + 8, y0 + h / 2, d / 2, carcassM()); box(16, h, d, x + w - 8, y0 + h / 2, d / 2, carcassM());
+              box(w - 32, 16, d, cx, y0 + 8, d / 2, carcassM()); box(w - 32, 16, d, cx, y0 + h - 8, d / 2, carcassM());
+              const ns = Math.max(1, Math.round(h / 360) - 1);
+              for (let k = 1; k <= ns; k++) box(w - 32, 16, d - 20, cx, y0 + h * k / (ns + 1), d / 2 - 10, carcassM());
+              box(w - 32, h - 32, 6, cx, y0 + h / 2, 3, carcassM(), false);
+            } else box(w, h, d, cx, y0 + h / 2, d / 2, carcassM());
+          }
+          const own = u.c;
+          for (const pc of (u.fr === "open" ? [] : fronts(front, w, h, u))) {
+            const pcx = x + pc.x + pc.w / 2, pcy = y0 + pc.y + pc.h / 2;
+            if (pc.kind === "gdoor") {
+              const fw = Math.min(60, pc.w / 4), m = doorM(false, own);
+              rbox(fw, pc.h, 18, x + pc.x + fw / 2, pcy, fz, m); rbox(fw, pc.h, 18, x + pc.x + pc.w - fw / 2, pcy, fz, m);
+              rbox(pc.w - 2 * fw, fw, 18, pcx, y0 + pc.y + fw / 2, fz, m); rbox(pc.w - 2 * fw, fw, 18, pcx, y0 + pc.y + pc.h - fw / 2, fz, m);
+              box(pc.w - 2 * fw, pc.h - 2 * fw, 4, pcx, pcy, fz, glassPane(), false);
+            } else {
+              const m = pc.kind === "glass" ? glass() : pc.kind === "mirror" ? mirrorM() : doorM(pc.kind === "drawer", own);
+              rbox(pc.w, pc.h, 18, pcx, pcy, fz, m, pc.kind === "glass" ? 1.5 : 2.5);
+            }
+            if (pc.kind === "glass") { box(pc.w, 60, 20, pcx, y0 + pc.y + pc.h - 30, fz + 1, steel(), false); handle(pcx, y0 + pc.y + pc.h - 110, fz + 9, Math.min(460, pc.w - 80), false); continue; }
+            if (st.h === "none") continue;
+            if (pc.kind === "drawer") {
+              handle(pcx, pc.side === -1 ? y0 + pc.y + 50 : y0 + pc.y + pc.h - Math.min(45, pc.h / 3), fz + 9, Math.min(pc.w * .5, 320), false);
+            } else {
+              const hx = x + pc.x + (pc.side! > 0 ? pc.w - 40 : 40), isTall = pc.h > 1100;
+              const lowUnit = isFloor && st.p !== "vanity" && y0 + h < 1300;
+              const hy = isTall ? Math.min(y0 + pc.y + pc.h - 200, 1100) : lowUnit ? y0 + pc.y + pc.h - 130 : y0 + pc.y + 130;
+              handle(hx, hy, fz + 9, isTall ? 500 : Math.min(200, pc.h - 60), true);
+            }
+          }
+          const topY = y0 + h + pr.topT;
+          if (ut.extra === "fridge") {
+            const fh = u.h ?? 1850; rbox(w - 20, fh, 640, cx, fh / 2, 330, std(0xbfc3c8, .3, .85), 12);
+            box(w - 22, 4, 4, cx, fh * .62, 652, std(0x6f7378, .4, .6), false);
+            handle(x + w - 70, fh * .7, 650, 400, true); handle(x + w - 70, fh * .38, 650, 300, true);
+          }
+          if (ut.extra === "sink") {
+            const sw = Math.min(w - 150, 760);
+            box(sw, 4, 440, cx, topY + 2, 300, steel(), false); box(sw - 60, 3, 380, cx, topY + 3, 300, std(0x6f7378, .35, .9), false);
+            const tp = new THREE.Mesh(new THREE.CylinderGeometry(.012, .016, .28, 14), steel()); tp.position.set(mm(cx), mm(topY) + .14, .09); cur.add(tp);
+            const sp = new THREE.Mesh(new THREE.TorusGeometry(.08, .011, 10, 24, Math.PI), steel()); sp.position.set(mm(cx), mm(topY) + .28, .17); sp.rotation.y = Math.PI / 2; cur.add(sp);
+          }
+          if (ut.extra === "hob") {
+            box(590, 6, 520, cx, topY + 3, 300, glass(), false);
+            for (const [rx, rz, rr] of [[-140, -120, 80], [140, -120, 65], [-140, 120, 65], [140, 120, 90]]) {
+              const ring = new THREE.Mesh(new THREE.RingGeometry(mm(rr - 8), mm(rr), 32), std(0x555555, .4)); ring.rotation.x = -Math.PI / 2;
+              ring.position.set(mm(cx + rx), mm(topY + 6.5), mm(300 + rz)); cur.add(ring);
+            }
+          }
+          if (ut.extra === "hood") {
+            box(w, 60, 480, cx, y0 + 100, 250, steel(), false);
+            const chTop = st.ch; box(260, chTop - y0 - 130, 220, cx, (chTop + y0 + 130) / 2, 120, steel(), false);
+          }
+          if (ut.extra === "shelf") box(w, 32, d - 50, cx, y0 + (isFloor ? 0 : h / 2), (d - 50) / 2, doorM(true, u.c));
+          if (ut.extra === "mirror") rbox(w, h, 6, cx, y0 + h / 2, 6, mirrorM(), 2);
+          if (ut.extra === "basin" || ut.extra === "basin2") {
+            const n = ut.extra === "basin2" ? 2 : 1;
+            for (let i = 0; i < n; i++) {
+              const bx = x + (w / (n * 2)) * (2 * i + 1);
+              rbox(460, 130, 360, bx, topY + 65, 240, ceramic(), 20);
+              const tp = new THREE.Mesh(new THREE.CylinderGeometry(.01, .014, .22, 12), steel()); tp.position.set(mm(bx), mm(topY) + .11, .05); cur.add(tp);
+            }
+          }
+          const wantsTop = isFloor && pr.worktop && (ut.top || t === "custom") && h <= 1100;
+          if (wantsTop) tops.push({ a: x, b: x + w, top: y0 + h, d });
+          if ((ut.plinth || t === "custom") && isFloor && y0 >= 40 && ut.carcass !== false) box(w, y0, 16, cx, y0 / 2, d - 60, std(0x1c1c1c, .7), false);
+          if (!isFloor && st.p === "kitchen" && ut.carcass !== false) {
+            const led = new THREE.Mesh(new THREE.BoxGeometry(mm(w - 60), .004, .012), mat("led", () => new THREE.MeshStandardMaterial({ color: 0x222222, emissive: 0xffd9a8, emissiveIntensity: 4 })));
+            led.position.set(mm(cx), mm(y0) - .003, mm(d - 50)); cur.add(led);
+            const pool = new THREE.RectAreaLight(0xffc98f, 7, mm(w - 60), .03); pool.position.set(mm(cx), mm(y0) - .01, mm(d - 50)); pool.rotation.x = -Math.PI / 2; cur.add(pool);
+          }
+          if (rk === "i" && ut.carcass !== false) rbox(w, h, 16, cx, y0 + h / 2, -8, doorM(false, u.c), 2);
+        }
+        label(String(w), cx, isFloor ? Math.max(30, y0 / 2) : y0 + h + 60, d + 30, !isFloor);
+        if (over) label("too long", cx, y0 + h / 2, d + 40);
+        pos = rev ? pos - w : pos + w;
+      });
+      // worktops over runs of neighbouring units with the same top height
+      const segs: Seg[] = [];
+      for (const sgm of tops.sort((p, q) => p.a - q.a)) { const l = segs[segs.length - 1]; if (l && Math.abs(l.b - sgm.a) < 1 && Math.abs(l.top - sgm.top) < 1) { l.b = sgm.b; l.d = Math.max(l.d, sgm.d); } else segs.push({ ...sgm }); }
+      for (const sg of segs) {
+        const over = rk === "i" ? 300 : 0, depth = sg.d + (pr.topD - pr.floor.d) + over;
+        rbox(sg.b - sg.a, pr.topT, depth, (sg.a + sg.b) / 2, sg.top + pr.topT / 2, depth / 2 - over, topM(), 3);
+      }
     }
 
     // camera
@@ -720,11 +928,17 @@ export const prerender = true;
     const tgt = new THREE.Vector3();
     function fitView(resetAngles = false) { if (resetAngles) { yaw = .32; pitch = .16; zoom = 1; } }
     function placeCam() {
-      const pr = P[st.p], top = Math.max(pr.up.y0 + pr.up.h, pr.floor.y0 + Math.max(...st.f.map(u => T[u[0]].h || pr.floor.h), pr.floor.h)) + 150;
-      const spanW = Math.max(st.L, used(st.f), used(st.u)) + 500;
-      tgt.set(0, mm(top) / 2, .35);
+      let top = 900, zMax = 700, wide = st.r.a.L;
+      for (const RN of RUNS) {
+        const run = st.r[RN.k]; if (!run.on) continue;
+        for (const [rowArr, f] of [[run.f, true], [run.u, false]] as const) for (const u of rowArr) { const dd = dims(u, f, RN.k); top = Math.max(top, dd.y + dd.h); }
+        if (RN.k === "b" || RN.k === "c") zMax = Math.max(zMax, run.L);
+        if (RN.k === "i" && run.f.length) { zMax = Math.max(zMax, ISLAND_Z + 700); wide = Math.max(wide, used(run.f)); }
+      }
+      top = Math.min(top + 150, st.ch);
+      tgt.set(0, mm(top) / 2, mm(zMax) * .4);
       const t = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
-      const dist = Math.max(mm(top + 300) / 2 / t, mm(spanW) / 2 / (t * camera.aspect)) * 1.08 / zoom + .4;
+      const dist = Math.max(mm(top + 300) / 2 / t, mm(wide + 500) / 2 / (t * camera.aspect)) * 1.05 / zoom + .4 + mm(zMax) * .35;
       camera.position.set(tgt.x + Math.sin(yaw) * Math.cos(pitch) * dist, tgt.y + Math.sin(pitch) * dist, tgt.z + Math.cos(yaw) * Math.cos(pitch) * dist);
       camera.lookAt(tgt);
     }
