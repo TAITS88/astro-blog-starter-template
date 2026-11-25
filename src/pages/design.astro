@@ -114,7 +114,6 @@ export const prerender = true;
               <span class="dz-chip" id="dzPhotoStat">Drag to look around</span>
               <div class="dz-bar-b">
                 <button class="dz-tool" type="button" id="dzSizes" aria-pressed="true">Sizes</button>
-                <button class="dz-tool" type="button" id="dzPhoto" aria-pressed="true">Photo-real</button>
                 <button class="dz-tool" type="button" id="dzSave">Save picture</button>
               </div>
             </div>
@@ -200,9 +199,11 @@ export const prerender = true;
     import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
     import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
     import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-    import { GTAOPass } from "three/examples/jsm/postprocessing/GTAOPass.js";
     import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
-    import { WebGLPathTracer } from "three-gpu-pathtracer";
+    import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader.js";
+    import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
+    import { N8AOPass } from "n8ao";
+    import roomHdr from "@pmndrs/assets/hdri/apartment.exr.js"; // CC0 Poly Haven interior HDRI
     import { SITE } from "../data/site";
 
     // ================= catalogue =================
@@ -486,7 +487,8 @@ export const prerender = true;
       return texCache[k] = t;
     }
     const matCache: Record<string, THREE.Material> = {};
-    const mat = (key: string, make: () => THREE.Material) => matCache[key] || (matCache[key] = make());
+    const ENV_I = .42;
+    const mat = (key: string, make: () => THREE.Material) => matCache[key] || (matCache[key] = (() => { const m = make() as any; if ("envMapIntensity" in m) m.envMapIntensity = ENV_I; return m; })());
     const std = (c: number, r = .5, m = 0) => mat(`s${c}-${r}-${m}`, () => new THREE.MeshStandardMaterial({ color: c, roughness: r, metalness: m }));
     const carcassM = () => std(0xf2f0ec, .6);
     const doorM = (horizontal = false) => { const d = DOORS[st.d]; return d.wood ? mat(`dw${st.d}${horizontal}`, () => new THREE.MeshStandardMaterial({ map: wood(d.wood!, horizontal), roughness: .58 })) : std(d.c, st.d === "sprayed" ? .35 : .62); };
@@ -687,6 +689,7 @@ export const prerender = true;
             if (!isFloor && st.p === "kitchen" && ut.carcass !== false) {
               const led = new THREE.Mesh(new THREE.BoxGeometry(mm(w - 60), .004, .012), mat("led", () => new THREE.MeshStandardMaterial({ color: 0x222222, emissive: 0xffd9a8, emissiveIntensity: 4 })));
               led.position.set(mm(x + w / 2), mm(y0) - .003, mm(d - 50)); root.add(led);
+              const pool = new THREE.RectAreaLight(0xffc98f, 7, mm(w - 60), .03); pool.position.set(mm(x + w / 2), mm(y0) - .01, mm(d - 50)); pool.lookAt(mm(x + w / 2), 0, mm(d - 50)); root.add(pool);
             }
           }
           label(String(w), x + w / 2, isFloor ? y0 - (pr.plinthH ? pr.plinthH / 2 : 60) : y0 + h + 60, isFloor ? d + 30 : d + 20, !isFloor);
@@ -709,7 +712,7 @@ export const prerender = true;
       placeRow(st.f, pr.floor, true);
       placeRow(st.u, pr.up, false);
       if (st.p === "tv") { box(1230, 710, 30, 0, 1150, 40, glass(), false); box(1210, 690, 2, 0, 1150, 56, std(0x1b2430, .2, .2), false); }
-      setLabelsPos(); sceneDirty = true; lastChange = performance.now();
+      setLabelsPos(); needsRender = true;
     }
 
     // camera
@@ -734,55 +737,47 @@ export const prerender = true;
         l.el.style.left = `${(v.x * .5 + .5) * W}px`; l.el.style.top = `${(-v.y * .5 + .5) * H}px`;
       }
     }
-    let sceneDirty = true, lastChange = 0;
+    let needsRender = true, lastMove = 0, hqDone = false;
     if (renderer) {
       const coarse = matchMedia("(pointer: coarse)").matches;
-      renderer.setPixelRatio(Math.min(devicePixelRatio, coarse ? 1.25 : 1.5));
-      renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = .95;
-      renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      const basePR = Math.min(devicePixelRatio, coarse ? 1.5 : 2);
+      renderer.setPixelRatio(basePR);
+      renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
+      renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.VSMShadowMap;
       stage.prepend(renderer.domElement);
       scene.background = new THREE.Color(0xf3f1ed);
-      // soft daylight studio: bright sky above, big window behind the viewer
-      { const EW = 512, EH = 256, data = new Float32Array(EW * EH * 4);
-        for (let y = 0; y < EH; y++) { const el = ((y + .5) / EH - .5) * Math.PI;
-          for (let x = 0; x < EW; x++) { const az = ((x + .5) / EW - .5) * 2 * Math.PI, dz = Math.cos(el) * Math.sin(az), dx = Math.cos(el) * Math.cos(az);
-            let b = el > 0 ? .32 + .6 * Math.sin(el) : .16;
-            const win = Math.max(0, Math.min(1, (dz - .6) * 6)) * Math.max(0, Math.min(1, (.75 - Math.abs(el - .25)) * 5)) * Math.max(0, Math.min(1, (.5 - Math.abs(dx)) * 4 + 1));
-            b += win * 1.9; const i = (y * EW + x) * 4;
-            data[i] = b * 1.0; data[i + 1] = b * .965; data[i + 2] = b * .91; data[i + 3] = 1; } }
-        const env = new THREE.DataTexture(data, EW, EH, THREE.RGBAFormat, THREE.FloatType);
-        env.mapping = THREE.EquirectangularReflectionMapping; env.magFilter = env.minFilter = THREE.LinearFilter; env.needsUpdate = true;
-        scene.environment = env; }
-      const key = new THREE.DirectionalLight(0xfff4e6, .75); key.position.set(1.8, 5.5, 4.5); key.castShadow = true;
-      key.shadow.mapSize.set(2048, 2048); Object.assign(key.shadow.camera, { left: -5, right: 5, top: 4, bottom: -2, near: .5, far: 20 }); key.shadow.radius = 6; key.shadow.bias = -.0003; key.shadow.normalBias = .01;
+      RectAreaLightUniformsLib.init();
+      // real interior lighting + reflections from a CC0 Poly Haven room HDRI
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      new EXRLoader().load(roomHdr, tex => { scene.environment = pmrem.fromEquirectangular(tex).texture; tex.dispose(); needsRender = true; });
+      const key = new THREE.DirectionalLight(0xfff1e0, 1.1); key.position.set(1.2, 4.5, 3.2); key.castShadow = true;
+      key.shadow.mapSize.set(2048, 2048); Object.assign(key.shadow.camera, { left: -5, right: 5, top: 4, bottom: -2, near: .5, far: 15 });
+      key.shadow.radius = 14; key.shadow.blurSamples = 20; key.shadow.bias = -.0005;
       scene.add(key);
 
-      const composer = new EffectComposer(renderer);
+      const target = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: 4 });
+      const composer = new EffectComposer(renderer, target);
       composer.addPass(new RenderPass(scene, camera));
-      const ao = new GTAOPass(scene, camera, 1, 1); ao.blendIntensity = .9; composer.addPass(ao);
+      const ao = new N8AOPass(scene, camera, 1, 1);
+      Object.assign(ao.configuration, { aoRadius: .45, distanceFalloff: .5, intensity: 3.2, color: new THREE.Color(0x1a140e), halfRes: true, denoiseRadius: 10, gammaCorrection: false });
+      ao.setQualityMode("Medium");
+      composer.addPass(ao);
       composer.addPass(new OutputPass());
 
-      // three r160 scenes lack these newer fields the path tracer reads
-      for (const k of ["environmentRotation", "backgroundRotation"]) if (!(k in THREE.Scene.prototype)) Object.defineProperty(THREE.Scene.prototype, k, { value: new THREE.Euler(), writable: true, configurable: true });
-      const pt = new WebGLPathTracer(renderer);
-      pt.tiles.set(2, 2); pt.bounces = 5; pt.filterGlossyFactor = .5; pt.minSamples = 3; pt.renderDelay = 0; pt.fadeDuration = 350;
-      pt.rasterizeSceneCallback = () => composer.render();
-      const MAXS = coarse ? 120 : 500;
-      let photo = true; try { photo = localStorage.getItem("ww-photo") !== "0"; } catch {}
-      const photoBtn = $("dzPhoto") as HTMLButtonElement, statEl = $("dzPhotoStat");
-      const syncPhoto = () => { photoBtn.setAttribute("aria-pressed", String(photo)); };
-      syncPhoto();
-      photoBtn.addEventListener("click", () => { photo = !photo; syncPhoto(); lastChange = performance.now(); try { localStorage.setItem("ww-photo", photo ? "1" : "0"); } catch {} });
+      const statEl = $("dzPhotoStat");
       const sizesBtn = $("dzSizes");
       sizesBtn.addEventListener("click", () => { const on = labelsEl.classList.toggle("off"); sizesBtn.setAttribute("aria-pressed", String(!on)); });
-      $("dzSave").addEventListener("click", () => {
-        renderer!.domElement.toBlob(b => { if (!b) return; const a = document.createElement("a"); a.href = URL.createObjectURL(b);
-          a.download = `whichwood-${st.p}-design.png`; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }, "image/png");
-        toast(photo && pt.samples >= MAXS * .5 ? "Picture saved" : "Picture saved — let the photo finish for the best quality");
-      });
-
-      const resize = () => { W = stage.clientWidth; H = stage.clientHeight; renderer!.setSize(W, H, false); composer.setSize(W, H); ao.setSize(W, H); camera.aspect = W / H; camera.updateProjectionMatrix(); lastChange = performance.now(); };
+      const resize = () => { W = stage.clientWidth; H = stage.clientHeight; renderer!.setSize(W, H, false); composer.setSize(W, H); ao.setSize(W, H); camera.aspect = W / H; camera.updateProjectionMatrix(); needsRender = true; hqDone = false; };
       const ro = new ResizeObserver(resize); ro.observe(stage); resize();
+      const hq = (on: boolean) => { ao.configuration.halfRes = !on; ao.setQualityMode(on ? "High" : "Medium"); };
+      $("dzSave").addEventListener("click", () => {
+        // render one extra-sharp frame at 2x, save it, restore
+        renderer!.setPixelRatio(Math.min(3, basePR * 2)); composer.setPixelRatio?.(Math.min(3, basePR * 2)); resize(); hq(true); composer.render();
+        renderer!.domElement.toBlob(b => {
+          if (b) { const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = `whichwood-${st.p}-design.png`; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
+          renderer!.setPixelRatio(basePR); composer.setPixelRatio?.(basePR); resize(); toast("Picture saved");
+        }, "image/png");
+      });
       let drag = false, lx = 0, ly = 0;
       stage.addEventListener("pointerdown", e => { if ((e.target as HTMLElement).closest("button")) return; drag = true; lx = e.clientX; ly = e.clientY; stage.setPointerCapture(e.pointerId); });
       stage.addEventListener("pointermove", e => { if (!drag) return; yaw -= (e.clientX - lx) * .006; pitch = Math.max(-.05, Math.min(.6, pitch + (e.clientY - ly) * .004)); lx = e.clientX; ly = e.clientY; });
@@ -790,24 +785,17 @@ export const prerender = true;
       $("dzZoomIn").addEventListener("click", () => { zoom = Math.min(2.5, zoom * 1.2); });
       $("dzZoomOut").addEventListener("click", () => { zoom = Math.max(.6, zoom / 1.2); });
       $("dzFront").addEventListener("click", () => { yaw = 0; pitch = .08; zoom = 1; });
-      let visible = true; const io = new IntersectionObserver(es => { visible = es[0].isIntersecting; }); io.observe(stage);
+      let visible = true; const io = new IntersectionObserver(es => { visible = es[0].isIntersecting; if (visible) needsRender = true; }); io.observe(stage);
       const lastPos = new THREE.Vector3(1e9, 0, 0), lastQ = new THREE.Quaternion();
-      let camDirty = true, lastStat = "";
-      const setStat = (t: string) => { if (t !== lastStat) { lastStat = t; statEl.textContent = t; } };
+      statEl.textContent = "Drag to look around";
+      // draw only when something changed; one sharper frame once the view settles
       const loop = () => {
         requestAnimationFrame(loop); if (!visible || document.hidden) return;
         const now = performance.now();
         placeCam();
-        if (camera.position.distanceToSquared(lastPos) > 1e-10 || 1 - Math.abs(camera.quaternion.dot(lastQ)) > 1e-10) { lastPos.copy(camera.position); lastQ.copy(camera.quaternion); lastChange = now; camDirty = true; }
-        setLabelsPos();
-        if (photo && now - lastChange > 450) {
-          try {
-            if (sceneDirty) { pt.setScene(scene, camera); sceneDirty = false; camDirty = false; }
-            else if (camDirty) { pt.updateCamera(); camDirty = false; }
-            if (pt.samples < MAXS) { pt.renderSample(); setStat(`Developing photo… ${Math.min(99, Math.round(pt.samples / MAXS * 100))}%`); }
-            else setStat("Photo ready · save it or keep designing");
-          } catch (err) { photo = false; syncPhoto(); setStat("Drag to look around"); composer.render(); }
-        } else { composer.render(); camDirty = true; setStat(photo ? "Hold still for the photo…" : "Drag to look around"); }
+        if (camera.position.distanceToSquared(lastPos) > 1e-10 || 1 - Math.abs(camera.quaternion.dot(lastQ)) > 1e-10) { lastPos.copy(camera.position); lastQ.copy(camera.quaternion); needsRender = true; }
+        if (needsRender) { needsRender = false; hqDone = false; lastMove = now; hq(false); setLabelsPos(); composer.render(); return; }
+        if (!hqDone && now - lastMove > 200) { hqDone = true; hq(true); composer.render(); }
       };
       requestAnimationFrame(loop);
     }

@@ -16,10 +16,11 @@
 		"@astrojs/mdx": "4.3.13",
 		"@astrojs/rss": "4.0.14",
 		"@astrojs/sitemap": "3.6.1",
+		"@pmndrs/assets": "1.7.0",
 		"astro": "5.16.9",
+		"n8ao": "1.9.4",
+		"postprocessing": "6.36.4",
 		"three": "0.160.0",
-		"three-gpu-pathtracer": "0.0.23",
-		"three-mesh-bvh": "0.7.8",
 		"typescript": "5.9.3"
 	},
 	"devDependencies": {
